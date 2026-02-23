@@ -1072,6 +1072,7 @@
         <button class="nav-tab" onclick="showTab('investigations')">Investigations</button>
         <button class="nav-tab" onclick="showTab('management')">Management</button>
         <button class="nav-tab" onclick="showTab('progress')">Progress Notes</button>
+        <button class="nav-tab" onclick="showTab('neonatal')">👶 Neonatal</button>
     </div>
 
     <!-- Main Container -->
@@ -4079,7 +4080,2400 @@
             </div>
         </div>
     </div> <!-- End of container -->
+            <!-- TAB: NEONATAL CLERK SHEET -->
+        <div id="neonatal" class="tab-content">
+            
+            <!-- Header Banner -->
+            <div class="diff-dx-card" style="background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);">
+                <h2 style="color: white; margin-bottom: 10px;">👶 NEONATAL CLERK SHEET</h2>
+                <p style="opacity: 0.9; font-size: 0.95rem;">Comprehensive documentation for newborn admission</p>
+            </div>
 
+            <!-- SECTION 1: PATIENT IDENTIFICATION -->
+            <div class="card">
+                <h2 class="card-title">Patient Identification</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-baby-name" class="required">Baby's Name</label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span>Baby of</span>
+                            <input type="text" id="neo-baby-name" placeholder="Mother's name" style="flex: 1;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-mrn">Hospital ID / MRN</label>
+                        <input type="text" id="neo-mrn">
+                    </div>
+                </div>
+
+                <div class="form-row four-col">
+                    <div class="form-group">
+                        <label for="neo-dob" class="required">Date of Birth</label>
+                        <input type="date" id="neo-dob" onchange="calculateNeoAge()">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-tob" class="required">Time of Birth</label>
+                        <input type="time" id="neo-tob">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-doa">Date of Admission</label>
+                        <input type="date" id="neo-doa" onchange="calculateNeoAge()">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-toa">Time of Admission</label>
+                        <input type="time" id="neo-toa">
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label>Age at Admission</label>
+                        <input type="text" id="neo-age-admission" readonly placeholder="Auto-calculated">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-sex" class="required">Sex</label>
+                        <select id="neo-sex">
+                            <option value="">Select...</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="ambiguous">Ambiguous</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-source">Source of Admission</label>
+                        <select id="neo-source">
+                            <option value="">Select...</option>
+                            <option value="labour-room">Labour Room</option>
+                            <option value="postnatal">Postnatal Ward</option>
+                            <option value="ot">Operation Theatre</option>
+                            <option value="er">Emergency Room</option>
+                            <option value="referred">Referred from outside</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-birth-weight" class="required">Birth Weight (grams)</label>
+                        <input type="number" id="neo-birth-weight" min="0" max="6000" onchange="classifyNewborn()">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-admission-weight">Admission Weight (grams)</label>
+                        <input type="number" id="neo-admission-weight" min="0" max="6000">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-referred-by">Referred By</label>
+                        <input type="text" id="neo-referred-by" placeholder="Dr. Name / Hospital">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: MATERNAL HISTORY -->
+            <div class="card">
+                <h2 class="card-title">Maternal History</h2>
+                
+                <h3 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Mother's Demographics</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-mother-name">Mother's Name</label>
+                        <input type="text" id="neo-mother-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-mother-age">Mother's Age (years)</label>
+                        <input type="number" id="neo-mother-age" min="10" max="60">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-father-name">Father's Name</label>
+                        <input type="text" id="neo-father-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-contact">Contact Number</label>
+                        <input type="tel" id="neo-contact">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-address">Address</label>
+                        <input type="text" id="neo-address">
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-mother-blood-group">Mother's Blood Group</label>
+                        <select id="neo-mother-blood-group">
+                            <option value="">Select...</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-father-blood-group">Father's Blood Group</label>
+                        <select id="neo-father-blood-group">
+                            <option value="">Select...</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-consanguinity">Consanguinity</label>
+                        <select id="neo-consanguinity">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 style="margin: 25px 0 10px 0; color: var(--secondary-color);">Obstetric History</h3>
+
+                <div class="form-row four-col">
+                    <div class="form-group">
+                        <label for="neo-gravida">Gravida (G)</label>
+                        <input type="number" id="neo-gravida" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-para">Para (P)</label>
+                        <input type="number" id="neo-para" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-living">Living (L)</label>
+                        <input type="number" id="neo-living" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-abortions">Abortions (A)</label>
+                        <input type="number" id="neo-abortions" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="neo-prev-pregnancy">Previous Pregnancy Outcomes</label>
+                    <textarea id="neo-prev-pregnancy" rows="2" placeholder="Details of previous pregnancies..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-prev-nicu">Previous NICU Admissions</label>
+                        <select id="neo-prev-nicu">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-prev-neonatal-death">Previous Neonatal Deaths</label>
+                        <select id="neo-prev-neonatal-death">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-recurrent-abortions">History of Recurrent Abortions</label>
+                        <select id="neo-recurrent-abortions">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-ivf">IVF/ART Conception</label>
+                        <select id="neo-ivf">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANTENATAL HISTORY -->
+            <div class="card">
+                <h2 class="card-title">Antenatal History</h2>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-booked">Booking Status</label>
+                        <select id="neo-booked">
+                            <option value="">Select...</option>
+                            <option value="booked">Booked</option>
+                            <option value="unbooked">Unbooked</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-anc-visits">Number of ANC Visits</label>
+                        <input type="number" id="neo-anc-visits" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-dating-scan">Dating Scan Done</label>
+                        <select id="neo-dating-scan">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-ga-lmp">Gestational Age by LMP</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="neo-ga-lmp-weeks" placeholder="Weeks" min="20" max="45" style="flex: 1;" onchange="classifyNewborn()">
+                            <input type="number" id="neo-ga-lmp-days" placeholder="Days" min="0" max="6" style="flex: 1;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-ga-usg">Gestational Age by USG</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="neo-ga-usg-weeks" placeholder="Weeks" min="20" max="45" style="flex: 1;">
+                            <input type="number" id="neo-ga-usg-days" placeholder="Days" min="0" max="6" style="flex: 1;">
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--text-color);">Maternal Conditions</h4>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-gdm">GDM / Overt DM</label>
+                        <select id="neo-gdm">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="diet">Yes - Diet controlled</option>
+                            <option value="oha">Yes - OHA controlled</option>
+                            <option value="insulin">Yes - Insulin controlled</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-pih">PIH / Pre-eclampsia / Eclampsia</label>
+                        <select id="neo-pih">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="pih">PIH</option>
+                            <option value="preeclampsia">Pre-eclampsia</option>
+                            <option value="eclampsia">Eclampsia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-hypothyroid">Hypothyroidism</label>
+                        <select id="neo-hypothyroid">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-anemia">Anemia</label>
+                        <select id="neo-anemia">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="mild">Mild (Hb 10-11 g/dL)</option>
+                            <option value="moderate">Moderate (Hb 7-10 g/dL)</option>
+                            <option value="severe">Severe (Hb <7 g/dL)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-uti">UTI During Pregnancy</label>
+                        <select id="neo-uti">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-fever-pregnancy">Fever During Pregnancy</label>
+                        <select id="neo-fever-pregnancy">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="1st">Yes - 1st Trimester</option>
+                            <option value="2nd">Yes - 2nd Trimester</option>
+                            <option value="3rd">Yes - 3rd Trimester</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-rash-pregnancy">Rash During Pregnancy</label>
+                        <select id="neo-rash-pregnancy">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-heart-disease">Heart Disease</label>
+                        <select id="neo-heart-disease">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--text-color);">Serology & Screening</h4>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-torch">TORCH Screening</label>
+                        <select id="neo-torch">
+                            <option value="">Select...</option>
+                            <option value="not-done">Not Done</option>
+                            <option value="negative">Done - Negative</option>
+                            <option value="positive">Done - Positive (specify)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-torch-details">TORCH Details (if positive)</label>
+                        <input type="text" id="neo-torch-details" placeholder="Specify which infection">
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-hiv">HIV Status</label>
+                        <select id="neo-hiv">
+                            <option value="">Select...</option>
+                            <option value="negative">Negative</option>
+                            <option value="positive">Positive</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-hbsag">HBsAg</label>
+                        <select id="neo-hbsag">
+                            <option value="">Select...</option>
+                            <option value="negative">Negative</option>
+                            <option value="positive">Positive</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-vdrl">VDRL</label>
+                        <select id="neo-vdrl">
+                            <option value="">Select...</option>
+                            <option value="negative">Negative</option>
+                            <option value="positive">Positive</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--text-color);">Other Antenatal Factors</h4>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-liquor">Amniotic Fluid</label>
+                        <select id="neo-liquor">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="polyhydramnios">Polyhydramnios</option>
+                            <option value="oligohydramnios">Oligohydramnios</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-afi">AFI (if done)</label>
+                        <input type="number" id="neo-afi" step="0.1" placeholder="cm">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-aph">APH (Antepartum Hemorrhage)</label>
+                        <select id="neo-aph">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="placenta-previa">Placenta Previa</option>
+                            <option value="abruption">Placental Abruption</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-anomaly-scan">Anomaly Scan Findings</label>
+                        <select id="neo-anomaly-scan">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="abnormal">Abnormal</option>
+                            <option value="not-done">Not Done</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-antenatal-steroids">Antenatal Steroids</label>
+                        <select id="neo-antenatal-steroids">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="complete">Yes - Complete course</option>
+                            <option value="incomplete">Yes - Incomplete course</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-antenatal-mgso4">Antenatal MgSO₄</label>
+                        <select id="neo-antenatal-mgso4">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="neo-drug-intake">Drug Intake During Pregnancy</label>
+                    <input type="text" id="neo-drug-intake" placeholder="List medications taken">
+                </div>
+            </div>
+
+            <!-- INTRAPARTUM HISTORY -->
+            <div class="card">
+                <h2 class="card-title">Intrapartum History</h2>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-delivery-place">Place of Delivery</label>
+                        <select id="neo-delivery-place">
+                            <option value="">Select...</option>
+                            <option value="hospital">Hospital</option>
+                            <option value="home">Home</option>
+                            <option value="on-way">On the way</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-delivery-mode">Mode of Delivery</label>
+                        <select id="neo-delivery-mode">
+                            <option value="">Select...</option>
+                            <option value="nvd">NVD (Normal Vaginal Delivery)</option>
+                            <option value="lscs">LSCS (C-Section)</option>
+                            <option value="forceps">Assisted - Forceps</option>
+                            <option value="vacuum">Assisted - Vacuum</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-presentation">Presentation</label>
+                        <select id="neo-presentation">
+                            <option value="">Select...</option>
+                            <option value="cephalic">Cephalic</option>
+                            <option value="breech">Breech</option>
+                            <option value="transverse">Transverse</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="neo-lscs-indication-group" style="display: none;">
+                    <label for="neo-lscs-indication">Indication for LSCS</label>
+                    <input type="text" id="neo-lscs-indication" placeholder="Specify indication">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-labor-duration">Duration of Labor (hours)</label>
+                        <input type="number" id="neo-labor-duration" step="0.5" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-prom">PROM (Premature Rupture of Membranes)</label>
+                        <select id="neo-prom" onchange="togglePromDuration()">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row" id="neo-prom-details" style="display: none;">
+                    <div class="form-group">
+                        <label for="neo-prom-duration">Duration of ROM (hours)</label>
+                        <input type="number" id="neo-prom-duration" step="0.5" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-prolonged-rom">Prolonged ROM (>18 hrs)</label>
+                        <select id="neo-prolonged-rom">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-liquor-color">Color of Liquor</label>
+                        <select id="neo-liquor-color">
+                            <option value="">Select...</option>
+                            <option value="clear">Clear</option>
+                            <option value="msaf-1">Meconium-stained (Grade I - Thin)</option>
+                            <option value="msaf-2">Meconium-stained (Grade II - Moderate)</option>
+                            <option value="msaf-3">Meconium-stained (Grade III - Thick/Pea soup)</option>
+                            <option value="blood-stained">Blood-stained</option>
+                            <option value="foul-smelling">Foul-smelling</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-cord-around-neck">Cord Around Neck</label>
+                        <select id="neo-cord-around-neck">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="loose-1">Yes - Loose, 1 loop</option>
+                            <option value="loose-2">Yes - Loose, 2 loops</option>
+                            <option value="tight-1">Yes - Tight, 1 loop</option>
+                            <option value="tight-2">Yes - Tight, 2+ loops</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-maternal-fever-labor">Maternal Fever During Labor</label>
+                        <select id="neo-maternal-fever-labor">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-foul-discharge">Foul-smelling Vaginal Discharge</label>
+                        <select id="neo-foul-discharge">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-maternal-antibiotics">Maternal Antibiotics in Labor</label>
+                        <select id="neo-maternal-antibiotics">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-maternal-antibiotics-details">If yes, specify drug & duration</label>
+                        <input type="text" id="neo-maternal-antibiotics-details" placeholder="Drug name & duration">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-multiple-pregnancy">Multiple Pregnancy</label>
+                        <select id="neo-multiple-pregnancy">
+                            <option value="">Select...</option>
+                            <option value="no">No (Singleton)</option>
+                            <option value="twin">Twin</option>
+                            <option value="triplet">Triplet</option>
+                            <option value="higher">Higher order</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-birth-order">Order of Birth (if multiple)</label>
+                        <select id="neo-birth-order">
+                            <option value="">N/A</option>
+                            <option value="1">1st</option>
+                            <option value="2">2nd</option>
+                            <option value="3">3rd</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BIRTH DETAILS & RESUSCITATION -->
+            <div class="card">
+                <h2 class="card-title">Birth Details & Resuscitation</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-cried-immediately">Cried Immediately at Birth</label>
+                        <select id="neo-cried-immediately">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-time-to-cry">Time to First Cry (if delayed)</label>
+                        <input type="number" id="neo-time-to-cry" placeholder="minutes" min="0">
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--text-color);">APGAR Scores</h4>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>0</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>1 min</th>
+                                <th>5 min</th>
+                                <th>10 min</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Appearance (Color)</strong></td>
+                                <td>Blue/Pale</td>
+                                <td>Body pink, extremities blue</td>
+                                <td>Completely pink</td>
+                                <td rowspan="5" style="vertical-align: middle;">
+                                    <input type="number" id="neo-apgar-1" min="0" max="10" style="width: 60px; text-align: center; font-size: 1.2rem; font-weight: bold;">
+                                </td>
+                                <td rowspan="5" style="vertical-align: middle;">
+                                    <input type="number" id="neo-apgar-5" min="0" max="10" style="width: 60px; text-align: center; font-size: 1.2rem; font-weight: bold;">
+                                </td>
+                                <td rowspan="5" style="vertical-align: middle;">
+                                    <input type="number" id="neo-apgar-10" min="0" max="10" style="width: 60px; text-align: center; font-size: 1.2rem; font-weight: bold;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pulse (Heart Rate)</strong></td>
+                                <td>Absent</td>
+                                <td>&lt;100 bpm</td>
+                                <td>≥100 bpm</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Grimace (Reflex)</strong></td>
+                                <td>No response</td>
+                                <td>Grimace</td>
+                                <td>Cry/Cough/Sneeze</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Activity (Tone)</strong></td>
+                                <td>Limp</td>
+                                <td>Some flexion</td>
+                                <td>Active movement</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Respiration</strong></td>
+                                <td>Absent</td>
+                                <td>Weak/Irregular</td>
+                                <td>Strong cry</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--text-color);">Resuscitation Details</h4>
+
+                <div class="form-group">
+                    <label for="neo-resuscitation">Resuscitation Required</label>
+                    <select id="neo-resuscitation" onchange="toggleResuscitationDetails()">
+                        <option value="">Select...</option>
+                        <option value="no">No - Routine care only</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+
+                <div id="neo-resuscitation-details" style="display: none;">
+                    <div class="form-group">
+                        <label>Steps Performed (check all that apply)</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="neo-resus-steps" value="initial"> Initial steps (warm, dry, stimulate)
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="neo-resus-steps" value="suction"> Suction
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="neo-resus-steps" value="ppv"> PPV (Positive Pressure Ventilation)
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="neo-resus-steps" value="chest-compression"> Chest Compressions
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="neo-resus-steps" value="intubation"> Intubation
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="neo-resus-steps" value="medications"> Medications
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-row three-col">
+                        <div class="form-group">
+                            <label for="neo-ppv-duration">Duration of PPV (minutes)</label>
+                            <input type="number" id="neo-ppv-duration" min="0" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="neo-resus-duration">Total Resuscitation Duration (min)</label>
+                            <input type="number" id="neo-resus-duration" min="0" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="neo-o2-used">Oxygen Used</label>
+                            <select id="neo-o2-used">
+                                <option value="">Select...</option>
+                                <option value="no">No (Room air)</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="neo-epinephrine">Epinephrine Given</label>
+                            <select id="neo-epinephrine">
+                                <option value="">Select...</option>
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="neo-meconium-below-cords">Meconium Below Cords</label>
+                            <select id="neo-meconium-below-cords">
+                                <option value="">Select...</option>
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                                <option value="na">N/A (Clear liquor)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--text-color);">Birth Measurements & Classification</h4>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-birth-weight-exam">Birth Weight (grams)</label>
+                        <input type="number" id="neo-birth-weight-exam" min="0" max="6000" onchange="classifyNewborn()">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-ga-ballard">GA by New Ballard Score (weeks)</label>
+                        <input type="number" id="neo-ga-ballard" min="20" max="45" onchange="classifyNewborn()">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-ballard-score">New Ballard Total Score</label>
+                        <input type="number" id="neo-ballard-score" min="-10" max="50">
+                    </div>
+                </div>
+
+                <div class="alert alert-info" id="neo-classification-result">
+                    <strong>Newborn Classification:</strong>
+                    <div id="neo-classification-text" style="margin-top: 10px;">
+                        Enter birth weight and gestational age to classify
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRESENTING COMPLAINTS -->
+            <div class="card">
+                <h2 class="card-title">Presenting Complaints</h2>
+                <div class="alert alert-info">
+                    Record complaints in order of significance, with duration
+                </div>
+
+                <div class="form-group">
+                    <label>1.</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="neo-complaint-1" placeholder="Chief complaint" style="flex: 3;">
+                        <input type="text" id="neo-complaint-1-duration" placeholder="Duration" style="flex: 1;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>2.</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="neo-complaint-2" placeholder="Complaint" style="flex: 3;">
+                        <input type="text" id="neo-complaint-2-duration" placeholder="Duration" style="flex: 1;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>3.</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="neo-complaint-3" placeholder="Complaint" style="flex: 3;">
+                        <input type="text" id="neo-complaint-3-duration" placeholder="Duration" style="flex: 1;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>4.</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="neo-complaint-4" placeholder="Complaint" style="flex: 3;">
+                        <input type="text" id="neo-complaint-4-duration" placeholder="Duration" style="flex: 1;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>5.</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="neo-complaint-5" placeholder="Complaint" style="flex: 3;">
+                        <input type="text" id="neo-complaint-5-duration" placeholder="Duration" style="flex: 1;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- POSTNATAL HISTORY -->
+            <div class="card">
+                <h2 class="card-title">Postnatal History</h2>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-vitamin-k">Vitamin K Given</label>
+                        <select id="neo-vitamin-k">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-bf-initiated">Breastfeeding Initiated</label>
+                        <select id="neo-bf-initiated">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-bf-time">Time of Initiation</label>
+                        <input type="text" id="neo-bf-time" placeholder="e.g., Within 1 hour">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-feeding-current">Current Feeding</label>
+                        <select id="neo-feeding-current">
+                            <option value="">Select...</option>
+                            <option value="direct-bf">Direct Breastfeeding</option>
+                            <option value="ebm">Expressed Breast Milk (EBM)</option>
+                            <option value="formula">Formula</option>
+                            <option value="iv">IV Fluids only</option>
+                            <option value="npo">NPO</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-urine-passed">Urine Passed</label>
+                        <select id="neo-urine-passed">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-urine-time">Time After Birth (if passed)</label>
+                        <input type="text" id="neo-urine-time" placeholder="e.g., 12 hours">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-meconium-passed">Meconium Passed</label>
+                        <select id="neo-meconium-passed">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-meconium-time">Time After Birth (if passed)</label>
+                        <input type="text" id="neo-meconium-time" placeholder="e.g., 24 hours">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Immunizations Given</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-immunization" value="bcg"> BCG
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-immunization" value="opv0"> OPV-0
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-immunization" value="hepb"> Hep B Birth Dose
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-jaundice-postnatal">Jaundice</label>
+                        <select id="neo-jaundice-postnatal">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-jaundice-day">Day of Onset (if yes)</label>
+                        <input type="number" id="neo-jaundice-day" min="1" max="28">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-seizures-postnatal">Seizures</label>
+                        <select id="neo-seizures-postnatal">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="neo-bleeding">Bleeding From Any Site</label>
+                    <select id="neo-bleeding">
+                        <option value="">Select...</option>
+                        <option value="no">No</option>
+                        <option value="yes">Yes (specify below)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- GENERAL PHYSICAL EXAMINATION -->
+            <div class="card">
+                <h2 class="card-title">General Physical Examination</h2>
+
+                <h4 style="margin: 15px 0 10px 0; color: var(--text-color);">Anthropometry</h4>
+
+                <div class="form-row four-col">
+                    <div class="form-group">
+                        <label for="neo-exam-weight">Weight (grams)</label>
+                        <input type="number" id="neo-exam-weight" min="0" max="6000">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-exam-length">Length (cm)</label>
+                        <input type="number" id="neo-exam-length" step="0.1" min="20" max="60">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-exam-hc">Head Circumference (cm)</label>
+                        <input type="number" id="neo-exam-hc" step="0.1" min="20" max="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-exam-cc">Chest Circumference (cm)</label>
+                        <input type="number" id="neo-exam-cc" step="0.1" min="20" max="50">
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--text-color);">General Condition</h4>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-general-condition">General Condition</label>
+                        <select id="neo-general-condition">
+                            <option value="">Select...</option>
+                            <option value="active">Active</option>
+                            <option value="lethargic">Lethargic</option>
+                            <option value="sick">Sick-looking</option>
+                            <option value="moribund">Moribund</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-activity">Activity</label>
+                        <select id="neo-activity">
+                            <option value="">Select...</option>
+                            <option value="active">Active</option>
+                            <option value="hypoactive">Hypoactive</option>
+                            <option value="limp">Limp</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-posture">Posture</label>
+                        <select id="neo-posture">
+                            <option value="">Select...</option>
+                            <option value="flexed">Flexed</option>
+                            <option value="extended">Extended</option>
+                            <option value="frog-leg">Frog-leg</option>
+                            <option value="opisthotonus">Opisthotonus</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-cry">Cry</label>
+                        <select id="neo-cry">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="weak">Weak</option>
+                            <option value="high-pitched">High-pitched</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-color">Color</label>
+                        <select id="neo-color">
+                            <option value="">Select...</option>
+                            <option value="pink">Pink</option>
+                            <option value="pale">Pale</option>
+                            <option value="plethoric">Plethoric</option>
+                            <option value="cyanosed">Cyanosed</option>
+                            <option value="jaundiced">Jaundiced</option>
+                            <option value="mottled">Mottled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Skin</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-skin" value="vernix"> Vernix
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-skin" value="lanugo"> Lanugo
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-skin" value="desquamation"> Desquamation
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-skin" value="rash"> Rash
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-skin" value="pustules"> Pustules
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-skin" value="petechiae"> Petechiae
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-skin" value="ecchymosis"> Ecchymosis
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-edema">Edema</label>
+                        <select id="neo-edema-exam">
+                            <option value="">Select...</option>
+                            <option value="absent">Absent</option>
+                            <option value="present">Present</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-edema-site">Edema Site (if present)</label>
+                        <input type="text" id="neo-edema-site" placeholder="e.g., Feet, hands, generalized">
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--text-color);">Vital Signs</h4>
+
+                <div class="form-row four-col">
+                    <div class="form-group">
+                        <label for="neo-temp">Temperature (°C)</label>
+                        <input type="number" id="neo-temp" step="0.1" min="30" max="42">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-hr">Heart Rate (bpm)</label>
+                        <input type="number" id="neo-hr" min="60" max="220">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-rr">Respiratory Rate (/min)</label>
+                        <input type="number" id="neo-rr" min="20" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-crt">CRT (seconds)</label>
+                        <input type="number" id="neo-crt" step="0.5" min="0" max="10">
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-spo2-preductal">SpO₂ Pre-ductal (%)</label>
+                        <input type="number" id="neo-spo2-preductal" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-spo2-postductal">SpO₂ Post-ductal (%)</label>
+                        <input type="number" id="neo-spo2-postductal" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-bp">Blood Pressure (mmHg)</label>
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <input type="number" id="neo-bp-sys" placeholder="Sys" style="flex: 1;">
+                            <span>/</span>
+                            <input type="number" id="neo-bp-dia" placeholder="Dia" style="flex: 1;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="neo-rbs">Blood Glucose (mg/dL)</label>
+                    <input type="number" id="neo-rbs" min="0" max="500">
+                </div>
+            </div>
+
+            <!-- HEAD TO TOE EXAMINATION -->
+            <div class="card">
+                <h2 class="card-title">Head to Toe Examination</h2>
+
+                <h4 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Head & Fontanelles</h4>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-af-size">Anterior Fontanelle Size</label>
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <input type="number" id="neo-af-size-1" placeholder="cm" style="flex: 1;" step="0.1">
+                            <span>×</span>
+                            <input type="number" id="neo-af-size-2" placeholder="cm" style="flex: 1;" step="0.1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-af-level">Anterior Fontanelle Level</label>
+                        <select id="neo-af-level">
+                            <option value="">Select...</option>
+                            <option value="level">Level / Flat</option>
+                            <option value="bulging">Bulging</option>
+                            <option value="sunken">Sunken</option>
+                            <option value="tense">Tense</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-pf">Posterior Fontanelle</label>
+                        <select id="neo-pf">
+                            <option value="">Select...</option>
+                            <option value="open">Open</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-sutures">Sutures</label>
+                        <select id="neo-sutures">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="overriding">Overriding</option>
+                            <option value="wide">Wide</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-caput">Caput Succedaneum</label>
+                        <select id="neo-caput">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-cephalhematoma">Cephalhematoma</label>
+                        <select id="neo-cephalhematoma">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes-left">Yes - Left</option>
+                            <option value="yes-right">Yes - Right</option>
+                            <option value="yes-bilateral">Yes - Bilateral</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-subgaleal">Subgaleal Hemorrhage</label>
+                        <select id="neo-subgaleal">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-facial-symmetry">Facial Symmetry</label>
+                        <select id="neo-facial-symmetry">
+                            <option value="">Select...</option>
+                            <option value="symmetric">Symmetric</option>
+                            <option value="asymmetric">Asymmetric</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-dysmorphic">Dysmorphic Features</label>
+                        <select id="neo-dysmorphic">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes (describe below)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="neo-dysmorphic-details">Dysmorphic Features Details</label>
+                    <textarea id="neo-dysmorphic-details" rows="2" placeholder="Describe any dysmorphic features..."></textarea>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Eyes</h4>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-eye-opening">Eye Opening</label>
+                        <select id="neo-eye-opening">
+                            <option value="">Select...</option>
+                            <option value="spontaneous">Spontaneous</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-pupils">Pupils</label>
+                        <select id="neo-pupils">
+                            <option value="">Select...</option>
+                            <option value="equal-reactive">Equal & Reactive</option>
+                            <option value="unequal">Unequal</option>
+                            <option value="non-reactive">Non-reactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-red-reflex">Red Reflex</label>
+                        <select id="neo-red-reflex">
+                            <option value="">Select...</option>
+                            <option value="present">Present bilaterally</option>
+                            <option value="absent">Absent / Abnormal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-sunset-sign">Sunset Sign</label>
+                        <select id="neo-sunset-sign">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-subconj-hemorrhage">Subconjunctival Hemorrhage</label>
+                        <select id="neo-subconj-hemorrhage">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Ears, Nose, Mouth</h4>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-ears">Ears</label>
+                        <select id="neo-ears">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="low-set">Low-set</option>
+                            <option value="malformed">Malformed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-preauricular">Pre-auricular Tags/Pits</label>
+                        <select id="neo-preauricular">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-nasal-patency">Nasal Patency (catheter check)</label>
+                        <select id="neo-nasal-patency">
+                            <option value="">Select...</option>
+                            <option value="patent">Patent bilaterally</option>
+                            <option value="blocked">Blocked</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-palate">Palate</label>
+                        <select id="neo-palate">
+                            <option value="">Select...</option>
+                            <option value="intact">Intact</option>
+                            <option value="cleft-complete">Cleft (Complete)</option>
+                            <option value="cleft-incomplete">Cleft (Incomplete)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-cleft-lip">Cleft Lip</label>
+                        <select id="neo-cleft-lip">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="unilateral">Yes - Unilateral</option>
+                            <option value="bilateral">Yes - Bilateral</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-tongue">Tongue</label>
+                        <select id="neo-tongue">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="macroglossia">Macroglossia</option>
+                            <option value="tongue-tie">Tongue-tie</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Neck</h4>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-neck-swelling">Neck Swelling</label>
+                        <select id="neo-neck-swelling">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-webbing">Webbing</label>
+                        <select id="neo-webbing">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SYSTEMIC EXAMINATION - CVS & RS -->
+            <div class="card">
+                <h2 class="card-title">Systemic Examination - CVS & Respiratory</h2>
+
+                <h4 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Cardiovascular System</h4>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-precordium">Precordium</label>
+                        <select id="neo-precordium">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="hyperactive">Hyperactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-heart-sounds">Heart Sounds</label>
+                        <select id="neo-heart-sounds">
+                            <option value="">Select...</option>
+                            <option value="normal">S1 S2 Normal</option>
+                            <option value="abnormal">Abnormal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-murmur">Murmur</label>
+                        <select id="neo-murmur">
+                            <option value="">Select...</option>
+                            <option value="absent">Absent</option>
+                            <option value="present">Present</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-murmur-details">Murmur Details (if present)</label>
+                        <input type="text" id="neo-murmur-details" placeholder="Grade, site, timing">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-femoral-pulses">Femoral Pulses</label>
+                        <select id="neo-femoral-pulses">
+                            <option value="">Select...</option>
+                            <option value="present">Present bilaterally</option>
+                            <option value="weak">Weak</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-prepost-spo2">Pre-Post Ductal SpO₂ Difference (%)</label>
+                        <input type="number" id="neo-prepost-spo2" min="0" max="20">
+                    </div>
+                </div>
+
+                <h4 style="margin: 25px 0 10px 0; color: var(--secondary-color);">Respiratory System</h4>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-resp-effort">Respiratory Effort</label>
+                        <select id="neo-resp-effort">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="tachypnea">Tachypnea</option>
+                            <option value="gasping">Gasping</option>
+                            <option value="apnea">Apnea</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-chest-movement">Chest Movement</label>
+                        <select id="neo-chest-movement">
+                            <option value="">Select...</option>
+                            <option value="symmetrical">Symmetrical</option>
+                            <option value="asymmetrical">Asymmetrical</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-grunting">Grunting</label>
+                        <select id="neo-grunting">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Retractions</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-retractions" value="none"> None
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-retractions" value="subcostal"> Subcostal
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-retractions" value="intercostal"> Intercostal
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-retractions" value="suprasternal"> Suprasternal
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="neo-retractions" value="xiphoid"> Xiphoid
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-air-entry">Air Entry</label>
+                        <select id="neo-air-entry">
+                            <option value="">Select...</option>
+                            <option value="equal">Equal bilateral</option>
+                            <option value="decreased-right">Decreased - Right</option>
+                            <option value="decreased-left">Decreased - Left</option>
+                            <option value="decreased-bilateral">Decreased - Bilateral</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-breath-sounds">Breath Sounds</label>
+                        <select id="neo-breath-sounds">
+                            <option value="">Select...</option>
+                            <option value="vesicular">Vesicular</option>
+                            <option value="bronchial">Bronchial</option>
+                            <option value="diminished">Diminished</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-added-sounds">Added Sounds</label>
+                        <select id="neo-added-sounds">
+                            <option value="">Select...</option>
+                            <option value="none">None</option>
+                            <option value="crepitations">Crepitations</option>
+                            <option value="rhonchi">Rhonchi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-silverman">Silverman-Anderson Score (/10)</label>
+                        <input type="number" id="neo-silverman" min="0" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-downes">Downe's Score (/10)</label>
+                        <input type="number" id="neo-downes" min="0" max="10">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SYSTEMIC EXAMINATION - ABDOMEN & CNS -->
+            <div class="card">
+                <h2 class="card-title">Systemic Examination - Abdomen & CNS</h2>
+
+                <h4 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Gastrointestinal / Abdomen</h4>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="neo-abd-shape">Abdominal Shape</label>
+                        <select id="neo-abd-shape">
+                            <option value="">Select...</option>
+                            <option value="flat">Flat</option>
+                            <option value="distended">Distended</option>
+                            <option value="scaphoid">Scaphoid</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-umbilicus">Umbilicus</label>
+                        <select id="neo-umbilicus">
+                            <option value="">Select...</option>
+                            <option value="healthy">Healthy</option>
+                            <option value="red">Red / Inflamed</option>
+                            <option value="discharge">Discharge</option>
+                            <option value="foul-smelling">Foul-smelling</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-umbilical-vessels">Umbilical Vessels</label>
+                        <select id="neo-umbilical-vessels">
+                            <option value="">Select...</option>
+                            <option value="3-vessels">3 vessels (2A + 1V)</option>
+                            <option value="sua">Single umbilical artery</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-liver-exam">Liver (cm below costal margin)</label>
+                        <input type="number" id="neo-liver-exam" step="0.5" min="0" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-spleen-exam">Spleen</label>
+                        <select id="neo-spleen-exam">
+                            <option value="">Select...</option>
+                            <option value="not-palpable">Not Palpable</option>
+                            <option value="palpable">Palpable (cm: ___)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-bowel-sounds">Bowel Sounds</label>
+                        <select id="neo-bowel-sounds">
+                            <option value="">Select...</option>
+                            <option value="present">Present</option>
+                            <option value="absent">Absent</option>
+                            <option value="hyperactive">Hyperactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-anus">Anus</label>
+                        <select id="neo-anus">
+                            <option value="">Select...</option>
+                            <option value="patent">Patent, normal position</option>
+                            <option value="imperforate">Imperforate</option>
+                            <option value="abnormal-position">Abnormal position</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-abd-wall-defect">Abdominal Wall Defect</label>
+                        <select id="neo-abd-wall-defect">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="omphalocele">Omphalocele</option>
+                            <option value="gastroschisis">Gastroschisis</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4 style="margin: 25px 0 10px 0; color: var(--secondary-color);">Central Nervous System</h4>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-loc">Level of Consciousness</label>
+                        <select id="neo-loc">
+                            <option value="">Select...</option>
+                            <option value="alert">Alert</option>
+                            <option value="lethargic">Lethargic</option>
+                            <option value="stuporous">Stuporous</option>
+                            <option value="comatose">Comatose</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-tone">Tone</label>
+                        <select id="neo-tone">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="hypertonia">Hypertonia</option>
+                            <option value="hypotonia">Hypotonia</option>
+                            <option value="asymmetric">Asymmetric</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h5 style="margin: 15px 0 10px 0;">Primitive Reflexes</h5>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reflex</th>
+                                <th>Finding</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Moro</td>
+                                <td>
+                                    <select id="neo-moro">
+                                        <option value="">Select...</option>
+                                        <option value="present">Present</option>
+                                        <option value="absent">Absent</option>
+                                        <option value="incomplete">Incomplete</option>
+                                        <option value="asymmetric">Asymmetric</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sucking</td>
+                                <td>
+                                    <select id="neo-sucking">
+                                        <option value="">Select...</option>
+                                        <option value="present">Present</option>
+                                        <option value="weak">Weak</option>
+                                        <option value="absent">Absent</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Rooting</td>
+                                <td>
+                                    <select id="neo-rooting">
+                                        <option value="">Select...</option>
+                                        <option value="present">Present</option>
+                                        <option value="absent">Absent</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Palmar Grasp</td>
+                                <td>
+                                    <select id="neo-palmar-grasp">
+                                        <option value="">Select...</option>
+                                        <option value="present">Present</option>
+                                        <option value="absent">Absent</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Plantar Grasp</td>
+                                <td>
+                                    <select id="neo-plantar-grasp">
+                                        <option value="">Select...</option>
+                                        <option value="present">Present</option>
+                                        <option value="absent">Absent</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-seizures-exam">Seizures</label>
+                        <select id="neo-seizures-exam">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="subtle">Subtle</option>
+                            <option value="clonic">Clonic</option>
+                            <option value="tonic">Tonic</option>
+                            <option value="myoclonic">Myoclonic</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-hie-stage">HIE Staging (Sarnat)</label>
+                        <select id="neo-hie-stage">
+                            <option value="">Select...</option>
+                            <option value="na">N/A - No HIE</option>
+                            <option value="stage1">Stage I (Mild)</option>
+                            <option value="stage2">Stage II (Moderate)</option>
+                            <option value="stage3">Stage III (Severe)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MUSCULOSKELETAL & GENITOURINARY -->
+            <div class="card">
+                <h2 class="card-title">Musculoskeletal & Genitourinary</h2>
+
+                <h4 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Musculoskeletal</h4>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-spine">Spine</label>
+                        <select id="neo-spine">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="sacral-dimple">Sacral dimple</option>
+                            <option value="tuft-of-hair">Tuft of hair</option>
+                            <option value="meningocele">Meningocele</option>
+                            <option value="mmc">Myelomeningocele</option>
+                            <option value="spina-bifida">Spina bifida</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-clavicles">Clavicles</label>
+                        <select id="neo-clavicles">
+                            <option value="">Select...</option>
+                            <option value="intact">Intact bilaterally</option>
+                            <option value="fracture-right">Fracture - Right</option>
+                            <option value="fracture-left">Fracture - Left</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-hips">Hips (Barlow & Ortolani)</label>
+                        <select id="neo-hips">
+                            <option value="">Select...</option>
+                            <option value="stable">Stable bilaterally</option>
+                            <option value="unstable-right">Unstable - Right</option>
+                            <option value="unstable-left">Unstable - Left</option>
+                            <option value="unstable-bilateral">Unstable - Bilateral</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-erb">Erb's Palsy</label>
+                        <select id="neo-erb">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="right">Yes - Right</option>
+                            <option value="left">Yes - Left</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-ctev">CTEV (Clubfoot)</label>
+                        <select id="neo-ctev">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="unilateral">Yes - Unilateral</option>
+                            <option value="bilateral">Yes - Bilateral</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-digits">Digits</label>
+                        <select id="neo-digits">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="polydactyly">Polydactyly</option>
+                            <option value="syndactyly">Syndactyly</option>
+                            <option value="clinodactyly">Clinodactyly</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="neo-single-palmar-crease">Single Palmar Crease</label>
+                    <select id="neo-single-palmar-crease">
+                        <option value="">Select...</option>
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+
+                <h4 style="margin: 25px 0 10px 0; color: var(--secondary-color);">Genitourinary - Male</h4>
+
+                <div id="neo-male-gu">
+                    <div class="form-row three-col">
+                        <div class="form-group">
+                            <label for="neo-phallus">Phallus</label>
+                            <select id="neo-phallus">
+                                <option value="">Select...</option>
+                                <option value="normal">Normal</option>
+                                <option value="micropenis">Micropenis</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="neo-testes-right">Right Testis</label>
+                            <select id="neo-testes-right">
+                                <option value="">Select...</option>
+                                <option value="descended">Descended</option>
+                                <option value="undescended">Undescended</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="neo-testes-left">Left Testis</label>
+                            <select id="neo-testes-left">
+                                <option value="">Select...</option>
+                                <option value="descended">Descended</option>
+                                <option value="undescended">Undescended</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="neo-hypospadias">Hypospadias</label>
+                            <select id="neo-hypospadias">
+                                <option value="">Select...</option>
+                                <option value="no">No</option>
+                                <option value="glanular">Glanular</option>
+                                <option value="penile">Penile</option>
+                                <option value="penoscrotal">Penoscrotal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="neo-hydrocele">Hydrocele</label>
+                            <select id="neo-hydrocele">
+                                <option value="">Select...</option>
+                                <option value="no">No</option>
+                                <option value="right">Right</option>
+                                <option value="left">Left</option>
+                                <option value="bilateral">Bilateral</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 25px 0 10px 0; color: var(--secondary-color);">Genitourinary - Female</h4>
+
+                <div id="neo-female-gu">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="neo-labia">Labia</label>
+                            <select id="neo-labia">
+                                <option value="">Select...</option>
+                                <option value="normal">Normal</option>
+                                <option value="fused">Fused</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="neo-clitoris">Clitoris</label>
+                            <select id="neo-clitoris">
+                                <option value="">Select...</option>
+                                <option value="normal">Normal</option>
+                                <option value="enlarged">Enlarged</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="neo-ambiguous">Ambiguous Genitalia</label>
+                    <select id="neo-ambiguous">
+                        <option value="">Select...</option>
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- CONGENITAL ANOMALIES CHECKLIST -->
+            <div class="card">
+                <h2 class="card-title">Congenital Anomalies Checklist</h2>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Anomaly</th>
+                                <th>Present</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Cleft lip / palate</td>
+                                <td>
+                                    <select id="neo-anomaly-cleft">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                            <tr>
+                                <td>Choanal atresia</td>
+                                <td>
+                                    <select id="neo-anomaly-choanal">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                            <tr>
+                                <td>TEF / Esophageal atresia</td>
+                                <td>
+                                    <select id="neo-anomaly-tef">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                            <tr>
+                                <td>Congenital diaphragmatic hernia</td>
+                                <td>
+                                    <select id="neo-anomaly-cdh">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                            <tr>
+                                <td>Abdominal wall defect</td>
+                                <td>
+                                    <select id="neo-anomaly-abd-wall">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                            <tr>
+                                <td>Anorectal malformation</td>
+                                <td>
+                                    <select id="neo-anomaly-arm">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                            <tr>
+                                <td>Neural tube defect</td>
+                                <td>
+                                    <select id="neo-anomaly-ntd">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                            <tr>
+                                <td>Congenital heart disease</td>
+                                <td>
+                                    <select id="neo-anomaly-chd">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="suspected">Suspected</option>
+                                        <option value="confirmed">Confirmed</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                            <tr>
+                                <td>Limb anomalies</td>
+                                <td>
+                                    <select id="neo-anomaly-limb">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                            <tr>
+                                <td>Ambiguous genitalia</td>
+                                <td>
+                                    <select id="neo-anomaly-ambiguous">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                            <tr>
+                                <td>Dysmorphic facies</td>
+                                <td>
+                                    <select id="neo-anomaly-dysmorphic">
+                                        <option value="">--</option>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Details"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PROVISIONAL & DIFFERENTIAL DIAGNOSIS -->
+            <div class="card">
+                <h2 class="card-title">Diagnosis</h2>
+
+                <h4 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Provisional Diagnosis</h4>
+
+                <div class="form-group">
+                    <label>1.</label>
+                    <input type="text" id="neo-provisional-1" placeholder="Primary diagnosis">
+                </div>
+                <div class="form-group">
+                    <label>2.</label>
+                    <input type="text" id="neo-provisional-2">
+                </div>
+                <div class="form-group">
+                    <label>3.</label>
+                    <input type="text" id="neo-provisional-3">
+                </div>
+                <div class="form-group">
+                    <label>4.</label>
+                    <input type="text" id="neo-provisional-4">
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Differential Diagnosis</h4>
+
+                <div class="form-group">
+                    <label>1.</label>
+                    <input type="text" id="neo-differential-1">
+                </div>
+                <div class="form-group">
+                    <label>2.</label>
+                    <input type="text" id="neo-differential-2">
+                </div>
+                <div class="form-group">
+                    <label>3.</label>
+                    <input type="text" id="neo-differential-3">
+                </div>
+            </div>
+
+            <!-- INVESTIGATIONS PLANNED -->
+            <div class="card">
+                <h2 class="card-title">Investigations Planned</h2>
+
+                <h4 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Hematology</h4>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="cbc"> CBC with peripheral smear</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="blood-group"> Blood group & Rh typing (Baby)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="retic"> Reticulocyte count</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="dct"> Direct Coombs Test (DCT)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="coag"> Coagulation profile (PT/INR, aPTT)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="g6pd"> G6PD screening</label>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Biochemistry</h4>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="glucose"> Blood glucose (serial)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="bilirubin"> Serum bilirubin (Total/Direct/Indirect)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="electrolytes"> Serum electrolytes</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="rft"> Blood urea / Creatinine</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="lft"> Liver function tests</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="abg"> Arterial blood gas (ABG)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="lactate"> Serum lactate</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="crp"> CRP (quantitative)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="procalcitonin"> Procalcitonin</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="tft"> Thyroid profile (TSH, FT4)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="nbs"> Newborn screening (heel prick)</label>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Microbiology</h4>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="blood-culture"> Blood culture & sensitivity</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="urine-culture"> Urine culture</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="csf"> CSF analysis</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="torch"> TORCH screen (IgM)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="sepsis-screen"> Sepsis screen</label>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Imaging</h4>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="cxr"> Chest X-ray</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="axr"> Abdominal X-ray</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="cranial-usg"> Cranial ultrasound</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="echo"> Echocardiography</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="abd-usg"> USG Abdomen</label>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Other</h4>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="cchd"> CCHD screening (Pulse oximetry)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="hearing"> Hearing screen (BERA/OAE)</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="rop"> ROP screening</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-ix" value="eeg"> EEG / aEEG</label>
+                </div>
+            </div>
+
+            <!-- INITIAL MANAGEMENT PLAN -->
+            <div class="card">
+                <h2 class="card-title">Initial Management Plan</h2>
+
+                <h4 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Thermoregulation</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-thermo">Thermoregulation Method</label>
+                        <select id="neo-thermo">
+                            <option value="">Select...</option>
+                            <option value="kmc">Kangaroo Mother Care (KMC)</option>
+                            <option value="radiant-warmer">Radiant Warmer</option>
+                            <option value="incubator">Incubator</option>
+                            <option value="plastic-wrap">Plastic Wrap (for VLBW)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-set-temp">Set Temperature (°C)</label>
+                        <input type="number" id="neo-set-temp" step="0.5" min="30" max="38">
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Respiratory Support</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-resp-support">Respiratory Support</label>
+                        <select id="neo-resp-support">
+                            <option value="">Select...</option>
+                            <option value="room-air">Room Air</option>
+                            <option value="o2-hood">O₂ by Hood</option>
+                            <option value="o2-prongs">O₂ by Nasal Prongs</option>
+                            <option value="hfnc">HFNC</option>
+                            <option value="cpap">CPAP</option>
+                            <option value="ventilator">Mechanical Ventilation</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-fio2">FiO₂ / Flow Rate</label>
+                        <input type="text" id="neo-fio2" placeholder="e.g., FiO₂ 0.3 or 2 L/min">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-surfactant">Surfactant Therapy</label>
+                        <select id="neo-surfactant">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-caffeine">Caffeine Citrate</label>
+                        <select id="neo-caffeine">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Fluid & Nutrition</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-feeding-plan">Feeding Plan</label>
+                        <select id="neo-feeding-plan">
+                            <option value="">Select...</option>
+                            <option value="npo">NPO</option>
+                            <option value="direct-bf">Direct Breastfeeding</option>
+                            <option value="ebm">EBM via cup/spoon/paladai</option>
+                            <option value="ebm-og">EBM via OG/NG tube</option>
+                            <option value="formula">Formula</option>
+                            <option value="tpn">TPN</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-iv-fluids">IV Fluids</label>
+                        <input type="text" id="neo-iv-fluids" placeholder="Type, rate (mL/kg/day)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="neo-gir">GIR (mg/kg/min)</label>
+                    <input type="number" id="neo-gir" step="0.1" min="0" max="20">
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Medications</h4>
+                <div class="table-responsive">
+                    <table id="neo-medications-table">
+                        <thead>
+                            <tr>
+                                <th>Drug</th>
+                                <th>Dose</th>
+                                <th>Route</th>
+                                <th>Frequency</th>
+                                <th>Duration</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" placeholder="Drug name"></td>
+                                <td><input type="text" placeholder="Dose"></td>
+                                <td>
+                                    <select>
+                                        <option value="">--</option>
+                                        <option value="IV">IV</option>
+                                        <option value="IM">IM</option>
+                                        <option value="PO">PO</option>
+                                        <option value="SC">SC</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Frequency"></td>
+                                <td><input type="text" placeholder="Duration"></td>
+                                <td><button class="remove-row-btn" onclick="removeRow(this)">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addNeoMedicationRow()">+ Add Medication</button>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Monitoring</h4>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" name="neo-monitoring" value="crm"> Continuous cardiorespiratory monitoring</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-monitoring" value="vitals"> Hourly vitals</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-monitoring" value="io"> Strict I/O charting</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-monitoring" value="weight"> Daily weight</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-monitoring" value="glucose"> Blood glucose monitoring</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-monitoring" value="bilirubin"> Serum bilirubin monitoring</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-monitoring" value="uop"> Urine output monitoring</label>
+                    <label class="checkbox-item"><input type="checkbox" name="neo-monitoring" value="neuro"> Neurological monitoring</label>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Phototherapy (if indicated)</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-phototherapy">Phototherapy</label>
+                        <select id="neo-phototherapy">
+                            <option value="">Select...</option>
+                            <option value="no">Not indicated</option>
+                            <option value="single">Single surface</option>
+                            <option value="double">Double surface</option>
+                            <option value="intensive">Intensive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-tsb-initiation">TSB at Initiation (mg/dL)</label>
+                        <input type="number" id="neo-tsb-initiation" step="0.1" min="0" max="40">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROBLEM LIST -->
+            <div class="card">
+                <h2 class="card-title">Problem List</h2>
+
+                <div class="table-responsive">
+                    <table id="neo-problem-list">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Problem</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text" id="neo-problem-1" placeholder="Problem"></td>
+                                <td>
+                                    <select>
+                                        <option value="active">Active</option>
+                                        <option value="resolved">Resolved</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><input type="text" id="neo-problem-2" placeholder="Problem"></td>
+                                <td>
+                                    <select>
+                                        <option value="active">Active</option>
+                                        <option value="resolved">Resolved</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><input type="text" id="neo-problem-3" placeholder="Problem"></td>
+                                <td>
+                                    <select>
+                                        <option value="active">Active</option>
+                                        <option value="resolved">Resolved</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><input type="text" id="neo-problem-4" placeholder="Problem"></td>
+                                <td>
+                                    <select>
+                                        <option value="active">Active</option>
+                                        <option value="resolved">Resolved</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><input type="text" id="neo-problem-5" placeholder="Problem"></td>
+                                <td>
+                                    <select>
+                                        <option value="active">Active</option>
+                                        <option value="resolved">Resolved</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CLERKED BY -->
+            <div class="card">
+                <h2 class="card-title">Documentation</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-clerked-by">Clerked By</label>
+                        <input type="text" id="neo-clerked-by" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-designation">Designation</label>
+                        <input type="text" id="neo-designation" placeholder="e.g., Medical Student, Intern">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-clerked-date">Date</label>
+                        <input type="date" id="neo-clerked-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-clerked-time">Time</label>
+                        <input type="time" id="neo-clerked-time">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="neo-reviewed-by">Reviewed By (Senior/Consultant)</label>
+                        <input type="text" id="neo-reviewed-by" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="neo-reviewed-designation">Designation</label>
+                        <input type="text" id="neo-reviewed-designation" placeholder="e.g., Registrar, Consultant">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- END OF NEONATAL TAB -->
     <!-- Action Buttons -->
     <div class="action-buttons">
         <button class="btn btn-secondary" onclick="clearForm()">
@@ -4508,3 +6902,4 @@
 </body>
 
 </html>
+
