@@ -2807,6 +2807,51 @@
                 </div>
             </div>
 
+
+            <div class="card">
+                <h2 class="card-title">📋 Problem List (Section K)</h2>
+                <p style="color:#666;font-size:0.9rem;margin-bottom:15px;">List all active medical problems identified
+                    during assessment</p>
+
+                <div class="table-responsive">
+                    <table id="problemListTable">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">#</th>
+                                <th>Problem (Active)</th>
+                                <th style="width:150px;">Acute/Chronic</th>
+                                <th style="width:100px;">Status</th>
+                                <th style="width:50px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text" id="problem1" placeholder="e.g., Severe malaria with anemia">
+                                </td>
+                                <td>
+                                    <select id="problemType1">
+                                        <option value="">Select</option>
+                                        <option value="acute">Acute</option>
+                                        <option value="chronic">Chronic</option>
+                                        <option value="acute-on-chronic">Acute on chronic</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select id="problemStatus1">
+                                        <option value="active">Active</option>
+                                        <option value="resolved">Resolved</option>
+                                        <option value="monitoring">Monitoring</option>
+                                    </select>
+                                </td>
+                                <td><button class="icon-btn" onclick="removeRow(this)" title="Remove">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addProblemRow()">+ Add Problem</button>
+            </div>
+
             <div class="card">
                 <h2 class="card-title">Fluid Management</h2>
                 <div class="alert alert-info">
@@ -4049,6 +4094,30 @@
             });
         });
 
+
+        function addProblemRow() {
+            const tbody = document.querySelector('#problemListTable tbody');
+            const rowCount = tbody.rows.length + 1;
+            const newRow = tbody.rows[0].cloneNode(true);
+
+            // Update row number
+            newRow.cells[0].textContent = rowCount;
+
+            // Clear inputs and update IDs
+            const input = newRow.cells[1].querySelector('input');
+            input.value = '';
+            input.id = 'problem' + rowCount;
+
+            const typeSelect = newRow.cells[2].querySelector('select');
+            typeSelect.selectedIndex = 0;
+            typeSelect.id = 'problemType' + rowCount;
+
+            const statusSelect = newRow.cells[3].querySelector('select');
+            statusSelect.selectedIndex = 0;
+            statusSelect.id = 'problemStatus' + rowCount;
+
+            tbody.appendChild(newRow);
+        }
     </script>
 </body>
 
