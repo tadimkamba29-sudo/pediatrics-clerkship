@@ -1406,6 +1406,49 @@
                             <option value="other">Other</option>
                         </select></div>
                 </div>
+
+                <div class="form-group">
+                    <label>Maternal Substance Use During Pregnancy</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="maternal-substance" value="none">
+                            None</label>
+                        <label class="checkbox-item"><input type="checkbox" name="maternal-substance" value="tobacco">
+                            Tobacco</label>
+                        <label class="checkbox-item"><input type="checkbox" name="maternal-substance" value="alcohol">
+                            Alcohol</label>
+                        <label class="checkbox-item"><input type="checkbox" name="maternal-substance" value="drugs">
+                            Illicit drugs</label>
+                        <label class="checkbox-item"><input type="checkbox" name="maternal-substance"
+                                value="traditional"> Traditional medicines</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="pregnancyComplications">Pregnancy Complications</label>
+                    <textarea id="pregnancyComplications" rows="2"
+                        placeholder="e.g., APH, PROM, oligohydramnios, preeclampsia, GDM..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fetalMovements">Fetal Movements</label>
+                        <select id="fetalMovements">
+                            <option value="">Select</option>
+                            <option value="normal">Normal</option>
+                            <option value="reduced">Reduced</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="maternalHIVStatus">Maternal HIV Status</label>
+                        <select id="maternalHIVStatus">
+                            <option value="">Unknown</option>
+                            <option value="negative">Negative</option>
+                            <option value="positive">Positive (on ART)</option>
+                            <option value="positive-not-on-art">Positive (not on ART)</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group"><label for="deliveryMode">Mode of Delivery</label><select id="deliveryMode">
                             <option value="">Select...</option>
@@ -1416,6 +1459,29 @@
                     <div class="form-group" id="csectionIndicationGroup" style="display:none;"><label
                             for="csectionIndication">C-section Indication</label><input type="text"
                             id="csectionIndication"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryComplications">Delivery Complications</label>
+                        <textarea id="deliveryComplications" rows="2"
+                            placeholder="e.g., shoulder dystocia, cord prolapse, prolonged labor..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="apgar1">APGAR 1 min</label>
+                        <input type="number" id="apgar1" min="0" max="10" placeholder="0-10">
+                    </div>
+                    <div class="form-group">
+                        <label for="apgar5">APGAR 5 min</label>
+                        <input type="number" id="apgar5" min="0" max="10" placeholder="0-10">
+                    </div>
+                    <div class="form-group">
+                        <label for="apgar10">APGAR 10 min (if needed)</label>
+                        <input type="number" id="apgar10" min="0" max="10" placeholder="0-10">
+                    </div>
                 </div>
                 <h3 style="margin:25px 0 10px;color:var(--secondary-color);">Neonatal</h3>
                 <div class="form-row three-col">
