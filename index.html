@@ -1,0 +1,4144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Pediatrics Clerkship Sheet</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --border-color: #bdc3c7;
+            --input-bg: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .header-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            margin-top: 10px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            overflow-x: auto;
+            background: white;
+            border-bottom: 2px solid var(--border-color);
+            -webkit-overflow-scrolling: touch;
+            position: sticky;
+            top: 72px;
+            z-index: 999;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            white-space: nowrap;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .nav-tab.active {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .nav-tab:hover {
+            background: var(--bg-color);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--bg-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--secondary-color);
+            margin-right: 10px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 6px;
+        }
+
+        label.required::after {
+            content: ' *';
+            color: var(--accent-color);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="time"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: var(--input-bg);
+            transition: all 0.3s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232c3e50' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 35px;
+        }
+
+        /* Checkboxes and Radio buttons */
+        .checkbox-group,
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        /* Grid Layouts */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .form-row.three-col {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .form-row.four-col {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        table th {
+            background: var(--bg-color);
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table input,
+        table select {
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-danger {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--secondary-color);
+            color: var(--secondary-color);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Action Buttons (Bottom) */
+        .action-buttons {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            z-index: 998;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+        }
+
+        /* Alert/Info Boxes */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: #e8f4f8;
+            border-color: var(--secondary-color);
+            color: #1a5490;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: var(--warning-color);
+            color: #856404;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        /* Differential Diagnosis Cards */
+        .diff-dx-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .diff-dx-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .diff-dx-item {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .diff-dx-item input,
+        .diff-dx-item textarea {
+            background: rgba(255,255,255,0.9);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-primary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .badge-danger {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .badge-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid var(--bg-color);
+            border-top: 3px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10000;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translate(-50%, 100px);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        /* Auto-save indicator */
+        .autosave-indicator {
+            position: fixed;
+            top: 80px;
+            right: 15px;
+            background: var(--success-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: none;
+            z-index: 1000;
+        }
+
+        .autosave-indicator.saving {
+            background: var(--warning-color);
+        }
+
+        /* Print Styles */
+        @media print {
+            .header,
+            .nav-tabs,
+            .action-buttons,
+            .autosave-indicator,
+            .btn {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            .card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            .tab-content {
+                display: block !important;
+            }
+        }
+
+        /* Dark Mode (Optional) */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1a1a1a;
+                --card-bg: #2d2d2d;
+                --text-color: #e0e0e0;
+                --border-color: #404040;
+                --input-bg: #353535;
+            }
+
+            body {
+                background: var(--bg-color);
+                color: var(--text-color);
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #95a5a6;
+        }
+
+        /* Vital Signs Visual Indicators */
+        .vital-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+
+        .vital-normal { background: var(--success-color); }
+        .vital-warning { background: var(--warning-color); }
+        .vital-danger { background: var(--accent-color); }
+
+        /* Growth Chart Mini Display */
+        .growth-display {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .growth-item {
+            text-align: center;
+            padding: 10px;
+            background: var(--bg-color);
+            border-radius: 8px;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .growth-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .growth-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        /* Add patient button */
+        .add-row-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .remove-row-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive utilities */
+        .mobile-only {
+            display: block;
+        }
+
+        .desktop-only {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-only {
+                display: none;
+            }
+            
+            .desktop-only {
+                display: block;
+            }
+        }
+
+        /* Summary panel */
+        .summary-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .summary-item strong {
+            display: inline-block;
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Pediatrics Clerkship Sheet</h1>
+        <div class="header-subtitle">Universal Clinical Documentation Tool</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <!-- Auto-save Indicator -->
+    <div class="autosave-indicator" id="autosaveIndicator">
+        ✓ Saved
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs" id="navTabs">
+        <button class="nav-tab active" onclick="showTab('patient-info')">Patient Info</button>
+        <button class="nav-tab" onclick="showTab('chief-complaint')">Chief Complaint</button>
+        <button class="nav-tab" onclick="showTab('past-medical')">Past Medical Hx</button>
+        <button class="nav-tab" onclick="showTab('family-social')">Family/Social Hx</button>
+        <button class="nav-tab" onclick="showTab('diff-dx-history')">⭐ Diff Dx (History)</button>
+        <button class="nav-tab" onclick="showTab('physical-exam')">Physical Exam</button>
+        <button class="nav-tab" onclick="showTab('diff-dx-final')">⭐ Diff Dx (Final)</button>
+        <button class="nav-tab" onclick="showTab('investigations')">Investigations</button>
+        <button class="nav-tab" onclick="showTab('management')">Management</button>
+        <button class="nav-tab" onclick="showTab('progress')">Progress Notes</button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- TAB 1: PATIENT INFORMATION -->
+        <div id="patient-info" class="tab-content active">
+            <div class="card">
+                <h2 class="card-title">Patient Identification</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patientName" class="required">Patient Name</label>
+                        <input type="text" id="patientName" placeholder="Full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mrn">Medical Record No.</label>
+                        <input type="text" id="mrn" placeholder="MRN">
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="dob" class="required">Date of Birth</label>
+                        <input type="date" id="dob" onchange="calculateAge()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="text" id="age" readonly placeholder="Auto-calculated">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sex" class="required">Sex</label>
+                        <select id="sex">
+                            <option value="">Select...</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="ambiguous">Ambiguous</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="weight" class="required">Weight (kg)</label>
+                        <input type="number" id="weight" step="0.1" placeholder="0.0" onchange="calculateGrowth()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="height" class="required">Height (cm)</label>
+                        <input type="number" id="height" step="0.1" placeholder="0.0" onchange="calculateGrowth()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="headCirc">Head Circumference (cm)</label>
+                        <input type="number" id="headCirc" step="0.1" placeholder="0.0">
+                    </div>
+                </div>
+
+                <div class="growth-display" id="growthDisplay" style="display: none;">
+                    <div class="growth-item">
+                        <div class="growth-value" id="bmiValue">--</div>
+                        <div class="growth-label">BMI</div>
+                    </div>
+                    <div class="growth-item">
+                        <div class="growth-value" id="wfaPercentile">--</div>
+                        <div class="growth-label">Wt Percentile</div>
+                    </div>
+                    <div class="growth-item">
+                        <div class="growth-value" id="hfaPercentile">--</div>
+                        <div class="growth-label">Ht Percentile</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="admissionDate">Date of Admission</label>
+                        <input type="date" id="admissionDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="admissionTime">Time of Admission</label>
+                        <input type="time" id="admissionTime">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="informant">Informant</label>
+                        <select id="informant">
+                            <option value="">Select...</option>
+                            <option value="mother">Mother</option>
+                            <option value="father">Father</option>
+                            <option value="guardian">Guardian</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reliability">Reliability of Informant</label>
+                        <select id="reliability">
+                            <option value="">Select...</option>
+                            <option value="reliable">Reliable</option>
+                            <option value="fairly">Fairly Reliable</option>
+                            <option value="unreliable">Unreliable</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="attendingPhysician">Attending Physician</label>
+                    <input type="text" id="attendingPhysician" placeholder="Dr. Name">
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: CHIEF COMPLAINT & HPI -->
+        <div id="chief-complaint" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Chief Complaint(s)</h2>
+                <div class="alert alert-info">
+                    Record in the patient's/caregiver's own words, with duration
+                </div>
+
+                <div class="form-group">
+                    <label for="complaint1" class="required">Complaint 1</label>
+                    <input type="text" id="complaint1" placeholder="e.g., 'High fever'">
+                </div>
+                
+                <div class="form-group">
+                    <label for="duration1">Duration</label>
+                    <input type="text" id="duration1" placeholder="e.g., '3 days'">
+                </div>
+
+                <div class="form-group">
+                    <label for="complaint2">Complaint 2</label>
+                    <input type="text" id="complaint2">
+                </div>
+                
+                <div class="form-group">
+                    <label for="duration2">Duration</label>
+                    <input type="text" id="duration2">
+                </div>
+
+                <div class="form-group">
+                    <label for="complaint3">Complaint 3</label>
+                    <input type="text" id="complaint3">
+                </div>
+                
+                <div class="form-group">
+                    <label for="duration3">Duration</label>
+                    <input type="text" id="duration3">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">History of Present Illness</h2>
+                
+                <div class="form-group">
+                    <label for="hpiNarrative" class="required">Detailed Chronological Narrative</label>
+                    <textarea id="hpiNarrative" rows="8" placeholder="Describe the illness chronologically from onset to presentation..."></textarea>
+                </div>
+
+                <h3 style="margin: 20px 0 15px 0; color: var(--secondary-color);">Symptom Characterization (Main Complaint)</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="onset">Onset</label>
+                        <select id="onset">
+                            <option value="">Select...</option>
+                            <option value="sudden">Sudden</option>
+                            <option value="gradual">Gradual</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="onsetDateTime">Date/Time Started</label>
+                        <input type="datetime-local" id="onsetDateTime">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" placeholder="Where is the symptom?">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="character">Character</label>
+                        <input type="text" id="character" placeholder="What does it feel like?">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="aggravatingFactors">Aggravating Factors</label>
+                    <input type="text" id="aggravatingFactors" placeholder="What makes it worse?">
+                </div>
+
+                <div class="form-group">
+                    <label for="relievingFactors">Relieving Factors</label>
+                    <input type="text" id="relievingFactors" placeholder="What makes it better?">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="timing">Timing/Frequency</label>
+                        <select id="timing">
+                            <option value="">Select...</option>
+                            <option value="constant">Constant</option>
+                            <option value="intermittent">Intermittent</option>
+                            <option value="pattern">Pattern (describe below)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="severity">Severity</label>
+                        <select id="severity">
+                            <option value="">Select...</option>
+                            <option value="mild">Mild</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="severe">Severe</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="progression">Progression</label>
+                    <select id="progression">
+                        <option value="">Select...</option>
+                        <option value="better">Getting Better</option>
+                        <option value="worse">Getting Worse</option>
+                        <option value="same">Staying the Same</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="associatedSymptoms">Associated Symptoms</label>
+                    <textarea id="associatedSymptoms" rows="3" placeholder="What else accompanies this symptom?"></textarea>
+                </div>
+
+                <h3 style="margin: 20px 0 15px 0; color: var(--secondary-color);">Effect on Function</h3>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="effectFeeding">On Feeding</label>
+                        <input type="text" id="effectFeeding">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="effectSleep">On Sleep</label>
+                        <input type="text" id="effectSleep">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="effectActivity">On Activity</label>
+                        <input type="text" id="effectActivity">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="pertinentPositives">Pertinent Positives</label>
+                    <textarea id="pertinentPositives" rows="3" placeholder="Significant symptoms/findings present..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="pertinentNegatives">Pertinent Negatives</label>
+                    <textarea id="pertinentNegatives" rows="3" placeholder="Relevant symptoms that are ABSENT..."></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Prior Treatment for This Episode</h2>
+                
+                <div class="table-responsive">
+                    <table id="priorTreatmentTable">
+                        <thead>
+                            <tr>
+                                <th>Medication/Intervention</th>
+                                <th>Dose</th>
+                                <th>Duration</th>
+                                <th>Response</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" placeholder="Medication"></td>
+                                <td><input type="text" placeholder="Dose"></td>
+                                <td><input type="text" placeholder="Duration"></td>
+                                <td><input type="text" placeholder="Response"></td>
+                                <td><button class="remove-row-btn" onclick="removeRow(this)">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addTreatmentRow()">+ Add Treatment</button>
+            </div>
+
+            <!-- Review of Systems (Abbreviated for space) -->
+            <div class="card">
+                <h2 class="card-title">Review of Systems</h2>
+                <div class="alert alert-info">
+                    Check boxes for positive findings and elaborate details
+                </div>
+
+                <h3 style="margin: 15px 0 10px 0; font-size: 1rem; color: var(--primary-color);">General/Constitutional</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="fever"> Fever
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="weight-loss"> Weight loss/gain
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="fatigue"> Fatigue/lethargy
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="poor-appetite"> Poor appetite
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="irritability"> Irritability
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="ftt"> Failure to thrive
+                    </label>
+                </div>
+
+                <h3 style="margin: 15px 0 10px 0; font-size: 1rem; color: var(--primary-color);">Respiratory</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="cough"> Cough
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="difficulty-breathing"> Difficulty breathing
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="wheezing"> Wheezing
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="stridor"> Stridor
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="cyanosis"> Cyanosis
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="chest-pain"> Chest pain
+                    </label>
+                </div>
+
+                <h3 style="margin: 15px 0 10px 0; font-size: 1rem; color: var(--primary-color);">Gastrointestinal</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="vomiting"> Vomiting
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="diarrhea"> Diarrhea
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="constipation"> Constipation
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="abd-pain"> Abdominal pain
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="jaundice"> Jaundice
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="ros" value="bloody-stool"> Bloody stool
+                    </label>
+                </div>
+
+                <!-- Add more ROS sections as needed -->
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="rosDetails">Details of Positive Findings</label>
+                    <textarea id="rosDetails" rows="4" placeholder="Elaborate on any checked items above..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: PAST MEDICAL HISTORY -->
+        <div id="past-medical" class="tab-content">
+            <!-- Birth & Perinatal History -->
+            <div class="card">
+                <h2 class="card-title">Birth & Perinatal History</h2>
+                
+                <h3 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Antenatal</h3>
+                
+                <div class="form-row four-col">
+                    <div class="form-group">
+                        <label for="gravida">Gravida</label>
+                        <input type="number" id="gravida" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="para">Para</label>
+                        <input type="number" id="para" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="abortus">Abortus</label>
+                        <input type="number" id="abortus" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="living">Living</label>
+                        <input type="number" id="living" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="antenatalCare">Antenatal Care</label>
+                        <select id="antenatalCare">
+                            <option value="">Select...</option>
+                            <option value="regular">Regular</option>
+                            <option value="irregular">Irregular</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ancVisits">Number of Visits</label>
+                        <input type="number" id="ancVisits" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="maternalBloodGroup">Maternal Blood Group</label>
+                        <select id="maternalBloodGroup">
+                            <option value="">Select...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="AB">AB</option>
+                            <option value="O">O</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="maternalRh">Rh</label>
+                        <select id="maternalRh">
+                            <option value="">Select...</option>
+                            <option value="positive">Positive</option>
+                            <option value="negative">Negative</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Maternal Illnesses During Pregnancy</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="maternal-illness" value="none"> None
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="maternal-illness" value="gdm"> GDM
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="maternal-illness" value="htn"> HTN/Pre-eclampsia
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="maternal-illness" value="infections"> Infections
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="maternalMeds">Medications During Pregnancy</label>
+                    <input type="text" id="maternalMeds" placeholder="List medications">
+                </div>
+
+                <h3 style="margin: 25px 0 10px 0; color: var(--secondary-color);">Natal</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gestationalAge">Gestational Age at Birth (weeks)</label>
+                        <input type="number" id="gestationalAge" step="0.1" min="20" max="45">
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryPlace">Place of Delivery</label>
+                        <select id="deliveryPlace">
+                            <option value="">Select...</option>
+                            <option value="hospital">Hospital</option>
+                            <option value="home">Home</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryMode">Mode of Delivery</label>
+                        <select id="deliveryMode">
+                            <option value="">Select...</option>
+                            <option value="svd">SVD</option>
+                            <option value="csection">C-section</option>
+                            <option value="assisted">Assisted (vacuum/forceps)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="csectionIndicationGroup" style="display: none;">
+                        <label for="csectionIndication">C-section Indication</label>
+                        <input type="text" id="csectionIndication">
+                    </div>
+                </div>
+
+                <h3 style="margin: 25px 0 10px 0; color: var(--secondary-color);">Neonatal</h3>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="birthWeight">Birth Weight (kg)</label>
+                        <input type="number" id="birthWeight" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthLength">Birth Length (cm)</label>
+                        <input type="number" id="birthLength" step="0.1" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthHC">Birth Head Circ (cm)</label>
+                        <input type="number" id="birthHC" step="0.1" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="criedImmediately">Cried Immediately</label>
+                        <select id="criedImmediately">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Resuscitation Needed</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="resuscitation" value="none"> None
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="resuscitation" value="bag-mask"> Bag-mask
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="resuscitation" value="intubation"> Intubation
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nicuAdmission">NICU Admission</label>
+                        <select id="nicuAdmission">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="nicuReasonGroup" style="display: none;">
+                        <label for="nicuReason">Reason & Duration</label>
+                        <input type="text" id="nicuReason" placeholder="Reason and duration">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feeding History -->
+            <div class="card">
+                <h2 class="card-title">Feeding History</h2>
+
+                <div class="form-group">
+                    <label for="currentFeeding">Current Feeding</label>
+                    <select id="currentFeeding">
+                        <option value="">Select...</option>
+                        <option value="exclusive-bf">Exclusive Breastfeeding</option>
+                        <option value="formula">Formula Feeding</option>
+                        <option value="mixed">Mixed Feeding</option>
+                        <option value="complementary">Complementary Foods</option>
+                        <option value="family-diet">Family Diet</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="exclusiveBfDuration">Duration of Exclusive BF (months)</label>
+                        <input type="number" id="exclusiveBfDuration" min="0" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="complementaryAge">Age Complementary Feeding Started (months)</label>
+                        <input type="number" id="complementaryAge" min="0" step="0.5">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dietRecall">24-Hour Dietary Recall</label>
+                    <textarea id="dietRecall" rows="5" placeholder="Breakfast:&#10;Lunch:&#10;Dinner:&#10;Snacks:"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="foodAllergies">Food Allergies/Intolerances</label>
+                    <input type="text" id="foodAllergies" placeholder="None or specify">
+                </div>
+
+                <div class="form-group">
+                    <label>Vitamins/Supplements</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="supplements" value="vit-d"> Vitamin D
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="supplements" value="iron"> Iron
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="supplements" value="multivitamin"> Multivitamin
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Developmental History (Simplified) -->
+            <div class="card">
+                <h2 class="card-title">Developmental Milestones</h2>
+                
+                <div class="alert alert-info">
+                    Record age achieved for key milestones
+                </div>
+
+                <h3 style="margin: 15px 0 10px 0; font-size: 1rem; color: var(--primary-color);">Gross Motor</h3>
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="milestoneSitting">Sitting (months)</label>
+                        <input type="number" id="milestoneSitting" step="0.5" placeholder="Expected: 6-8">
+                    </div>
+                    <div class="form-group">
+                        <label for="milestoneStanding">Standing (months)</label>
+                        <input type="number" id="milestoneStanding" step="0.5" placeholder="Expected: 12">
+                    </div>
+                    <div class="form-group">
+                        <label for="milestoneWalking">Walking (months)</label>
+                        <input type="number" id="milestoneWalking" step="0.5" placeholder="Expected: 12-15">
+                    </div>
+                </div>
+
+                <h3 style="margin: 15px 0 10px 0; font-size: 1rem; color: var(--primary-color);">Language</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="milestoneFirstWords">First Words (months)</label>
+                        <input type="number" id="milestoneFirstWords" step="0.5" placeholder="Expected: 9-12">
+                    </div>
+                    <div class="form-group">
+                        <label for="milestoneSentences">2-3 Word Sentences (years)</label>
+                        <input type="number" id="milestoneSentences" step="0.5" placeholder="Expected: 2">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="devRegression">Any Developmental Regression</label>
+                        <select id="devRegression">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="devRegressionDetailsGroup" style="display: none;">
+                        <label for="devRegressionDetails">Details</label>
+                        <input type="text" id="devRegressionDetails">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="schooling">Current Schooling</label>
+                        <select id="schooling">
+                            <option value="">Select...</option>
+                            <option value="not-school-age">Not School Age</option>
+                            <option value="preschool">Preschool</option>
+                            <option value="school">School</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="schoolPerformance">School Performance</label>
+                        <select id="schoolPerformance">
+                            <option value="">Select...</option>
+                            <option value="good">Good</option>
+                            <option value="average">Average</option>
+                            <option value="poor">Poor</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Immunization History -->
+            <div class="card">
+                <h2 class="card-title">Immunization History</h2>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vaccine</th>
+                                <th>Dose 1</th>
+                                <th>Dose 2</th>
+                                <th>Dose 3</th>
+                                <th>Booster</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>BCG</td>
+                                <td><input type="date" id="bcg1"></td>
+                                <td><input type="date" id="bcg2"></td>
+                                <td><input type="date" id="bcg3"></td>
+                                <td><input type="date" id="bcgBooster"></td>
+                            </tr>
+                            <tr>
+                                <td>Hepatitis B</td>
+                                <td><input type="date" id="hepb1"></td>
+                                <td><input type="date" id="hepb2"></td>
+                                <td><input type="date" id="hepb3"></td>
+                                <td><input type="date" id="hepbBooster"></td>
+                            </tr>
+                            <tr>
+                                <td>DPT/Pentavalent</td>
+                                <td><input type="date" id="dpt1"></td>
+                                <td><input type="date" id="dpt2"></td>
+                                <td><input type="date" id="dpt3"></td>
+                                <td><input type="date" id="dptBooster"></td>
+                            </tr>
+                            <tr>
+                                <td>OPV/IPV</td>
+                                <td><input type="date" id="polio1"></td>
+                                <td><input type="date" id="polio2"></td>
+                                <td><input type="date" id="polio3"></td>
+                                <td><input type="date" id="polioBooster"></td>
+                            </tr>
+                            <tr>
+                                <td>MMR/Measles</td>
+                                <td><input type="date" id="mmr1"></td>
+                                <td><input type="date" id="mmr2"></td>
+                                <td>—</td>
+                                <td>—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="immunizationStatus">Overall Immunization Status</label>
+                    <select id="immunizationStatus">
+                        <option value="">Select...</option>
+                        <option value="up-to-date">Up to Date</option>
+                        <option value="incomplete">Incomplete</option>
+                        <option value="unknown">Unknown</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Past Illnesses & Current Medications -->
+            <div class="card">
+                <h2 class="card-title">Past Illnesses & Hospitalizations</h2>
+                
+                <div class="table-responsive">
+                    <table id="pastIllnessTable">
+                        <thead>
+                            <tr>
+                                <th>Date/Age</th>
+                                <th>Diagnosis</th>
+                                <th>Treatment</th>
+                                <th>Outcome</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" placeholder="e.g., 2 years ago"></td>
+                                <td><input type="text" placeholder="Diagnosis"></td>
+                                <td><input type="text" placeholder="Treatment"></td>
+                                <td><input type="text" placeholder="Outcome"></td>
+                                <td><button class="remove-row-btn" onclick="removeRow(this)">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addIllnessRow()">+ Add Illness</button>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Chronic Diseases</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="chronic-disease" value="none"> None
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="chronic-disease" value="asthma"> Asthma
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="chronic-disease" value="epilepsy"> Epilepsy
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="chronic-disease" value="diabetes"> Diabetes
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="chronic-disease" value="heart"> Heart Disease
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="knownAllergies">Known Allergies</label>
+                    <input type="text" id="knownAllergies" placeholder="None or specify drug/food/environmental allergies">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Current Medications</h2>
+                
+                <div class="table-responsive">
+                    <table id="currentMedsTable">
+                        <thead>
+                            <tr>
+                                <th>Medication</th>
+                                <th>Dose</th>
+                                <th>Route</th>
+                                <th>Frequency</th>
+                                <th>Indication</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" placeholder="Medication name"></td>
+                                <td><input type="text" placeholder="Dose"></td>
+                                <td>
+                                    <select>
+                                        <option value="">--</option>
+                                        <option value="PO">PO</option>
+                                        <option value="IV">IV</option>
+                                        <option value="IM">IM</option>
+                                        <option value="Inh">Inh</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Frequency"></td>
+                                <td><input type="text" placeholder="Indication"></td>
+                                <td><button class="remove-row-btn" onclick="removeRow(this)">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addMedicationRow()">+ Add Medication</button>
+            </div>
+        </div>
+
+        <!-- TAB 4: FAMILY & SOCIAL HISTORY -->
+        <div id="family-social" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Family History</h2>
+
+                <h3 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Parents</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fatherAge">Father's Age</label>
+                        <input type="number" id="fatherAge" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="motherAge">Mother's Age</label>
+                        <input type="number" id="motherAge" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fatherOccupation">Father's Occupation</label>
+                        <input type="text" id="fatherOccupation">
+                    </div>
+                    <div class="form-group">
+                        <label for="motherOccupation">Mother's Occupation</label>
+                        <input type="text" id="motherOccupation">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="consanguinity">Consanguinity</label>
+                        <select id="consanguinity">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="consanguinityDegreeGroup" style="display: none;">
+                        <label for="consanguinityDegree">Degree of Consanguinity</label>
+                        <input type="text" id="consanguinityDegree">
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Siblings</h3>
+                
+                <div class="table-responsive">
+                    <table id="siblingsTable">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Age</th>
+                                <th>Sex</th>
+                                <th>Health Status</th>
+                                <th>Relevant Conditions</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><input type="number" placeholder="Age"></td>
+                                <td>
+                                    <select>
+                                        <option value="">--</option>
+                                        <option value="M">M</option>
+                                        <option value="F">F</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Health status"></td>
+                                <td><input type="text" placeholder="Conditions"></td>
+                                <td><button class="remove-row-btn" onclick="removeRow(this)">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addSiblingRow()">+ Add Sibling</button>
+
+                <h3 style="margin: 25px 0 10px 0; color: var(--secondary-color);">Family History Of</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Genetic/Chromosomal Disorders</label>
+                        <select>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fhGenetic">If yes, specify relation/details</label>
+                        <input type="text" id="fhGenetic">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Asthma/Atopy/Allergies</label>
+                        <select>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fhAsthma">If yes, specify relation/details</label>
+                        <input type="text" id="fhAsthma">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Diabetes Mellitus</label>
+                        <select>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fhDiabetes">If yes, specify relation/details</label>
+                        <input type="text" id="fhDiabetes">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Sickle Cell/Thalassemia</label>
+                        <select>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fhHemoglobinopathy">If yes, specify relation/details</label>
+                        <input type="text" id="fhHemoglobinopathy">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fhOther">Other Significant Family History</label>
+                    <textarea id="fhOther" rows="3" placeholder="TB, HIV, Cancer, Mental health disorders, etc."></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Social & Environmental History</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ses">Socioeconomic Status</label>
+                        <select id="ses">
+                            <option value="">Select...</option>
+                            <option value="low">Low</option>
+                            <option value="middle">Middle</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="housingType">Housing Type</label>
+                        <input type="text" id="housingType" placeholder="House, apartment, etc.">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="householdMembers">Number of Household Members</label>
+                        <input type="number" id="householdMembers" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="waterSource">Water Source</label>
+                        <select id="waterSource">
+                            <option value="">Select...</option>
+                            <option value="piped">Piped/Municipal</option>
+                            <option value="well">Well</option>
+                            <option value="river">River/Lake</option>
+                            <option value="bottled">Bottled</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sanitation">Sanitation</label>
+                        <select id="sanitation">
+                            <option value="">Select...</option>
+                            <option value="flush">Flush Toilet</option>
+                            <option value="pit">Pit Latrine</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="electricity">Electricity</label>
+                        <select id="electricity">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="smokeExposure">Smoke Exposure</label>
+                        <select id="smokeExposure">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="petsAnimals">Pets/Animal Exposure</label>
+                        <input type="text" id="petsAnimals" placeholder="None or specify">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="daycare">Day Care/School Attendance</label>
+                        <select id="daycare">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tbContact">TB Contact</label>
+                        <select id="tbContact">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="travelHistory">Recent Travel History</label>
+                    <input type="text" id="travelHistory" placeholder="None or specify location and dates">
+                </div>
+
+                <div class="form-group">
+                    <label for="sickContacts">Contact with Sick Individuals</label>
+                    <textarea id="sickContacts" rows="2" placeholder="None or describe contacts"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: ⭐ DIFFERENTIAL DIAGNOSIS (HISTORY-BASED) -->
+        <div id="diff-dx-history" class="tab-content">
+            <div class="diff-dx-card">
+                <h2 style="color: white; margin-bottom: 10px;">⭐ DIFFERENTIAL DIAGNOSIS BASED ON HISTORY</h2>
+                <p style="opacity: 0.9; font-size: 0.95rem;">Generate differential diagnoses BEFORE examining the patient</p>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Key Features from History</h2>
+                <div class="alert alert-info">
+                    Summarize the most important features that will guide your differential diagnosis
+                </div>
+
+                <div class="form-group">
+                    <label>1. Most Important Feature</label>
+                    <input type="text" id="keyFeature1" placeholder="e.g., 3-day history of high fever">
+                </div>
+                <div class="form-group">
+                    <label>2.</label>
+                    <input type="text" id="keyFeature2" placeholder="e.g., Associated cough and difficulty breathing">
+                </div>
+                <div class="form-group">
+                    <label>3.</label>
+                    <input type="text" id="keyFeature3">
+                </div>
+                <div class="form-group">
+                    <label>4.</label>
+                    <input type="text" id="keyFeature4">
+                </div>
+                <div class="form-group">
+                    <label>5.</label>
+                    <input type="text" id="keyFeature5">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Provisional Differential Diagnoses (History-Based)</h2>
+                
+                <div class="diff-dx-item">
+                    <h4 style="margin-bottom: 10px; color: var(--primary-color);">Differential #1 (Most Likely)</h4>
+                    <div class="form-group">
+                        <label>Diagnosis</label>
+                        <input type="text" id="histDx1" placeholder="Your top differential based on history">
+                    </div>
+                    <div class="form-group">
+                        <label>Supporting Features from History</label>
+                        <textarea id="histDx1Support" rows="2" placeholder="What from the history supports this diagnosis?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Features Against</label>
+                        <textarea id="histDx1Against" rows="2" placeholder="What from the history argues against this?"></textarea>
+                    </div>
+                </div>
+
+                <div class="diff-dx-item">
+                    <h4 style="margin-bottom: 10px; color: var(--primary-color);">Differential #2</h4>
+                    <div class="form-group">
+                        <label>Diagnosis</label>
+                        <input type="text" id="histDx2">
+                    </div>
+                    <div class="form-group">
+                        <label>Supporting Features from History</label>
+                        <textarea id="histDx2Support" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Features Against</label>
+                        <textarea id="histDx2Against" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="diff-dx-item">
+                    <h4 style="margin-bottom: 10px; color: var(--primary-color);">Differential #3</h4>
+                    <div class="form-group">
+                        <label>Diagnosis</label>
+                        <input type="text" id="histDx3">
+                    </div>
+                    <div class="form-group">
+                        <label>Supporting Features from History</label>
+                        <textarea id="histDx3Support" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Features Against</label>
+                        <textarea id="histDx3Against" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <!-- Add buttons to add more differentials -->
+                <button class="btn btn-outline" style="width: 100%; margin-top: 10px;" onclick="addDifferential('history')">
+                    + Add Another Differential
+                </button>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">What to Look for on Physical Examination</h2>
+                <div class="alert alert-warning">
+                    For each differential above, list what findings would support or refute it
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Differential</th>
+                                <th>Findings that would SUPPORT</th>
+                                <th>Findings that would REFUTE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span id="lookForDx1">Dx #1</span></td>
+                                <td><textarea rows="2" id="lookForSupport1" placeholder="What exam findings would support this?"></textarea></td>
+                                <td><textarea rows="2" id="lookForRefute1" placeholder="What would argue against it?"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td><span id="lookForDx2">Dx #2</span></td>
+                                <td><textarea rows="2" id="lookForSupport2"></textarea></td>
+                                <td><textarea rows="2" id="lookForRefute2"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td><span id="lookForDx3">Dx #3</span></td>
+                                <td><textarea rows="2" id="lookForSupport3"></textarea></td>
+                                <td><textarea rows="2" id="lookForRefute3"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Red Flags from History<span class="badge badge-danger">CRITICAL</span></h2>
+                <div class="alert alert-danger">
+                    Serious diagnoses NOT to miss based on history
+                </div>
+
+                <div class="form-group">
+                    <label>1.</label>
+                    <input type="text" id="redFlag1" placeholder="e.g., Meningitis">
+                </div>
+                <div class="form-group">
+                    <label>2.</label>
+                    <input type="text" id="redFlag2" placeholder="e.g., Sepsis">
+                </div>
+                <div class="form-group">
+                    <label>3.</label>
+                    <input type="text" id="redFlag3">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Clinical Reasoning Notes</h2>
+                <div class="form-group">
+                    <label>Your thinking process (Why did you prioritize these differentials?)</label>
+                    <textarea id="clinicalReasoningHistory" rows="6" placeholder="Explain your reasoning for ranking the differentials as you did...&#10;&#10;What patterns did you recognize?&#10;What key discriminating features did you identify?&#10;What assumptions are you making?"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Due to length, I'll create the remaining tabs in a follow-up. For now, let me show you the JavaScript functionality and how to continue -->
+            <!-- TAB 6: PHYSICAL EXAMINATION -->
+        <div id="physical-exam" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">General Appearance & Vital Signs</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="generalAppearance">General Appearance</label>
+                        <select id="generalAppearance">
+                            <option value="">Select...</option>
+                            <option value="well">Well</option>
+                            <option value="ill-looking">Ill-looking</option>
+                            <option value="toxic">Toxic</option>
+                            <option value="lethargic">Lethargic</option>
+                            <option value="alert-active">Alert & Active</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="consciousness">Consciousness (AVPU)</label>
+                        <select id="consciousness">
+                            <option value="">Select...</option>
+                            <option value="alert">Alert</option>
+                            <option value="verbal">Responsive to Verbal</option>
+                            <option value="pain">Responsive to Pain</option>
+                            <option value="unresponsive">Unresponsive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="nutritionalStatus">Nutritional Status</label>
+                        <select id="nutritionalStatus">
+                            <option value="">Select...</option>
+                            <option value="well-nourished">Well-nourished</option>
+                            <option value="mild-wasting">Mild wasting</option>
+                            <option value="moderate-wasting">Moderate wasting</option>
+                            <option value="severe-wasting">Severe wasting</option>
+                            <option value="overweight">Overweight</option>
+                            <option value="obese">Obese</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hydrationStatus">Hydration Status</label>
+                        <select id="hydrationStatus">
+                            <option value="">Select...</option>
+                            <option value="well-hydrated">Well-hydrated</option>
+                            <option value="some-dehydration">Some dehydration</option>
+                            <option value="severe-dehydration">Severe dehydration</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activity">Activity Level</label>
+                        <select id="activity">
+                            <option value="">Select...</option>
+                            <option value="active">Active</option>
+                            <option value="quiet">Quiet</option>
+                            <option value="irritable">Irritable</option>
+                            <option value="lethargic">Lethargic</option>
+                            <option value="unresponsive">Unresponsive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Vital Signs</h3>
+
+                <div class="form-row four-col">
+                    <div class="form-group">
+                        <label for="temperature">Temperature (°C)</label>
+                        <input type="number" id="temperature" step="0.1" min="30" max="45" onchange="interpretVitalSign('temperature')">
+                        <span id="tempInterpretation" class="vital-indicator"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="heartRate">Heart Rate (bpm)</label>
+                        <input type="number" id="heartRate" min="0" max="300" onchange="interpretVitalSign('hr')">
+                        <span id="hrInterpretation" class="vital-indicator"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="respiratoryRate">Respiratory Rate (/min)</label>
+                        <input type="number" id="respiratoryRate" min="0" max="100" onchange="interpretVitalSign('rr')">
+                        <span id="rrInterpretation" class="vital-indicator"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="oxygenSaturation">SpO₂ (%)</label>
+                        <input type="number" id="oxygenSaturation" min="0" max="100" onchange="interpretVitalSign('spo2')">
+                        <span id="spo2Interpretation" class="vital-indicator"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bloodPressureSystolic">Blood Pressure (mmHg)</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="number" id="bloodPressureSystolic" placeholder="Systolic" style="flex: 1;">
+                            <span>/</span>
+                            <input type="number" id="bloodPressureDiastolic" placeholder="Diastolic" style="flex: 1;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="capillaryRefill">Capillary Refill Time (sec)</label>
+                        <input type="number" id="capillaryRefill" step="0.1" min="0" max="10">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>On Room Air or Oxygen?</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="oxygenSupport" style="flex: 1;">
+                            <option value="room-air">Room Air</option>
+                            <option value="oxygen">Oxygen</option>
+                        </select>
+                        <input type="number" id="oxygenFlow" placeholder="L/min" style="flex: 1; display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dehydration Assessment -->
+            <div class="card">
+                <h2 class="card-title">Dehydration Assessment</h2>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sign</th>
+                                <th>Finding</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>General Condition</td>
+                                <td>
+                                    <select id="dehydGeneral">
+                                        <option value="">Select...</option>
+                                        <option value="well">Well, alert</option>
+                                        <option value="restless">Restless, irritable</option>
+                                        <option value="lethargic">Lethargic/unconscious</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Eyes</td>
+                                <td>
+                                    <select id="dehydEyes">
+                                        <option value="">Select...</option>
+                                        <option value="normal">Normal</option>
+                                        <option value="sunken">Sunken</option>
+                                        <option value="very-sunken">Very sunken</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tears</td>
+                                <td>
+                                    <select id="dehydTears">
+                                        <option value="">Select...</option>
+                                        <option value="present">Present</option>
+                                        <option value="absent">Absent</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mouth/Tongue</td>
+                                <td>
+                                    <select id="dehydMouth">
+                                        <option value="">Select...</option>
+                                        <option value="moist">Moist</option>
+                                        <option value="dry">Dry</option>
+                                        <option value="very-dry">Very dry</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Thirst</td>
+                                <td>
+                                    <select id="dehydThirst">
+                                        <option value="">Select...</option>
+                                        <option value="normal">Drinks normally</option>
+                                        <option value="thirsty">Thirsty, drinks eagerly</option>
+                                        <option value="unable">Drinks poorly/unable</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Skin Pinch</td>
+                                <td>
+                                    <select id="dehydSkin">
+                                        <option value="">Select...</option>
+                                        <option value="quick">Goes back quickly</option>
+                                        <option value="slow">Goes back slowly</option>
+                                        <option value="very-slow">Goes back very slowly</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-warning" style="margin-top: 15px;">
+                    <strong>Overall Classification:</strong> <span id="dehydrationClassification">Assess above to determine</span>
+                </div>
+            </div>
+
+            <!-- Systematic Examination -->
+            <div class="card">
+                <h2 class="card-title">1. SKIN, HAIR, NAILS</h2>
+                
+                <div class="form-group">
+                    <label>Skin Color</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="skin-color" value="normal"> Normal
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="skin-color" value="pale"> Pale
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="skin-color" value="jaundiced"> Jaundiced
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="skin-color" value="cyanosed"> Cyanosed
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="skin-color" value="mottled"> Mottled
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rashPresent">Rash Present</label>
+                        <select id="rashPresent">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="rashDetailsGroup" style="display: none;">
+                        <label>Rash Type</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item"><input type="checkbox" value="macular"> Macular</label>
+                            <label class="checkbox-item"><input type="checkbox" value="papular"> Papular</label>
+                            <label class="checkbox-item"><input type="checkbox" value="vesicular"> Vesicular</label>
+                            <label class="checkbox-item"><input type="checkbox" value="petechial"> Petechial</label>
+                            <label class="checkbox-item"><input type="checkbox" value="purpuric"> Purpuric</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="rashDescription">Rash Distribution & Details</label>
+                    <textarea id="rashDescription" rows="2" placeholder="Describe distribution, blanching, etc."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="turgor">Skin Turgor</label>
+                        <select id="turgor">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="reduced">Reduced</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edema">Edema</label>
+                        <select id="edema">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hairExam">Hair</label>
+                        <select id="hairExam">
+                            <option value="normal">Normal</option>
+                            <option value="sparse">Sparse</option>
+                            <option value="discolored">Discolored</option>
+                            <option value="flag-sign">Flag sign</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nailsExam">Nails</label>
+                        <select id="nailsExam">
+                            <option value="normal">Normal</option>
+                            <option value="clubbing">Clubbing</option>
+                            <option value="koilonychia">Koilonychia</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Abbreviated remaining systems for space -->
+            <div class="card">
+                <h2 class="card-title">2. HEAD & FONTANELLES</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="headShape">Head Shape</label>
+                        <select id="headShape">
+                            <option value="">Select...</option>
+                            <option value="normocephalic">Normocephalic</option>
+                            <option value="microcephalic">Microcephalic</option>
+                            <option value="macrocephalic">Macrocephalic</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="anteriorFontanelle">Anterior Fontanelle</label>
+                        <select id="anteriorFontanelle">
+                            <option value="">Select...</option>
+                            <option value="open-flat">Open & Flat</option>
+                            <option value="open-sunken">Open & Sunken</option>
+                            <option value="open-bulging">Open & Bulging</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">3. EYES</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="conjunctivae">Conjunctivae</label>
+                        <select id="conjunctivae">
+                            <option value="">Select...</option>
+                            <option value="pink">Pink</option>
+                            <option value="pale">Pale</option>
+                            <option value="injected">Injected</option>
+                            <option value="jaundiced">Jaundiced</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pupils">Pupils</label>
+                        <select id="pupils">
+                            <option value="">Select...</option>
+                            <option value="equal-reactive">Equal & Reactive</option>
+                            <option value="unequal">Unequal</option>
+                            <option value="non-reactive">Non-reactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="redReflex">Red Reflex</label>
+                    <select id="redReflex">
+                        <option value="">Select...</option>
+                        <option value="present">Present bilaterally</option>
+                        <option value="absent">Absent/abnormal</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">4. EARS, NOSE, THROAT</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tympanicMembrane">Tympanic Membrane</label>
+                        <select id="tympanicMembrane">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="bulging">Bulging</option>
+                            <option value="retracted">Retracted</option>
+                            <option value="perforated">Perforated</option>
+                            <option value="erythematous">Erythematous</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nasalDischarge">Nasal Discharge</label>
+                        <select id="nasalDischarge">
+                            <option value="none">None</option>
+                            <option value="clear">Clear</option>
+                            <option value="purulent">Purulent</option>
+                            <option value="bloody">Bloody</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pharynx">Pharynx</label>
+                        <select id="pharynx">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="erythematous">Erythematous</option>
+                            <option value="exudate">Exudate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tonsils">Tonsils</label>
+                        <select id="tonsils">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="enlarged-1">Enlarged (Grade 1/4)</option>
+                            <option value="enlarged-2">Enlarged (Grade 2/4)</option>
+                            <option value="enlarged-3">Enlarged (Grade 3/4)</option>
+                            <option value="enlarged-4">Enlarged (Grade 4/4)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">5. NECK</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="lymphNodes">Lymph Nodes</label>
+                        <select id="lymphNodes">
+                            <option value="">Select...</option>
+                            <option value="not-palpable">Not Palpable</option>
+                            <option value="palpable">Palpable</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="neckStiffness">Neck Stiffness</label>
+                        <select id="neckStiffness">
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lymphNodeDetails">Lymph Node Details (if palpable)</label>
+                    <input type="text" id="lymphNodeDetails" placeholder="Location, size, consistency, tenderness, mobility">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">6. CHEST & RESPIRATORY SYSTEM</h2>
+                
+                <div class="form-group">
+                    <label for="chestShape">Chest Shape</label>
+                    <select id="chestShape">
+                        <option value="">Select...</option>
+                        <option value="normal">Normal</option>
+                        <option value="barrel">Barrel chest</option>
+                        <option value="pectus-excavatum">Pectus excavatum</option>
+                        <option value="pectus-carinatum">Pectus carinatum</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Respiratory Effort</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="resp-effort" value="normal"> Normal
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="resp-effort" value="intercostal"> Intercostal retractions
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="resp-effort" value="subcostal"> Subcostal retractions
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="resp-effort" value="suprasternal"> Suprasternal retractions
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="resp-effort" value="nasal-flaring"> Nasal flaring
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="resp-effort" value="grunting"> Grunting
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="airEntry">Air Entry</label>
+                        <select id="airEntry">
+                            <option value="">Select...</option>
+                            <option value="equal">Equal bilateral</option>
+                            <option value="reduced-right">Reduced on right</option>
+                            <option value="reduced-left">Reduced on left</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="breathSounds">Breath Sounds</label>
+                        <select id="breathSounds">
+                            <option value="">Select...</option>
+                            <option value="vesicular">Vesicular</option>
+                            <option value="bronchial">Bronchial</option>
+                            <option value="reduced">Reduced</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="crackles">Crackles/Crepitations</label>
+                        <select id="crackles">
+                            <option value="no">No</option>
+                            <option value="fine">Yes - Fine</option>
+                            <option value="coarse">Yes - Coarse</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="wheezing">Wheezing</label>
+                        <select id="wheezing">
+                            <option value="no">No</option>
+                            <option value="expiratory">Yes - Expiratory</option>
+                            <option value="inspiratory">Yes - Inspiratory</option>
+                            <option value="both">Yes - Both</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="stridor">Stridor</label>
+                    <select id="stridor">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">7. CARDIOVASCULAR SYSTEM</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cyanosisType">Cyanosis</label>
+                        <select id="cyanosisType">
+                            <option value="no">No</option>
+                            <option value="central">Central</option>
+                            <option value="peripheral">Peripheral</option>
+                            <option value="differential">Differential</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="clubbing">Clubbing</label>
+                        <select id="clubbing">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="apexBeat">Apex Beat</label>
+                        <input type="text" id="apexBeat" placeholder="Location & character">
+                    </div>
+                    <div class="form-group">
+                        <label for="thrills">Thrills</label>
+                        <select id="thrills">
+                            <option value="no">No</option>
+                            <option value="yes">Yes (specify location)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="heartSounds">Heart Sounds</label>
+                        <select id="heartSounds">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal S1 & S2</option>
+                            <option value="s3">S3 present</option>
+                            <option value="split-s2">Split S2</option>
+                            <option value="loud-p2">Loud P2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="murmur">Murmur</label>
+                        <select id="murmur">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="murmurDetails" style="display: none;">
+                    <h4 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Murmur Characteristics</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="murmurTiming">Timing</label>
+                            <select id="murmurTiming">
+                                <option value="">Select...</option>
+                                <option value="systolic">Systolic</option>
+                                <option value="diastolic">Diastolic</option>
+                                <option value="continuous">Continuous</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="murmurGrade">Grade</label>
+                            <select id="murmurGrade">
+                                <option value="">Select...</option>
+                                <option value="1/6">1/6</option>
+                                <option value="2/6">2/6</option>
+                                <option value="3/6">3/6</option>
+                                <option value="4/6">4/6</option>
+                                <option value="5/6">5/6</option>
+                                <option value="6/6">6/6</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="murmurLocation">Location & Radiation</label>
+                        <input type="text" id="murmurLocation" placeholder="e.g., Apex, radiates to axilla">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="femoralPulses">Femoral Pulses</label>
+                    <select id="femoralPulses">
+                        <option value="">Select...</option>
+                        <option value="present">Present bilaterally</option>
+                        <option value="weak">Weak</option>
+                        <option value="absent">Absent</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">8. ABDOMEN</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="abdShape">Abdominal Shape</label>
+                        <select id="abdShape">
+                            <option value="">Select...</option>
+                            <option value="flat">Flat</option>
+                            <option value="distended">Distended</option>
+                            <option value="scaphoid">Scaphoid</option>
+                            <option value="protuberant">Protuberant (normal in toddlers)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bowelSounds">Bowel Sounds</label>
+                        <select id="bowelSounds">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="hyperactive">Hyperactive</option>
+                            <option value="hypoactive">Hypoactive</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="abdTenderness">Tenderness</label>
+                        <select id="abdTenderness">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="tendernessLocationGroup" style="display: none;">
+                        <label>Location</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item"><input type="checkbox" value="ruq"> RUQ</label>
+                            <label class="checkbox-item"><input type="checkbox" value="luq"> LUQ</label>
+                            <label class="checkbox-item"><input type="checkbox" value="rlq"> RLQ</label>
+                            <label class="checkbox-item"><input type="checkbox" value="llq"> LLQ</label>
+                            <label class="checkbox-item"><input type="checkbox" value="periumbilical"> Periumbilical</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="liver">Liver</label>
+                        <select id="liver">
+                            <option value="">Select...</option>
+                            <option value="not-palpable">Not Palpable</option>
+                            <option value="palpable">Palpable</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="liverSize">If palpable, cm below costal margin</label>
+                        <input type="number" id="liverSize" step="0.5" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="spleen">Spleen</label>
+                        <select id="spleen">
+                            <option value="">Select...</option>
+                            <option value="not-palpable">Not Palpable</option>
+                            <option value="palpable">Palpable</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="spleenSize">If palpable, cm below costal margin</label>
+                        <input type="number" id="spleenSize" step="0.5" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="abdMasses">Masses</label>
+                    <select id="abdMasses">
+                        <option value="no">No</option>
+                        <option value="yes">Yes (describe below)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="abdAdditional">Additional Abdominal Findings</label>
+                    <textarea id="abdAdditional" rows="2" placeholder="Ascites, hernias, organomegaly details, etc."></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">9. GENITOURINARY (Brief)</h2>
+                
+                <div class="form-group">
+                    <label for="guExam">Examination Findings</label>
+                    <textarea id="guExam" rows="3" placeholder="Males: Penis, testes, hydrocele&#10;Females: External genitalia&#10;Tanner staging if applicable"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">10. MUSCULOSKELETAL & NEUROLOGICAL (Brief)</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gait">Gait</label>
+                        <select id="gait">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="antalgic">Antalgic</option>
+                            <option value="ataxic">Ataxic</option>
+                            <option value="not-walking">Not walking yet</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="muscleTone">Muscle Tone</label>
+                        <select id="muscleTone">
+                            <option value="">Select...</option>
+                            <option value="normal">Normal</option>
+                            <option value="hypotonic">Hypotonic</option>
+                            <option value="hypertonic">Hypertonic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Meningeal Signs</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="meningeal" value="neck-stiffness"> Neck Stiffness
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="meningeal" value="kernig"> Kernig Sign
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="meningeal" value="brudzinski"> Brudzinski Sign
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="neuroAdditional">Additional Neurological/MSK Findings</label>
+                    <textarea id="neuroAdditional" rows="3" placeholder="Power, reflexes, primitive reflexes, cerebellar signs, joint examination, etc."></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Additional Physical Examination Findings</h2>
+                
+                <div class="form-group">
+                    <label for="peAdditionalFindings">Other Significant Findings</label>
+                    <textarea id="peAdditionalFindings" rows="4" placeholder="Any other important findings not captured above..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 7: ⭐ DIFFERENTIAL DIAGNOSIS (FINAL) -->
+        <div id="diff-dx-final" class="tab-content">
+            <div class="diff-dx-card">
+                <h2 style="color: white; margin-bottom: 10px;">⭐ REFINED DIFFERENTIAL DIAGNOSIS</h2>
+                <p style="opacity: 0.9; font-size: 0.95rem;">Based on BOTH History AND Physical Examination</p>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Summary of Significant Findings</h2>
+                
+                <h3 style="margin: 15px 0 10px 0; color: var(--secondary-color);">From History:</h3>
+                <div class="summary-panel">
+                    <div class="summary-item"><strong>Key Feature 1:</strong> <span id="summaryHistKey1">--</span></div>
+                    <div class="summary-item"><strong>Key Feature 2:</strong> <span id="summaryHistKey2">--</span></div>
+                    <div class="summary-item"><strong>Key Feature 3:</strong> <span id="summaryHistKey3">--</span></div>
+                </div>
+
+                <h3 style="margin: 15px 0 10px 0; color: var(--secondary-color);">From Physical Examination:</h3>
+                <div class="form-group">
+                    <label>1. Most Important PE Finding</label>
+                    <input type="text" id="peKeyFinding1" placeholder="e.g., Tachypnea with intercostal retractions">
+                </div>
+                <div class="form-group">
+                    <label>2.</label>
+                    <input type="text" id="peKeyFinding2" placeholder="e.g., Crackles in right lower chest">
+                </div>
+                <div class="form-group">
+                    <label>3.</label>
+                    <input type="text" id="peKeyFinding3">
+                </div>
+                <div class="form-group">
+                    <label>4.</label>
+                    <input type="text" id="peKeyFinding4">
+                </div>
+                <div class="form-group">
+                    <label>5.</label>
+                    <input type="text" id="peKeyFinding5">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">How Physical Examination Changed Your Thinking</h2>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>History-Based Differential</th>
+                                <th>Key PE Findings</th>
+                                <th>Impact on Likelihood</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span id="compareDx1">Dx #1</span></td>
+                                <td><textarea rows="2" id="comparePE1" placeholder="What PE findings were relevant?"></textarea></td>
+                                <td>
+                                    <select id="compareImpact1">
+                                        <option value="">Select...</option>
+                                        <option value="more-likely">More Likely Now</option>
+                                        <option value="less-likely">Less Likely Now</option>
+                                        <option value="ruled-out">Ruled Out</option>
+                                        <option value="unchanged">Unchanged</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span id="compareDx2">Dx #2</span></td>
+                                <td><textarea rows="2" id="comparePE2"></textarea></td>
+                                <td>
+                                    <select id="compareImpact2">
+                                        <option value="">Select...</option>
+                                        <option value="more-likely">More Likely Now</option>
+                                        <option value="less-likely">Less Likely Now</option>
+                                        <option value="ruled-out">Ruled Out</option>
+                                        <option value="unchanged">Unchanged</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span id="compareDx3">Dx #3</span></td>
+                                <td><textarea rows="2" id="comparePE3"></textarea></td>
+                                <td>
+                                    <select id="compareImpact3">
+                                        <option value="">Select...</option>
+                                        <option value="more-likely">More Likely Now</option>
+                                        <option value="less-likely">Less Likely Now</option>
+                                        <option value="ruled-out">Ruled Out</option>
+                                        <option value="unchanged">Unchanged</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">New Differentials (Suggested by PE)</h2>
+                <div class="alert alert-info">
+                    Did the physical exam reveal findings that suggest diagnoses you hadn't considered from history alone?
+                </div>
+
+                <div class="form-group">
+                    <label>1. New Differential Based on PE</label>
+                    <input type="text" id="newDxFromPE1" placeholder="Diagnosis not initially considered">
+                </div>
+                <div class="form-group">
+                    <label>Supporting PE Finding</label>
+                    <input type="text" id="newDxFromPE1Support" placeholder="What PE finding suggested this?">
+                </div>
+
+                <div class="form-group">
+                    <label>2. New Differential Based on PE</label>
+                    <input type="text" id="newDxFromPE2">
+                </div>
+                <div class="form-group">
+                    <label>Supporting PE Finding</label>
+                    <input type="text" id="newDxFromPE2Support">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Final Refined Differential Diagnoses</h2>
+                <div class="alert alert-success">
+                    Your revised differential list incorporating BOTH history AND physical examination
+                </div>
+
+                <div class="diff-dx-item">
+                    <h4 style="margin-bottom: 10px; color: var(--primary-color);">
+                        #1 - Working Diagnosis (Most Likely)
+                        <span class="badge badge-success">PRIMARY</span>
+                    </h4>
+                    <div class="form-group">
+                        <label>Diagnosis</label>
+                        <input type="text" id="finalDx1" placeholder="Your primary working diagnosis">
+                    </div>
+                    <div class="form-group">
+                        <label>Supporting Evidence (History + PE)</label>
+                        <textarea id="finalDx1Support" rows="3" placeholder="List all supporting features from both history and examination"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Evidence Against</label>
+                        <textarea id="finalDx1Against" rows="2" placeholder="What doesn't fit?"></textarea>
+                    </div>
+                </div>
+
+                <div class="diff-dx-item">
+                    <h4 style="margin-bottom: 10px; color: var(--primary-color);">#2 - Second Most Likely</h4>
+                    <div class="form-group">
+                        <label>Diagnosis</label>
+                        <input type="text" id="finalDx2">
+                    </div>
+                    <div class="form-group">
+                        <label>Supporting Evidence (History + PE)</label>
+                        <textarea id="finalDx2Support" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Evidence Against</label>
+                        <textarea id="finalDx2Against" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="diff-dx-item">
+                    <h4 style="margin-bottom: 10px; color: var(--primary-color);">#3</h4>
+                    <div class="form-group">
+                        <label>Diagnosis</label>
+                        <input type="text" id="finalDx3">
+                    </div>
+                    <div class="form-group">
+                        <label>Supporting Evidence (History + PE)</label>
+                        <textarea id="finalDx3Support" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Evidence Against</label>
+                        <textarea id="finalDx3Against" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Working Diagnosis Justification</h2>
+                
+                <div class="form-group">
+                    <label for="workingDxJustification">Why is your #1 diagnosis the most likely?</label>
+                    <textarea id="workingDxJustification" rows="5" placeholder="Provide your clinical reasoning for choosing this as the working diagnosis...&#10;&#10;Consider:&#10;- Which features are most specific?&#10;- What is the most common cause in this age group/setting?&#10;- What pattern does this fit?"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Critical Diagnoses NOT to Miss<span class="badge badge-danger">URGENT</span></h2>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Serious Diagnosis to Rule Out</th>
+                                <th>How to Rule Out</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" id="criticalDx1" placeholder="e.g., Bacterial meningitis"></td>
+                                <td><input type="text" id="criticalDxRuleOut1" placeholder="e.g., Lumbar puncture"></td>
+                                <td>
+                                    <select id="criticalDxStatus1">
+                                        <option value="">Select...</option>
+                                        <option value="excluded">Excluded by exam</option>
+                                        <option value="considering">Still considering</option>
+                                        <option value="need-ix">Need investigations</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" id="criticalDx2" placeholder="e.g., Sepsis"></td>
+                                <td><input type="text" id="criticalDxRuleOut2" placeholder="e.g., Blood cultures, CRP"></td>
+                                <td>
+                                    <select id="criticalDxStatus2">
+                                        <option value="">Select...</option>
+                                        <option value="excluded">Excluded by exam</option>
+                                        <option value="considering">Still considering</option>
+                                        <option value="need-ix">Need investigations</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" id="criticalDx3"></td>
+                                <td><input type="text" id="criticalDxRuleOut3"></td>
+                                <td>
+                                    <select id="criticalDxStatus3">
+                                        <option value="">Select...</option>
+                                        <option value="excluded">Excluded by exam</option>
+                                        <option value="considering">Still considering</option>
+                                        <option value="need-ix">Need investigations</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Investigations to Differentiate</h2>
+                <div class="alert alert-warning">
+                    What investigations will help you confirm or exclude your differentials?
+                </div>
+
+                <div class="table-responsive">
+                    <table id="investigationPlanTable">
+                        <thead>
+                            <tr>
+                                <th>Investigation</th>
+                                <th>What It Will Help Differentiate</th>
+                                <th>Expected Finding if Working Dx Correct</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" placeholder="e.g., Chest X-ray"></td>
+                                <td><textarea rows="2" placeholder="e.g., Pneumonia vs bronchiolitis"></textarea></td>
+                                <td><input type="text" placeholder="e.g., Right lower lobe consolidation"></td>
+                                <td><button class="remove-row-btn" onclick="removeRow(this)">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addInvestigationPlanRow()">+ Add Investigation</button>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Clinical Reasoning Reflection</h2>
+                
+                <div class="form-group">
+                    <label for="reasoningChangePE">How did my thinking change after the physical examination?</label>
+                    <textarea id="reasoningChangePE" rows="4" placeholder="Reflect on how the exam findings changed your diagnostic thinking..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="reasoningSurprises">What surprised me?</label>
+                    <textarea id="reasoningSurprises" rows="3" placeholder="Any unexpected findings? Anything that didn't match your initial hypothesis?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="reasoningUncertainty">What am I still uncertain about?</label>
+                    <textarea id="reasoningUncertainty" rows="3" placeholder="What questions remain? What do you need more information about?"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 8: INVESTIGATIONS -->
+        <div id="investigations" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Laboratory Investigations</h2>
+                
+                <h3 style="margin: 15px 0 10px 0; color: var(--secondary-color);">Complete Blood Count</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Test</th>
+                                <th>Result</th>
+                                <th>Normal Range</th>
+                                <th>Interpretation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>WBC (×10⁹/L)</td>
+                                <td><input type="number" id="wbc" step="0.1"></td>
+                                <td>4-11</td>
+                                <td><span id="wbcInterpretation">--</span></td>
+                            </tr>
+                            <tr>
+                                <td>Hemoglobin (g/dL)</td>
+                                <td><input type="number" id="hgb" step="0.1"></td>
+                                <td>Age-dependent</td>
+                                <td><span id="hgbInterpretation">--</span></td>
+                            </tr>
+                            <tr>
+                                <td>Platelets (×10⁹/L)</td>
+                                <td><input type="number" id="platelets"></td>
+                                <td>150-400</td>
+                                <td><span id="plateletsInterpretation">--</span></td>
+                            </tr>
+                            <tr>
+                                <td>Neutrophils (%)</td>
+                                <td><input type="number" id="neutrophils" step="0.1"></td>
+                                <td>40-60%</td>
+                                <td><span id="neutrophilsInterpretation">--</span></td>
+                            </tr>
+                            <tr>
+                                <td>Lymphocytes (%)</td>
+                                <td><input type="number" id="lymphocytes" step="0.1"></td>
+                                <td>20-40%</td>
+                                <td><span id="lymphocytesInterpretation">--</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Blood Chemistry</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Test</th>
+                                <th>Result</th>
+                                <th>Normal Range</th>
+                                <th>Interpretation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Glucose (mg/dL)</td>
+                                <td><input type="number" id="glucose" step="0.1"></td>
+                                <td>60-100</td>
+                                <td><span id="glucoseInterpretation">--</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sodium (mEq/L)</td>
+                                <td><input type="number" id="sodium" step="0.1"></td>
+                                <td>135-145</td>
+                                <td><span id="sodiumInterpretation">--</span></td>
+                            </tr>
+                            <tr>
+                                <td>Potassium (mEq/L)</td>
+                                <td><input type="number" id="potassium" step="0.1"></td>
+                                <td>3.5-5.0</td>
+                                <td><span id="potassiumInterpretation">--</span></td>
+                            </tr>
+                            <tr>
+                                <td>Creatinine (mg/dL)</td>
+                                <td><input type="number" id="creatinine" step="0.01"></td>
+                                <td>Age-dependent</td>
+                                <td><span id="creatinineInterpretation">--</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Inflammatory Markers</h3>
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="crp">CRP (mg/L)</label>
+                        <input type="number" id="crp" step="0.1" placeholder="Normal <10">
+                    </div>
+                    <div class="form-group">
+                        <label for="esr">ESR (mm/hr)</label>
+                        <input type="number" id="esr" placeholder="Normal <20">
+                    </div>
+                    <div class="form-group">
+                        <label for="procalcitonin">Procalcitonin (ng/mL)</label>
+                        <input type="number" id="procalcitonin" step="0.01" placeholder="Normal <0.5">
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: var(--secondary-color);">Other Lab Tests</h3>
+                <div class="form-group">
+                    <label for="otherLabTests">Other Laboratory Results</label>
+                    <textarea id="otherLabTests" rows="4" placeholder="Blood cultures, urinalysis, stool studies, CSF analysis, etc.&#10;&#10;Format: Test Name | Result | Interpretation"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Imaging Studies</h2>
+                
+                <div class="form-group">
+                    <label for="chestXray">Chest X-ray</label>
+                    <select id="chestXray">
+                        <option value="">Not done</option>
+                        <option value="done">Done</option>
+                    </select>
+                </div>
+                <div class="form-group" id="chestXrayFindingsGroup" style="display: none;">
+                    <label for="chestXrayFindings">Findings</label>
+                    <textarea id="chestXrayFindings" rows="3" placeholder="Describe CXR findings..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="ultrasound">Ultrasound</label>
+                    <select id="ultrasound">
+                        <option value="">Not done</option>
+                        <option value="done">Done</option>
+                    </select>
+                </div>
+                <div class="form-group" id="ultrasoundFindingsGroup" style="display: none;">
+                    <label for="ultrasoundType">Type</label>
+                    <input type="text" id="ultrasoundType" placeholder="e.g., Abdominal, Cranial">
+                    <label for="ultrasoundFindings" style="margin-top: 10px;">Findings</label>
+                    <textarea id="ultrasoundFindings" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="otherImaging">Other Imaging (CT, MRI, Echo, etc.)</label>
+                    <textarea id="otherImaging" rows="4" placeholder="Modality | Findings"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Investigation Summary & Impact</h2>
+                
+                <div class="form-group">
+                    <label for="investigationsSummary">How did investigations change your diagnosis?</label>
+                    <textarea id="investigationsSummary" rows="4" placeholder="Summarize key investigation findings and how they influenced your diagnostic thinking..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="investigationsDxConfirmed">Which differential was confirmed?</label>
+                    <input type="text" id="investigationsDxConfirmed" placeholder="Final diagnosis based on investigations">
+                </div>
+
+                <div class="form-group">
+                    <label for="investigationsDxRuledOut">Which differentials were ruled out and why?</label>
+                    <textarea id="investigationsDxRuledOut" rows="3" placeholder="List ruled-out diagnoses and the investigation findings that excluded them"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 9: MANAGEMENT -->
+        <div id="management" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Final Diagnosis</h2>
+                
+                <div class="summary-panel">
+                    <div class="form-group">
+                        <label for="primaryDiagnosis">1. Primary Diagnosis</label>
+                        <input type="text" id="primaryDiagnosis" placeholder="Main diagnosis">
+                    </div>
+                    <div class="form-group">
+                        <label for="secondaryDiagnosis">2. Secondary/Comorbid Diagnosis</label>
+                        <input type="text" id="secondaryDiagnosis" placeholder="If applicable">
+                    </div>
+                    <div class="form-group">
+                        <label for="tertiaryDiagnosis">3. Additional Diagnosis</label>
+                        <input type="text" id="tertiaryDiagnosis" placeholder="If applicable">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="diagnosisBasis">Basis for Diagnosis (Clinical + Investigation Evidence)</label>
+                    <textarea id="diagnosisBasis" rows="4" placeholder="Summarize the key evidence from history, examination, and investigations that led to this diagnosis..."></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Admission Decision</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="admissionDecision">Decision</label>
+                        <select id="admissionDecision">
+                            <option value="">Select...</option>
+                            <option value="admit">Admit</option>
+                            <option value="discharge">Discharge with follow-up</option>
+                            <option value="observe">Observe and reassess</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="wardGroup" style="display: none;">
+                        <label for="ward">Ward</label>
+                        <select id="ward">
+                            <option value="">Select...</option>
+                            <option value="general">General Pediatric</option>
+                            <option value="hdu">HDU</option>
+                            <option value="picu">PICU</option>
+                            <option value="nicu">NICU</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="admissionReason">Reason for Admission/Discharge Plan</label>
+                    <textarea id="admissionReason" rows="2" placeholder="Why admit or why safe to discharge?"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Non-Pharmacological Management</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="feeding">Feeding/Diet</label>
+                        <select id="feeding">
+                            <option value="">Select...</option>
+                            <option value="npo">NPO</option>
+                            <option value="breastfeeding">Continue Breastfeeding</option>
+                            <option value="oral-diet">Oral Diet</option>
+                            <option value="ng-feeds">NG Feeds</option>
+                            <option value="iv-fluids">IV Fluids Only</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="feedingDetails">Details</label>
+                        <input type="text" id="feedingDetails" placeholder="Specify diet, volume, frequency">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>IV Fluid Management (if indicated)</label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ivFluidType">Fluid Type</label>
+                            <select id="ivFluidType">
+                                <option value="">Select...</option>
+                                <option value="ns">0.9% Normal Saline</option>
+                                <option value="half-ns">0.45% NS</option>
+                                <option value="d5">Dextrose 5%</option>
+                                <option value="rl">Ringer's Lactate</option>
+                                <option value="dns">Dextrose Normal Saline</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ivFluidRate">Rate (mL/hr)</label>
+                            <input type="number" id="ivFluidRate" step="0.1">
+                        </div>
+                    </div>
+                    <div class="alert alert-info" style="margin-top: 10px;">
+                        <strong>Maintenance Fluid Calculator (Holliday-Segar):</strong><br>
+                        Patient weight: <span id="maintenanceWeight">--</span> kg<br>
+                        Calculated maintenance: <span id="maintenanceFluid">--</span> mL/day (<span id="maintenanceFluidRate">--</span> mL/hr)
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="oxygenTherapy">Oxygen Therapy</label>
+                        <select id="oxygenTherapy">
+                            <option value="no">Not Required</option>
+                            <option value="nasal">Nasal Cannula</option>
+                            <option value="mask">Face Mask</option>
+                            <option value="nrb">Non-Rebreather</option>
+                            <option value="cpap">CPAP</option>
+                            <option value="ventilator">Mechanical Ventilation</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="oxygenFlow">Flow Rate (L/min)</label>
+                        <input type="number" id="oxygenFlow" step="0.5">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Monitoring</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="monitoring" value="vitals"> Vital signs
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="monitoring" value="io"> I&O chart
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="monitoring" value="weight"> Daily weight
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="monitoring" value="glucose"> Blood glucose
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="monitoring" value="spo2"> Continuous SpO₂
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="monitoring" value="neuro"> Neuro obs
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="vitalSignsFrequency">Vital Signs Frequency</label>
+                    <select id="vitalSignsFrequency">
+                        <option value="">Select...</option>
+                        <option value="q1h">Every 1 hour</option>
+                        <option value="q2h">Every 2 hours</option>
+                        <option value="q4h">Every 4 hours</option>
+                        <option value="q6h">Every 6 hours</option>
+                        <option value="q12h">Every 12 hours</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Pharmacological Management</h2>
+                
+                <div class="alert alert-danger">
+                    <strong>⚠️ DRUG ALLERGY CHECK:</strong>
+                    <label style="display: inline; margin-left: 10px;">
+                        <input type="checkbox" id="allergyChecked"> ✓ Checked - No known allergies
+                    </label>
+                    <input type="text" id="allergyDetails" placeholder="If allergies, specify here" style="margin-left: 10px; width: 300px;">
+                </div>
+
+                <div class="table-responsive">
+                    <table id="medicationsTable">
+                        <thead>
+                            <tr>
+                                <th>Medication</th>
+                                <th>Indication</th>
+                                <th>Dose (mg/kg)</th>
+                                <th>Total Dose</th>
+                                <th>Route</th>
+                                <th>Frequency</th>
+                                <th>Duration</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" placeholder="Drug name"></td>
+                                <td><input type="text" placeholder="Indication"></td>
+                                <td><input type="number" step="0.1" placeholder="mg/kg"></td>
+                                <td><input type="text" placeholder="Calculated dose"></td>
+                                <td>
+                                    <select>
+                                        <option value="">--</option>
+                                        <option value="PO">PO</option>
+                                        <option value="IV">IV</option>
+                                        <option value="IM">IM</option>
+                                        <option value="SC">SC</option>
+                                        <option value="PR">PR</option>
+                                        <option value="Inh">Inh</option>
+                                        <option value="Topical">Topical</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select>
+                                        <option value="">--</option>
+                                        <option value="once">Once</option>
+                                        <option value="q6h">q6h</option>
+                                        <option value="q8h">q8h</option>
+                                        <option value="q12h">q12h</option>
+                                        <option value="q24h">q24h</option>
+                                        <option value="prn">PRN</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" placeholder="Duration"></td>
+                                <td><button class="remove-row-btn" onclick="removeRow(this)">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addMedicationManagementRow()">+ Add Medication</button>
+
+                <div class="alert alert-info" style="margin-top: 15px;">
+                    <strong>Dose Calculator:</strong><br>
+                    Patient weight: <span id="doseCalcWeight">--</span> kg<br>
+                    Drug dose: <input type="number" id="doseCalcMgKg" step="0.1" placeholder="mg/kg" style="width: 80px;"> mg/kg = 
+                    <strong><span id="doseCalcTotal">--</span> mg total dose</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Patient/Caregiver Education</h2>
+                
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="education" value="disease"> Disease explained
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="education" value="treatment"> Treatment plan explained
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="education" value="medications"> Medication instructions given
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="education" value="warning-signs"> Warning signs discussed
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="education" value="feeding"> Feeding counseling
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="education" value="immunization"> Immunization counseling
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="education" value="follow-up"> Follow-up plan explained
+                    </label>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="warningSignsDiscussed">Warning Signs to Return to ER</label>
+                    <textarea id="warningSignsDiscussed" rows="3" placeholder="List specific warning signs discussed with caregiver..."></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Expected Course</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="anticipatedLOS">Anticipated Length of Stay (days)</label>
+                        <input type="number" id="anticipatedLOS" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="expectedOutcome">Expected Outcome</label>
+                        <select id="expectedOutcome">
+                            <option value="">Select...</option>
+                            <option value="full-recovery">Full Recovery</option>
+                            <option value="improved">Improved</option>
+                            <option value="chronic-management">Chronic Management</option>
+                            <option value="uncertain">Uncertain</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="complicationsWatch">Complications to Watch For</label>
+                    <textarea id="complicationsWatch" rows="3" placeholder="List potential complications and how to monitor for them..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 10: PROGRESS NOTES -->
+        <div id="progress" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Daily Progress Notes (SOAP Format)</h2>
+                <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="addProgressNote()">
+                    + Add New Progress Note
+                </button>
+                
+                <div id="progressNotesContainer">
+                    <!-- Progress notes will be added here dynamically -->
+                    <div class="card" style="background: #f8f9fa; border-left: 4px solid var(--secondary-color);">
+                        <h3 style="color: var(--secondary-color); margin-bottom: 15px;">
+                            Progress Note #1
+                            <span style="float: right; font-size: 0.9rem; font-weight: normal;">
+                                Day <span class="day-number">1</span> of admission
+                            </span>
+                        </h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" class="progress-date">
+                            </div>
+                            <div class="form-group">
+                                <label>Time</label>
+                                <input type="time" class="progress-time">
+                            </div>
+                        </div>
+
+                        <h4 style="margin: 15px 0 10px 0; color: var(--primary-color);">S - SUBJECTIVE</h4>
+                        <div class="form-group">
+                            <label>Caregiver Concerns/Symptoms Today</label>
+                            <textarea class="progress-subjective" rows="2" placeholder="How is the child today? Any new symptoms or concerns?"></textarea>
+                        </div>
+
+                        <div class="form-row three-col">
+                            <div class="form-group">
+                                <label>Feeding</label>
+                                <select class="progress-feeding">
+                                    <option value="">Select...</option>
+                                    <option value="well">Feeding Well</option>
+                                    <option value="poor">Feeding Poorly</option>
+                                    <option value="refusing">Refusing</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Urine Output</label>
+                                <select class="progress-urine">
+                                    <option value="">Select...</option>
+                                    <option value="adequate">Adequate</option>
+                                    <option value="decreased">Decreased</option>
+                                    <option value="none">None</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Activity Level</label>
+                                <select class="progress-activity">
+                                    <option value="">Select...</option>
+                                    <option value="active">Active/Playful</option>
+                                    <option value="quiet">Quiet</option>
+                                    <option value="lethargic">Lethargic</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h4 style="margin: 15px 0 10px 0; color: var(--primary-color);">O - OBJECTIVE</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Weight Today (kg)</label>
+                                <input type="number" class="progress-weight" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Change from Yesterday</label>
+                                <input type="text" class="progress-weight-change" readonly placeholder="Auto-calculated">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Vital Signs</label>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px;">
+                                <input type="number" class="progress-temp" placeholder="T °C" step="0.1">
+                                <input type="number" class="progress-hr" placeholder="HR bpm">
+                                <input type="number" class="progress-rr" placeholder="RR /min">
+                                <input type="text" class="progress-bp" placeholder="BP mmHg">
+                                <input type="number" class="progress-spo2" placeholder="SpO₂ %">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>General Appearance & System-Specific Findings</label>
+                            <textarea class="progress-exam" rows="3" placeholder="Brief examination findings...&#10;General appearance:&#10;Respiratory:&#10;Cardiovascular:&#10;Abdominal:&#10;Other:"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Investigation Results Today</label>
+                            <textarea class="progress-investigations" rows="2" placeholder="New lab or imaging results..."></textarea>
+                        </div>
+
+                        <h4 style="margin: 15px 0 10px 0; color: var(--primary-color);">A - ASSESSMENT</h4>
+                        <div class="form-group">
+                            <label>Current Diagnosis</label>
+                            <input type="text" class="progress-diagnosis" placeholder="Working diagnosis">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Clinical Status</label>
+                                <select class="progress-status">
+                                    <option value="">Select...</option>
+                                    <option value="improving">Improving</option>
+                                    <option value="stable">Stable</option>
+                                    <option value="unchanged">Unchanged</option>
+                                    <option value="worsening">Worsening</option>
+                                    <option value="deteriorating">Deteriorating</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Response to Treatment</label>
+                                <select class="progress-response">
+                                    <option value="">Select...</option>
+                                    <option value="good">Good Response</option>
+                                    <option value="partial">Partial Response</option>
+                                    <option value="poor">Poor Response</option>
+                                    <option value="no-response">No Response</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Assessment Summary</label>
+                            <textarea class="progress-assessment" rows="2" placeholder="Brief clinical assessment..."></textarea>
+                        </div>
+
+                        <h4 style="margin: 15px 0 10px 0; color: var(--primary-color);">P - PLAN</h4>
+                        <div class="form-group">
+                            <label>Continue</label>
+                            <textarea class="progress-continue" rows="2" placeholder="What to continue..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Modify</label>
+                            <textarea class="progress-modify" rows="2" placeholder="What to change and why..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Discontinue</label>
+                            <textarea class="progress-discontinue" rows="2" placeholder="What to stop and why..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>New Orders</label>
+                            <textarea class="progress-new-orders" rows="2" placeholder="New medications, investigations, consultations..."></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Anticipated Discharge</label>
+                                <select class="progress-discharge">
+                                    <option value="">Select...</option>
+                                    <option value="today">Today</option>
+                                    <option value="tomorrow">Tomorrow</option>
+                                    <option value="2-3-days">2-3 days</option>
+                                    <option value="more-than-3">More than 3 days</option>
+                                    <option value="uncertain">Uncertain</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Clerk/Student Name</label>
+                                <input type="text" class="progress-clerk" placeholder="Your name">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Discharge Summary (When Ready)</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dischargeDate">Date of Discharge</label>
+                        <input type="date" id="dischargeDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="totalDaysAdmitted">Total Days Admitted</label>
+                        <input type="number" id="totalDaysAdmitted" readonly placeholder="Auto-calculated">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dischargeCondition">Condition at Discharge</label>
+                    <select id="dischargeCondition">
+                        <option value="">Select...</option>
+                        <option value="improved">Improved</option>
+                        <option value="cured">Cured</option>
+                        <option value="stable">Stable</option>
+                        <option value="unchanged">Unchanged</option>
+                        <option value="ama">Against Medical Advice (AMA)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="dischargeDiagnoses">Discharge Diagnosis(es)</label>
+                    <textarea id="dischargeDiagnoses" rows="3" placeholder="1.&#10;2.&#10;3."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="dischargeMedications">Discharge Medications</label>
+                    <textarea id="dischargeMedications" rows="4" placeholder="Medication | Dose | Route | Frequency | Duration"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="dischargeInstructions">Discharge Instructions for Caregivers</label>
+                    <textarea id="dischargeInstructions" rows="4" placeholder="Home care instructions, activity restrictions, diet, wound care, warning signs to return..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="followUpPlan">Follow-up Appointments</label>
+                    <textarea id="followUpPlan" rows="2" placeholder="When and where to follow up..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End of container -->
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button class="btn btn-secondary" onclick="clearForm()">
+            <span>🗑️</span> Clear
+        </button>
+        <button class="btn btn-primary" onclick="saveData()">
+            <span>💾</span> Save
+        </button>
+        <button class="btn btn-success" onclick="exportPDF()">
+            <span>📄</span> Export PDF
+        </button>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- JavaScript -->
+    <script>
+        // TAB NAVIGATION
+        function showTab(tabId) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+            
+            // Update progress
+            updateProgress();
+            
+            // Save current tab to localStorage
+            localStorage.setItem('currentTab', tabId);
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // AGE CALCULATION
+        function calculateAge() {
+            const dob = document.getElementById('dob').value;
+            if (!dob) return;
+            
+            const birthDate = new Date(dob);
+            const today = new Date();
+            
+            let years = today.getFullYear() - birthDate.getFullYear();
+            let months = today.getMonth() - birthDate.getMonth();
+            let days = today.getDate() - birthDate.getDate();
+            
+            if (days < 0) {
+                months--;
+                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            }
+            
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+            
+            document.getElementById('age').value = `${years} years, ${months} months, ${days} days`;
+            
+            // Also update age-dependent normal ranges
+            updateVitalSignRanges(years, months);
+        }
+
+        // GROWTH CALCULATIONS
+        function calculateGrowth() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            
+            if (!weight || !height) return;
+            
+            // Calculate BMI
+            const heightM = height / 100;
+            const bmi = (weight / (heightM * heightM)).toFixed(1);
+            
+            document.getElementById('bmiValue').textContent = bmi;
+            
+            // Show growth display
+            document.getElementById('growthDisplay').style.display = 'flex';
+            
+            // TODO: Add WHO percentile calculations
+            // This would require importing WHO growth charts data
+            document.getElementById('wfaPercentile').textContent = "N/A*";
+            document.getElementById('hfaPercentile').textContent = "N/A*";
+        }
+
+        // UPDATE VITAL SIGN NORMAL RANGES
+        function updateVitalSignRanges(years, months) {
+            // This would update expected ranges based on age
+            // Placeholder for now
+        }
+
+        // ADD/REMOVE TABLE ROWS
+        function addTreatmentRow() {
+            const table = document.getElementById('priorTreatmentTable').getElementsByTagName('tbody')[0];
+            const newRow = table.rows[0].cloneNode(true);
+            // Clear inputs
+            newRow.querySelectorAll('input').forEach(input => input.value = '');
+            table.appendChild(newRow);
+        }
+
+        function addIllnessRow() {
+            const table = document.getElementById('pastIllnessTable').getElementsByTagName('tbody')[0];
+            const newRow = table.rows[0].cloneNode(true);
+            newRow.querySelectorAll('input').forEach(input => input.value = '');
+            table.appendChild(newRow);
+        }
+
+        function addMedicationRow() {
+            const table = document.getElementById('currentMedsTable').getElementsByTagName('tbody')[0];
+            const newRow = table.rows[0].cloneNode(true);
+            newRow.querySelectorAll('input, select').forEach(input => input.value = '');
+            table.appendChild(newRow);
+        }
+
+        function addSiblingRow() {
+            const table = document.getElementById('siblingsTable').getElementsByTagName('tbody')[0];
+            const rowCount = table.rows.length;
+            const newRow = table.rows[0].cloneNode(true);
+            newRow.cells[0].textContent = rowCount + 1;
+            newRow.querySelectorAll('input, select').forEach(input => input.value = '');
+            table.appendChild(newRow);
+        }
+
+        function removeRow(btn) {
+            const row = btn.closest('tr');
+            if (row.parentElement.children.length > 1) {
+                row.remove();
+            } else {
+                showToast('Cannot remove the last row', 'warning');
+            }
+        }
+
+        // CONDITIONAL FIELD DISPLAY
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show/hide C-section indication
+            const deliveryMode = document.getElementById('deliveryMode');
+            if (deliveryMode) {
+                deliveryMode.addEventListener('change', function() {
+                    const csectionGroup = document.getElementById('csectionIndicationGroup');
+                    csectionGroup.style.display = this.value === 'csection' ? 'block' : 'none';
+                });
+            }
+            
+            // Show/hide NICU reason
+            const nicuAdmission = document.getElementById('nicuAdmission');
+            if (nicuAdmission) {
+                nicuAdmission.addEventListener('change', function() {
+                    const nicuReasonGroup = document.getElementById('nicuReasonGroup');
+                    nicuReasonGroup.style.display = this.value === 'yes' ? 'block' : 'none';
+                });
+            }
+            
+            // Show/hide dev regression details
+            const devRegression = document.getElementById('devRegression');
+            if (devRegression) {
+                devRegression.addEventListener('change', function() {
+                    const detailsGroup = document.getElementById('devRegressionDetailsGroup');
+                    detailsGroup.style.display = this.value === 'yes' ? 'block' : 'none';
+                });
+            }
+            
+            // Show/hide consanguinity degree
+            const consanguinity = document.getElementById('consanguinity');
+            if (consanguinity) {
+                consanguinity.addEventListener('change', function() {
+                    const degreeGroup = document.getElementById('consanguinityDegreeGroup');
+                    degreeGroup.style.display = this.value === 'yes' ? 'block' : 'none';
+                });
+            }
+            
+            // Auto-populate differential diagnosis names in "what to look for" table
+            document.getElementById('histDx1')?.addEventListener('input', function() {
+                document.getElementById('lookForDx1').textContent = this.value || 'Dx #1';
+            });
+            document.getElementById('histDx2')?.addEventListener('input', function() {
+                document.getElementById('lookForDx2').textContent = this.value || 'Dx #2';
+            });
+            document.getElementById('histDx3')?.addEventListener('input', function() {
+                document.getElementById('lookForDx3').textContent = this.value || 'Dx #3';
+            });
+            
+            // Load saved data on page load
+            loadData();
+            
+            // Auto-save every 30 seconds
+            setInterval(autoSave, 30000);
+            
+            // Restore last active tab
+            const lastTab = localStorage.getItem('currentTab');
+            if (lastTab && document.getElementById(lastTab)) {
+                showTab(lastTab);
+                // Update nav tab active state
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    if (tab.getAttribute('onclick').includes(lastTab)) {
+                        tab.classList.add('active');
+                    }
+                });
+            }
+        });
+
+        // PROGRESS BAR UPDATE
+        function updateProgress() {
+            const allInputs = document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], input[type="time"], select, textarea');
+            const requiredInputs = document.querySelectorAll('input[type="text"][required], input[type="number"][required], input[type="date"][required], select[required]');
+            
+            let filled = 0;
+            allInputs.forEach(input => {
+                if (input.value && input.value.trim() !== '') filled++;
+            });
+            
+            const percentage = (filled / allInputs.length) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        // AUTO-SAVE FUNCTIONALITY
+        function autoSave() {
+            const formData = gatherFormData();
+            localStorage.setItem('pediatricsClerkshipData', JSON.stringify(formData));
+            
+            // Show indicator
+            const indicator = document.getElementById('autosaveIndicator');
+            indicator.classList.add('saving');
+            indicator.textContent = 'Saving...';
+            indicator.style.display = 'block';
+            
+            setTimeout(() => {
+                indicator.classList.remove('saving');
+                indicator.textContent = '✓ Saved';
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                }, 2000);
+            }, 500);
+        }
+
+        // GATHER FORM DATA
+        function gatherFormData() {
+            const data = {};
+            
+            // Get all inputs
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (input.id) {
+                    if (input.type === 'checkbox') {
+                        data[input.id] = input.checked;
+                    } else if (input.type === 'radio') {
+                        if (input.checked) data[input.name] = input.value;
+                    } else {
+                        data[input.id] = input.value;
+                    }
+                }
+            });
+            
+            // Get table data
+            data.tables = {
+                priorTreatment: getTableData('priorTreatmentTable'),
+                pastIllness: getTableData('pastIllnessTable'),
+                currentMeds: getTableData('currentMedsTable'),
+                siblings: getTableData('siblingsTable')
+            };
+            
+            // Add timestamp
+            data.lastSaved = new Date().toISOString();
+            
+            return data;
+        }
+
+        function getTableData(tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) return [];
+            
+            const rows = table.querySelectorAll('tbody tr');
+            const data = [];
+            
+            rows.forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('input, select').forEach(input => {
+                    rowData.push(input.value);
+                });
+                if (rowData.some(val => val !== '')) {
+                    data.push(rowData);
+                }
+            });
+            
+            return data;
+        }
+
+        // LOAD SAVED DATA
+        function loadData() {
+            const savedData = localStorage.getItem('pediatricsClerkshipData');
+            if (!savedData) return;
+            
+            try {
+                const data = JSON.parse(savedData);
+                
+                // Restore input values
+                Object.keys(data).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = data[key];
+                        } else {
+                            element.value = data[key];
+                        }
+                    }
+                });
+                
+                // Restore tables
+                if (data.tables) {
+                    restoreTableData('priorTreatmentTable', data.tables.priorTreatment);
+                    restoreTableData('pastIllnessTable', data.tables.pastIllness);
+                    restoreTableData('currentMedsTable', data.tables.currentMeds);
+                    restoreTableData('siblingsTable', data.tables.siblings);
+                }
+                
+                // Recalculate age and growth if DOB/measurements present
+                if (data.dob) calculateAge();
+                if (data.weight && data.height) calculateGrowth();
+                
+                updateProgress();
+                
+                showToast('Data loaded successfully', 'success');
+            } catch (e) {
+                console.error('Error loading data:', e);
+                showToast('Error loading saved data', 'error');
+            }
+        }
+
+        function restoreTableData(tableId, data) {
+            if (!data || data.length === 0) return;
+            
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            
+            const tbody = table.querySelector('tbody');
+            tbody.innerHTML = ''; // Clear existing rows
+            
+            data.forEach((rowData, index) => {
+                // Create new row
+                const row = tbody.insertRow();
+                rowData.forEach((cellValue, cellIndex) => {
+                    const cell = row.insertCell();
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = cellValue;
+                    cell.appendChild(input);
+                });
+                
+                // Add remove button
+                const cell = row.insertCell();
+                const btn = document.createElement('button');
+                btn.className = 'remove-row-btn';
+                btn.textContent = '×';
+                btn.onclick = function() { removeRow(this); };
+                cell.appendChild(btn);
+            });
+        }
+
+        // MANUAL SAVE
+        function saveData() {
+            autoSave();
+            showToast('Data saved successfully!', 'success');
+        }
+
+        // CLEAR FORM
+        function clearForm() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                // Clear all inputs
+                document.querySelectorAll('input, select, textarea').forEach(input => {
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        input.checked = false;
+                    } else {
+                        input.value = '';
+                    }
+                });
+                
+                // Clear localStorage
+                localStorage.removeItem('pediatricsClerkshipData');
+                localStorage.removeItem('currentTab');
+                
+                updateProgress();
+                showToast('Form cleared', 'success');
+            }
+        }
+
+        // EXPORT TO PDF
+        function exportPDF() {
+            showToast('PDF export feature coming soon...', 'info');
+            // This would use a library like jsPDF or print CSS
+            // window.print(); // Simple alternative for now
+        }
+
+        // TOAST NOTIFICATIONS
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show';
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ADD MORE DIFFERENTIAL DIAGNOSIS
+        function addDifferential(section) {
+            showToast('Add differential feature coming soon...', 'info');
+            // This would dynamically add more differential diagnosis fields
+        }
+
+        // Listen for input changes to trigger auto-save and progress update
+        document.addEventListener('input', function(e) {
+            if (e.target.matches('input, select, textarea')) {
+                updateProgress();
+            }
+        });
+    </script>
+
+</body>
+</html>
