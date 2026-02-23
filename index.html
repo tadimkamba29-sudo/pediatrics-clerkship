@@ -1521,6 +1521,46 @@
                     </div>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label>Resuscitation Required</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" name="resuscitation" value="none"> None</label>
+                    <label class="checkbox-item"><input type="checkbox" name="resuscitation" value="stimulation">
+                        Stimulation</label>
+                    <label class="checkbox-item"><input type="checkbox" name="resuscitation" value="oxygen">
+                        Oxygen</label>
+                    <label class="checkbox-item"><input type="checkbox" name="resuscitation" value="bag-mask"> Bag-mask
+                        ventilation</label>
+                    <label class="checkbox-item"><input type="checkbox" name="resuscitation" value="intubation">
+                        Intubation</label>
+                    <label class="checkbox-item"><input type="checkbox" name="resuscitation" value="chest-compressions">
+                        Chest compressions</label>
+                    <label class="checkbox-item"><input type="checkbox" name="resuscitation" value="medications">
+                        Medications</label>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="birthWeight">Birth Weight (kg)</label>
+                    <input type="number" id="birthWeight" step="0.01" placeholder="e.g., 2.85">
+                </div>
+                <div class="form-group">
+                    <label for="birthLength">Birth Length (cm)</label>
+                    <input type="number" id="birthLength" step="0.1" placeholder="e.g., 48.5">
+                </div>
+                <div class="form-group">
+                    <label for="birthHC">Birth Head Circumference (cm)</label>
+                    <input type="number" id="birthHC" step="0.1" placeholder="e.g., 33.2">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="neonatalComplications">Neonatal Complications/Problems</label>
+                <textarea id="neonatalComplications" rows="2"
+                    placeholder="e.g., hypoglycemia, jaundice requiring phototherapy, sepsis, RDS..."></textarea>
+            </div>
             <div class="card">
                 <h2 class="card-title">Feeding History</h2>
                 <div class="form-group"><label for="currentFeeding">Current Feeding</label><select id="currentFeeding">
