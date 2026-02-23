@@ -3490,12 +3490,32 @@
         <div class="toast" id="toast">Notification</div>
 
         <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="btn btn-success" onclick="saveData()">💾 Save</button>
-            <button class="btn btn-primary" onclick="exportPDF()">🖨 Print / PDF</button>
-            <button class="btn btn-danger" onclick="clearForm()">🗑 Clear</button>
+        <div class="action-buttons"
+            style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:30px 0;">
+            <button class="btn btn-success" onclick="saveData()" title="Save to browser storage">
+                💾 Save (Local)
+            </button>
+            <button class="btn btn-primary" onclick="exportToTxt()" title="Download human-readable summary">
+                📄 Download TXT
+            </button>
+            <button class="btn" onclick="exportToJson()" style="background:#00796b; color:white;"
+                title="Download full backup (JSON)">
+                📥 Download JSON
+            </button>
+            <button class="btn" onclick="importFromJson()" style="background:#5e35b1; color:white;"
+                title="Restore from JSON backup">
+                📤 Import JSON
+            </button>
+            <button class="btn btn-primary" onclick="exportPDF()" title="Print or save as PDF">
+                🖨 Print / PDF
+            </button>
+            <button class="btn btn-danger" onclick="clearForm()" title="Clear all data">
+                🗑 Clear
+            </button>
         </div>
 
+        <!-- Hidden file input for JSON import -->
+        <input type="file" id="jsonImportInput" accept=".json" style="display:none;" onchange="handleJsonImport(event)">
     </div><!-- end .container -->
 
     <script>
@@ -4224,6 +4244,304 @@
 
             tbody.appendChild(newRow);
         }
+
+        // ====================== EXPORT & IMPORT FUNCTIONS ======================
+
+        function exportToTxt() {
+            const data = gatherFormData();
+            const patient = document.getElementById('patientName')?.value || 'Patient';
+            const age = document.getElementById('age')?.value || '';
+            const dob = document.getElementById('dob')?.value || '';
+
+            let txt = '';
+            txt += '═══════════════════════════════════════════════════════════\n';
+            txt += '           PEDIATRICS CLERKSHIP SHEET\n';
+            txt += '═══════════════════════════════════════════════════════════\n\n';
+            txt += `Generated: ${new Date().toLocaleString()}\n`;
+            txt += `───────────────────────────────────────────────────────────\n\n`;
+
+            // SECTION A: Patient Identification
+            txt += '█ PATIENT IDENTIFICATION\n\n';
+            txt += `Name:           ${data.patientName || 'Not entered'}\n`;
+            txt += `DOB:            ${dob}   Age: ${age}\n`;
+            txt += `Sex:            ${data.sex || ''}\n`;
+            txt += `Weight:         ${data.weight || ''} kg   Height: ${data.height || ''} cm\n`;
+            txt += `MUAC:           ${data.muac || ''} cm\n`;
+            txt += `Z-Scores:       WAZ: ${data.waz || ''}  HAZ: ${data.haz || ''}  WHZ: ${data.whz || ''}\n`;
+            txt += `Hospital:       ${data.hospitalFacility || ''}\n`;
+            txt += `Exam Date:      ${data.examDate || ''} ${data.examTime || ''}\n`;
+            txt += `Admission:      ${data.admissionDate || ''} ${data.admissionTime || ''}\n`;
+            txt += `Source:         ${data.historySource || ''}\n`;
+            txt += `Reliability:    ${data.reliability || ''}\n\n`;
+
+            // SECTION B: Chief Complaint
+            txt += '█ CHIEF COMPLAINT\n\n';
+            txt += `1. ${data.complaint1 || 'Not entered'} (${data.duration1 || ''})\n`;
+            if (data.complaint2) txt += `2. ${data.complaint2} (${data.duration2 || ''})\n`;
+            if (data.complaint3) txt += `3. ${data.complaint3} (${data.duration3 || ''})\n`;
+            txt += '\n';
+
+            // SECTION C: HPI
+            txt += '█ HISTORY OF PRESENT ILLNESS\n\n';
+            txt += (data.hpiNarrative || 'Not entered') + '\n\n';
+
+            if (data.onsetDetails || data.severity) {
+                txt += 'Details:\n';
+                if (data.onsetDetails) txt += `  Onset: ${data.onsetDetails}\n`;
+                if (data.severity) txt += `  Severity: ${data.severity}\n`;
+                if (data.aggravating) txt += `  Aggravating: ${data.aggravating}\n`;
+                if (data.relieving) txt += `  Relieving: ${data.relieving}\n`;
+                txt += '\n';
+            }
+
+            // SECTION D: Review of Systems
+            txt += '█ REVIEW OF SYSTEMS\n\n';
+            const rosChecked = Array.from(document.querySelectorAll('input[name="ros"]:checked'))
+                .map(cb => cb.value);
+            if (rosChecked.length > 0) {
+                rosChecked.forEach(item => txt += `  ✓ ${item}\n`);
+            } else {
+                txt += '  (None selected)\n';
+            }
+            if (data.rosDetails) txt += `\nDetails: ${data.rosDetails}\n`;
+            txt += '\n';
+
+            // SECTION E: Past Medical/Birth History
+            txt += '█ PAST MEDICAL HISTORY\n\n';
+            txt += `Previous illnesses: ${data.pastIllness || 'None reported'}\n`;
+            txt += `Hospitalizations:   ${data.hospitalizations || 'None reported'}\n`;
+            txt += `Surgeries:          ${data.surgeries || 'None reported'}\n\n`;
+
+            txt += '  Birth & Perinatal History:\n';
+            txt += `    Gestational age:     ${data.gestationalAge || ''} weeks\n`;
+            txt += `    Birth weight:        ${data.birthWeight || ''} kg\n`;
+            txt += `    Birth length:        ${data.birthLength || ''} cm\n`;
+            txt += `    Birth HC:            ${data.birthHC || ''} cm\n`;
+            txt += `    Delivery mode:       ${data.deliveryMode || ''}\n`;
+            txt += `    APGAR:               1min: ${data.apgar1 || ''}, 5min: ${data.apgar5 || ''}, 10min: ${data.apgar10 || ''}\n`;
+            txt += `    NICU admission:      ${data.nicuAdmission || ''}\n`;
+            txt += `    Complications:       ${data.neonatalComplications || 'None'}\n`;
+            txt += `    Maternal HIV:        ${data.maternalHIVStatus || ''}\n`;
+            txt += `    Pregnancy issues:    ${data.pregnancyComplications || 'None'}\n\n`;
+
+            // SECTION F: Immunizations
+            txt += '█ IMMUNIZATION HISTORY\n\n';
+            txt += `Status: ${data.immunizationStatus || 'Not documented'}\n`;
+            if (data.immunizationDetails) txt += `Details: ${data.immunizationDetails}\n`;
+            txt += '\n';
+
+            // SECTION G: Feeding History
+            txt += '█ FEEDING HISTORY\n\n';
+            txt += `Type: ${data.feedingType || 'Not documented'}\n`;
+            if (data.feedingDetails) txt += `${data.feedingDetails}\n`;
+            txt += '\n';
+
+            // SECTION H: Differential Diagnosis (Pre-exam)
+            txt += '█ DIFFERENTIAL DIAGNOSIS (PRE-EXAM)\n\n';
+            txt += `1. ${data.preDx1 || ''}\n`;
+            txt += `2. ${data.preDx2 || ''}\n`;
+            txt += `3. ${data.preDx3 || ''}\n\n`;
+
+            // SECTION I: Physical Exam
+            txt += '█ PHYSICAL EXAMINATION\n\n';
+            txt += `General:        ${data.generalAppearance || ''}\n`;
+            txt += `Vitals:         T: ${data.temperature || ''}°C  HR: ${data.heartRate || ''}  RR: ${data.respiratoryRate || ''}  BP: ${data.bloodPressure || ''}  SpO2: ${data.oxygenSat || ''}%\n`;
+            txt += `HEENT:          ${data.heent || ''}\n`;
+            txt += `Cardiovascular: ${data.cardiovascular || ''}\n`;
+            txt += `Respiratory:    ${data.respiratory || ''}\n`;
+            txt += `Abdomen:        ${data.abdomen || ''}\n`;
+            txt += `Neurological:   ${data.neurological || ''}\n\n`;
+
+            // SECTION J: Differential Diagnosis (Post-exam)
+            txt += '█ DIFFERENTIAL DIAGNOSIS (POST-EXAM)\n\n';
+            txt += `1. ${data.finalDx1 || ''}\n`;
+            txt += `2. ${data.finalDx2 || ''}\n`;
+            txt += `3. ${data.finalDx3 || ''}\n\n`;
+
+            txt += 'Working Diagnosis:\n';
+            txt += (data.workingDiagnosis || 'Not finalized') + '\n\n';
+
+            // SECTION K: Problem List
+            txt += '█ PROBLEM LIST\n\n';
+            const problemTable = document.querySelector('#problemListTable tbody');
+            if (problemTable && problemTable.rows.length > 0) {
+                for (let i = 0; i < problemTable.rows.length; i++) {
+                    const cells = problemTable.rows[i].cells;
+                    const problem = cells[1]?.querySelector('input')?.value || '';
+                    const type = cells[2]?.querySelector('select')?.value || '';
+                    const status = cells[3]?.querySelector('select')?.value || '';
+                    if (problem) {
+                        txt += `  ${i + 1}. ${problem} (${type}) - ${status}\n`;
+                    }
+                }
+            } else {
+                txt += '  (No problems listed)\n';
+            }
+            txt += '\n';
+
+            // SECTION L: Investigations
+            txt += '█ INVESTIGATIONS ORDERED\n\n';
+            txt += (data.investigationsOrdered || 'None documented') + '\n\n';
+
+            // SECTION M: Management Plan
+            txt += '█ MANAGEMENT PLAN\n\n';
+            txt += (data.managementPlan || 'Not documented') + '\n\n';
+
+            // SECTION Q: Reflection
+            if (data.reflectionLearning || data.uncertainties) {
+                txt += '█ CLINICAL REFLECTION\n\n';
+                if (data.reflectionLearning) txt += `Learning Points:\n${data.reflectionLearning}\n\n`;
+                if (data.uncertainties) txt += `Uncertainties:\n${data.uncertainties}\n\n`;
+                if (data.literatureReview) txt += `Literature Reviewed:\n${data.literatureReview}\n\n`;
+            }
+
+            txt += '═══════════════════════════════════════════════════════════\n';
+            txt += '                    END OF CLERKSHIP SHEET\n';
+            txt += '═══════════════════════════════════════════════════════════\n';
+
+            // Download the file
+            const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const safePatientName = patient.replace(/[^a-zA-Z0-9]/g, '_');
+            const dateStr = new Date().toISOString().slice(0, 10);
+            a.download = `Clerkship_${safePatientName}_${dateStr}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('✅ TXT file downloaded successfully!', 'success');
+        }
+
+        function exportToJson() {
+            const data = gatherFormData();
+            data._exportDate = new Date().toISOString();
+            data._version = '2.0';
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const dateStr = new Date().toISOString().slice(0, 10);
+            a.download = `Clerkship_Backup_${dateStr}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('✅ Full JSON backup downloaded!', 'success');
+        }
+
+        function importFromJson() {
+            document.getElementById('jsonImportInput').click();
+        }
+
+        function handleJsonImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+
+                    // Confirm before overwriting
+                    if (!confirm('⚠️ This will replace all current data. Continue?')) {
+                        return;
+                    }
+
+                    // Restore all form data
+                    Object.keys(data).forEach(key => {
+                        if (key.startsWith('_')) return; // Skip metadata
+
+                        const element = document.getElementById(key);
+                        if (element) {
+                            if (element.type === 'checkbox') {
+                                element.checked = data[key];
+                            } else if (element.type === 'radio') {
+                                if (element.value === data[key]) element.checked = true;
+                            } else {
+                                element.value = data[key];
+                            }
+                        }
+                    });
+
+                    // Restore checkboxes by name (like ROS, resuscitation, etc.)
+                    document.querySelectorAll('input[type="checkbox"][name]').forEach(cb => {
+                        const key = `${cb.name}_${cb.value}`;
+                        if (data[key]) cb.checked = true;
+                    });
+
+                    // Save to localStorage
+                    localStorage.setItem('clerkshipData', JSON.stringify(data));
+
+                    // Refresh calculations
+                    if (typeof calculateGrowth === 'function') calculateGrowth();
+                    if (typeof updateProgress === 'function') updateProgress();
+
+                    showToast('✅ Data imported successfully!', 'success');
+
+                    // Show first tab
+                    if (typeof showTab === 'function') showTab('patient-info');
+
+                } catch (error) {
+                    alert('❌ Error importing file: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+
+            // Reset input for next use
+            event.target.value = '';
+        }
+
+        function showToast(message, type = 'info') {
+            // Check if a toast notification system exists, otherwise use alert
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.textContent = message;
+                existingToast.className = `toast ${type}`;
+                existingToast.style.display = 'block';
+                setTimeout(() => existingToast.style.display = 'none', 3000);
+            } else {
+                // Fallback: create simple toast
+                const toast = document.createElement('div');
+                toast.textContent = message;
+                toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196f3'};
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10000;
+            font-size: 14px;
+            animation: slideIn 0.3s ease;
+        `;
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => document.body.removeChild(toast), 300);
+                }, 3000);
+            }
+        }
+
+        // Add CSS for toast animations
+        const style = document.createElement('style');
+        style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+    }
+`;
+        document.head.appendChild(style);
     </script>
 </body>
 
