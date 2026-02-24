@@ -720,19 +720,9 @@
                                 <label for="gestational_age">Gestational Age at Birth (weeks)</label>
                                 <input type="number" id="gestational_age" step="0.1" placeholder="e.g., 38.5">
                             </div>
-                        </div>
-                        <div class="form-row three-col">
                             <div class="form-group">
                                 <label for="birth_weight">Birth Weight (kg)</label>
                                 <input type="number" id="birth_weight" step="0.01" placeholder="e.g., 3.2">
-                            </div>
-                            <div class="form-group">
-                                <label for="birth_length">Birth Length (cm)</label>
-                                <input type="number" id="birth_length" step="0.1" placeholder="e.g., 50">
-                            </div>
-                            <div class="form-group">
-                                <label for="birth_hc">Birth Head Circumference (cm)</label>
-                                <input type="number" id="birth_hc" step="0.1" placeholder="e.g., 35">
                             </div>
                         </div>
                         <div class="form-row">
@@ -758,6 +748,15 @@
                                 <label><input type="radio" name="cried_immediately" value="Yes"> Yes</label>
                                 <label><input type="radio" name="cried_immediately" value="No"> No</label>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Add dynamic milestones container -->
+                    <div class="card">
+                        <h2 class="card-title">Developmental Milestones</h2>
+                        <div id="milestonesContainer">
+                            <!-- This will be populated dynamically based on age -->
+                            <p><em>Enter date of birth to load age-appropriate milestones</em></p>
                         </div>
                     </div>
 
