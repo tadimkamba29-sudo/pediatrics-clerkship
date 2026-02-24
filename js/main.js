@@ -648,17 +648,16 @@ function attachEventListeners() {
         });
     }
     
-    // Sex → Z-scores
-    const sexField = document.getElementById('sex');
-    if (sexField) {
-        sexField.addEventListener('change', () => {
+    // Sex radio buttons → Z-scores
+    document.querySelectorAll('input[name="sex"]').forEach(radio => {
+        radio.addEventListener('change', () => {
             if (typeof calculateAllZScores === 'function') {
                 calculateAllZScores();
             }
         });
-    }
+    });
     
-    // Weight/Height → BMI AND Z-scores
+    // Weight/Height/HC → BMI AND Z-scores
     const weightField = document.getElementById('weight');
     const heightField = document.getElementById('height');
     const headCircField = document.getElementById('head_circ');
@@ -730,6 +729,18 @@ function attachEventListeners() {
             field.addEventListener('input', updateHistorySummary);
         }
     }
+    
+    // HIV status toggle (NEW)
+    document.querySelectorAll('input[name="hiv_status"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            const hivDetails = document.getElementById('hiv_details_group');
+            if (hivDetails) {
+                hivDetails.style.display = 
+                    document.querySelector('input[name="hiv_status"]:checked')?.value === 'Positive'
+                    ? 'block' : 'none';
+            }
+        });
+    });
     
     // Initial toggle on load
     toggleConditionalFields();
