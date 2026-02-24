@@ -25,7 +25,17 @@ document.addEventListener('DOMContentLoaded', () => {
     updateVitalIndicators();
     interpretLabs();
     classifyNewborn();
-    updateHistorySummary(); // ← ADDED
+    updateHistorySummary();
+    
+    // Initialize Z-scores if growth.js is loaded
+    if (typeof calculateAllZScores === 'function') {
+        calculateAllZScores();
+    }
+    
+    // Initialize developmental milestones if growth.js is loaded
+    if (typeof updateDevelopmentalMilestones === 'function') {
+        updateDevelopmentalMilestones();
+    }
 });
 
 // ============================================================================
@@ -209,6 +219,16 @@ function loadFormData() {
         classifyNewborn();
         toggleConditionalFields();
         updateHistorySummary();
+        
+        // Recalculate Z-scores if growth.js is loaded
+        if (typeof calculateAllZScores === 'function') {
+            calculateAllZScores();
+        }
+        
+        // Update developmental milestones if growth.js is loaded
+        if (typeof updateDevelopmentalMilestones === 'function') {
+            updateDevelopmentalMilestones();
+        }
         
         console.log('Data loaded successfully');
     } catch (e) {
@@ -487,7 +507,7 @@ function removeDifferential(btn) {
 }
 
 // ============================================================================
-// AUTO-SUMMARY FOR DIFF DX (FINAL) - NEW FEATURE
+// AUTO-SUMMARY FOR DIFF DX (FINAL)
 // ============================================================================
 
 function updateHistorySummary() {
@@ -563,6 +583,13 @@ function toggleConditionalFields() {
     if (lscsIndication) {
         lscsIndication.style.display = neonatalDelivery === 'LSCS' ? 'block' : 'none';
     }
+    
+    // HIV status details
+    const hivStatus = document.querySelector('input[name="hiv_status"]:checked')?.value;
+    const hivDetails = document.getElementById('hiv_details_group');
+    if (hivDetails) {
+        hivDetails.style.display = hivStatus === 'Positive' ? 'block' : 'none';
+    }
 }
 
 // ============================================================================
@@ -607,15 +634,60 @@ function updateProgress() {
 // ============================================================================
 
 function attachEventListeners() {
-    // DOB → Age calculation
+    // DOB → Age calculation AND milestones AND Z-scores
     const dobField = document.getElementById('dob');
-    if (dobField) dobField.addEventListener('change', calculateAge);
+    if (dobField) {
+        dobField.addEventListener('change', () => {
+            calculateAge();
+            if (typeof updateDevelopmentalMilestones === 'function') {
+                updateDevelopmentalMilestones();
+            }
+            if (typeof calculateAllZScores === 'function') {
+                calculateAllZScores();
+            }
+        });
+    }
     
-    // Weight/Height → BMI
+    // Sex → Z-scores
+    const sexField = document.getElementById('sex');
+    if (sexField) {
+        sexField.addEventListener('change', () => {
+            if (typeof calculateAllZScores === 'function') {
+                calculateAllZScores();
+            }
+        });
+    }
+    
+    // Weight/Height → BMI AND Z-scores
     const weightField = document.getElementById('weight');
     const heightField = document.getElementById('height');
-    if (weightField) weightField.addEventListener('input', calculateGrowth);
-    if (heightField) heightField.addEventListener('input', calculateGrowth);
+    const headCircField = document.getElementById('head_circ');
+    
+    if (weightField) {
+        weightField.addEventListener('input', () => {
+            calculateGrowth();
+            if (typeof calculateAllZScores === 'function') {
+                calculateAllZScores();
+            }
+        });
+    }
+    
+    if (heightField) {
+        heightField.addEventListener('input', () => {
+            calculateGrowth();
+            if (typeof calculateAllZScores === 'function') {
+                calculateAllZScores();
+            }
+        });
+    }
+    
+    if (headCircField) {
+        headCircField.addEventListener('input', () => {
+            if (typeof calculateAllZScores === 'function') {
+                calculateAllZScores();
+            }
+        });
+    }
     
     // Vitals → Color indicators
     ['hr', 'rr', 'bp_systolic', 'temp'].forEach(id => {
