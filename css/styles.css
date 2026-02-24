@@ -95,6 +95,10 @@ body {
     background: var(--success-color);
     width: 0%;
     transition: width 0.3s ease;
+    font-size: 0.7rem;
+    text-align: center;
+    line-height: 4px;
+    color: white;
 }
 
 .nav-tabs {
@@ -197,6 +201,25 @@ body {
     border-radius: 2px;
 }
 
+/* Card Subsection Titles */
+.card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-top: 20px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
 .form-group {
     margin-bottom: 18px;
 }
@@ -220,6 +243,7 @@ input[type="date"],
 input[type="time"],
 input[type="datetime-local"],
 input[type="tel"],
+input[type="file"],
 select,
 textarea {
     width: 100%;
@@ -273,25 +297,47 @@ input:read-only {
     opacity: 0.7;
 }
 
+/* Form Control Class (for dynamic elements) */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: var(--input-bg);
+    color: var(--text-color);
+    transition: all 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
 .checkbox-group,
 .radio-group {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
+    margin-top: 8px;
 }
 
-.checkbox-item,
-.radio-item {
+.checkbox-group label,
+.radio-group label {
     display: flex;
     align-items: center;
     cursor: pointer;
     padding: 8px 12px;
     border-radius: 6px;
     transition: background 0.2s;
+    margin-bottom: 0;
+    font-weight: 400;
 }
 
-.checkbox-item:hover,
-.radio-item:hover {
+.checkbox-group label:hover,
+.radio-group label:hover {
     background: var(--bg-color);
 }
 
@@ -335,6 +381,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
+    margin-top: 10px;
 }
 
 table th {
@@ -430,6 +477,41 @@ table tr:hover {
     transform: scale(0.98);
 }
 
+/* Add/Remove Buttons for Dynamic Tables */
+.btn-add {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-add:hover {
+    background: #229954;
+    transform: scale(1.1);
+}
+
+.btn-remove {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-remove:hover {
+    background: #c0392b;
+    transform: scale(1.1);
+}
+
 @media (prefers-color-scheme: dark) {
     .btn-primary {
         background: #8ab4f8;
@@ -461,6 +543,24 @@ table tr:hover {
     .btn-outline:hover {
         color: #202124;
     }
+
+    .btn-add {
+        background: #81c995;
+        color: #202124;
+    }
+
+    .btn-add:hover {
+        background: #9dd4ab;
+    }
+
+    .btn-remove {
+        background: #f28b82;
+        color: #202124;
+    }
+
+    .btn-remove:hover {
+        background: #f5a79d;
+    }
 }
 
 .action-buttons {
@@ -475,10 +575,14 @@ table tr:hover {
     gap: 10px;
     z-index: 998;
     border-top: 1px solid var(--border-color);
+    flex-wrap: wrap;
 }
 
 .action-buttons .btn {
     flex: 1;
+    min-width: 120px;
+    padding: 10px 15px;
+    font-size: 0.9rem;
 }
 
 .alert {
@@ -530,6 +634,40 @@ table tr:hover {
     }
 }
 
+/* ============================================================================ */
+/* DIFFERENTIAL DIAGNOSIS CARDS */
+/* ============================================================================ */
+
+.differential-item {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+}
+
+.differential-item:hover {
+    border-color: var(--secondary-color);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.diff-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.diff-header h4 {
+    color: var(--secondary-color);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
 .diff-dx-card {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -574,11 +712,64 @@ table tr:hover {
         background: #3c4043;
         color: #e8eaed;
     }
+
+    .differential-item,
+    .progress-note-card {
+        background: #292a2d;
+        border-color: #3c4043;
+    }
+
+    .differential-item:hover,
+    .progress-note-card:hover {
+        border-color: #8ab4f8;
+    }
 }
 
 .diff-dx-item h4 {
     color: white;
 }
+
+/* ============================================================================ */
+/* PROGRESS NOTES */
+/* ============================================================================ */
+
+#progressNotesContainer {
+    margin-top: 20px;
+}
+
+.progress-note-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+}
+
+.progress-note-card:hover {
+    border-color: var(--secondary-color);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.note-header h4 {
+    color: var(--secondary-color);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ============================================================================ */
+/* BADGES */
+/* ============================================================================ */
 
 .badge {
     display: inline-block;
@@ -604,6 +795,11 @@ table tr:hover {
     color: white;
 }
 
+.badge-warning {
+    background: var(--warning-color);
+    color: white;
+}
+
 @media (prefers-color-scheme: dark) {
     .badge-primary {
         background: #8ab4f8;
@@ -619,7 +815,16 @@ table tr:hover {
         background: #81c995;
         color: #202124;
     }
+
+    .badge-warning {
+        background: #fdd663;
+        color: #202124;
+    }
 }
+
+/* ============================================================================ */
+/* AUTOSAVE INDICATOR */
+/* ============================================================================ */
 
 .autosave-indicator {
     position: fixed;
@@ -652,6 +857,10 @@ table tr:hover {
     }
 }
 
+/* ============================================================================ */
+/* TOAST NOTIFICATION */
+/* ============================================================================ */
+
 .toast {
     position: fixed;
     bottom: 100px;
@@ -668,6 +877,7 @@ table tr:hover {
     border: 1px solid var(--border-color);
     max-width: 340px;
     text-align: center;
+    font-weight: 500;
 }
 
 @keyframes slideUp {
@@ -686,11 +896,40 @@ table tr:hover {
     display: block;
 }
 
+.toast.toast-success {
+    background: var(--success-color);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.toast.toast-danger {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.toast.toast-warning {
+    background: var(--warning-color);
+    color: white;
+    border-color: var(--warning-color);
+}
+
+.toast.toast-info {
+    background: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+
+/* ============================================================================ */
+/* GROWTH DISPLAY */
+/* ============================================================================ */
+
 .growth-display {
     display: flex;
     justify-content: space-around;
     margin-top: 10px;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .growth-item {
@@ -699,6 +938,7 @@ table tr:hover {
     background: var(--bg-color);
     border-radius: 8px;
     flex: 1;
+    min-width: 80px;
     border: 1px solid var(--border-color);
 }
 
@@ -714,58 +954,40 @@ table tr:hover {
     margin-top: 5px;
 }
 
-.add-row-btn {
-    background: var(--success-color);
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    margin-top: 10px;
-    transition: all 0.3s;
+/* ============================================================================ */
+/* VITAL SIGNS INDICATORS */
+/* ============================================================================ */
+
+.input-with-indicator {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.add-row-btn:hover {
-    background: #229954;
-    transform: translateY(-1px);
+.input-with-indicator input {
+    flex: 1;
 }
 
-@media (prefers-color-scheme: dark) {
-    .add-row-btn {
-        background: #81c995;
-        color: #202124;
-    }
-
-    .add-row-btn:hover {
-        background: #9dd4ab;
-    }
+.indicator {
+    font-size: 1.2rem;
+    min-width: 24px;
+    text-align: center;
 }
 
-.remove-row-btn {
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: all 0.3s;
+.bp-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.remove-row-btn:hover {
-    background: #c0392b;
+.bp-input input {
+    flex: 1;
 }
 
-@media (prefers-color-scheme: dark) {
-    .remove-row-btn {
-        background: #f28b82;
-        color: #202124;
-    }
-
-    .remove-row-btn:hover {
-        background: #f5a79d;
-    }
+.bp-input span:first-of-type {
+    font-weight: bold;
+    color: var(--text-secondary);
 }
 
 .vital-indicator {
@@ -787,6 +1009,187 @@ table tr:hover {
 .vital-danger {
     background: var(--accent-color);
 }
+
+/* ============================================================================ */
+/* RESULT BOXES & CALCULATOR BOXES */
+/* ============================================================================ */
+
+.result-box {
+    background: var(--bg-color);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.result-box strong {
+    color: var(--secondary-color);
+}
+
+.calculator-box {
+    background: var(--bg-color);
+    border: 2px solid var(--secondary-color);
+    border-radius: 10px;
+    padding: 18px;
+    margin: 15px 0;
+}
+
+.calculator-box h4 {
+    color: var(--secondary-color);
+    margin-bottom: 12px;
+    font-size: 1rem;
+    margin-top: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* ============================================================================ */
+/* INFO BOX */
+/* ============================================================================ */
+
+.info-box {
+    background: rgba(52, 152, 219, 0.1);
+    border-left: 4px solid var(--secondary-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.info-box ul {
+    margin: 10px 0 0 20px;
+}
+
+.info-box li {
+    margin-bottom: 5px;
+}
+
+.info-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+    .info-box {
+        background: rgba(138, 180, 248, 0.15);
+    }
+}
+
+/* ============================================================================ */
+/* REVIEW OF SYSTEMS - X/TICK MODEL */
+/* ============================================================================ */
+
+.ros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.ros-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg-color);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.ros-label {
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.ros-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.ros-btn {
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
+
+.ros-btn input {
+    display: none;
+}
+
+.ros-btn span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: 2px solid var(--border-color);
+    transition: all 0.2s;
+}
+
+.ros-btn .tick {
+    color: var(--text-secondary);
+}
+
+.ros-btn .cross {
+    color: var(--text-secondary);
+}
+
+.ros-btn input:checked + .tick {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+}
+
+.ros-btn input:checked + .cross {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+.ros-btn:hover span {
+    border-color: var(--secondary-color);
+}
+
+/* ============================================================================ */
+/* MILESTONE CHECKLIST */
+/* ============================================================================ */
+
+.milestone-checklist {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.milestone-checklist label {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 400;
+    transition: background 0.2s;
+    border: 1px solid var(--border-color);
+}
+
+.milestone-checklist label:hover {
+    background: var(--border-color);
+}
+
+.milestone-checklist input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* ============================================================================ */
+/* SUMMARY PANEL */
+/* ============================================================================ */
 
 .summary-panel {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -814,6 +1217,66 @@ table tr:hover {
     opacity: 0.9;
 }
 
+/* ============================================================================ */
+/* OLD ADD/REMOVE BUTTON STYLES (keeping for compatibility) */
+/* ============================================================================ */
+
+.add-row-btn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    transition: all 0.3s;
+}
+
+.add-row-btn:hover {
+    background: #229954;
+    transform: translateY(-1px);
+}
+
+.remove-row-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+}
+
+.remove-row-btn:hover {
+    background: #c0392b;
+}
+
+@media (prefers-color-scheme: dark) {
+    .add-row-btn {
+        background: #81c995;
+        color: #202124;
+    }
+
+    .add-row-btn:hover {
+        background: #9dd4ab;
+    }
+
+    .remove-row-btn {
+        background: #f28b82;
+        color: #202124;
+    }
+
+    .remove-row-btn:hover {
+        background: #f5a79d;
+    }
+}
+
+/* ============================================================================ */
+/* SCROLLBAR STYLING */
+/* ============================================================================ */
+
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -832,10 +1295,18 @@ table tr:hover {
     background: var(--text-secondary);
 }
 
+/* ============================================================================ */
+/* FOCUS STYLES */
+/* ============================================================================ */
+
 *:focus-visible {
     outline: 2px solid var(--secondary-color);
     outline-offset: 2px;
 }
+
+/* ============================================================================ */
+/* DARK MODE OVERRIDES */
+/* ============================================================================ */
 
 @media (prefers-color-scheme: dark) {
     label {
@@ -855,7 +1326,25 @@ table tr:hover {
     textarea::placeholder {
         color: #9aa0a6;
     }
+
+    .ros-item {
+        background: #3c4043;
+        border-color: #5f6368;
+    }
+
+    .milestone-checklist label {
+        background: #3c4043;
+        border-color: #5f6368;
+    }
+
+    .milestone-checklist label:hover {
+        background: #5f6368;
+    }
 }
+
+/* ============================================================================ */
+/* MOBILE RESPONSIVE */
+/* ============================================================================ */
 
 @media (max-width: 767px) {
     .container {
@@ -889,24 +1378,92 @@ table tr:hover {
     table td {
         padding: 8px 6px;
     }
+
+    .action-buttons {
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+
+    .action-buttons .btn {
+        flex: 1 1 calc(50% - 5px);
+        min-width: auto;
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+
+    .growth-display {
+        flex-direction: column;
+    }
+
+    .growth-item {
+        min-width: 100%;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .calculator-box {
+        padding: 12px;
+    }
+
+    .differential-item,
+    .progress-note-card {
+        padding: 12px;
+    }
+
+    .ros-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ros-item {
+        padding: 10px;
+    }
+
+    .milestone-checklist {
+        grid-template-columns: 1fr;
+    }
 }
+
+/* ============================================================================ */
+/* PRINT STYLES */
+/* ============================================================================ */
 
 @media print {
     body {
         background: white;
         color: black;
+        padding-bottom: 0;
     }
 
     .header {
         position: static !important;
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        border-bottom: 2px solid #000;
+    }
+
+    .header h1 {
+        color: black !important;
+    }
+
+    .header-subtitle,
+    .header-meta {
+        color: #666 !important;
+    }
+
+    .progress-bar {
+        display: none;
     }
 
     .nav-tabs,
     .action-buttons,
     .autosave-indicator,
-    .btn,
-    .remove-row-btn,
-    .add-row-btn {
+    .toast,
+    .btn-add,
+    .btn-remove,
+    .btn {
         display: none !important;
     }
 
@@ -915,6 +1472,7 @@ table tr:hover {
         box-shadow: none;
         border: 1px solid #ddd;
         page-break-inside: avoid;
+        margin-bottom: 15px;
     }
 
     .tab-content {
@@ -924,8 +1482,91 @@ table tr:hover {
     input,
     select,
     textarea {
+        border: none !important;
+        border-bottom: 1px solid #ddd !important;
+        background: transparent !important;
+        color: black !important;
+        padding: 4px 0 !important;
+    }
+
+    input:read-only {
+        background: transparent !important;
+    }
+
+    table {
+        border: 1px solid #ddd;
+    }
+
+    table th {
+        background: #f0f0f0 !important;
+        color: black !important;
+        border: 1px solid #ddd !important;
+    }
+
+    table td {
+        border: 1px solid #ddd !important;
+    }
+
+    .card-title::before {
+        background: black !important;
+    }
+
+    .differential-item,
+    .progress-note-card {
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+    }
+
+    .result-box,
+    .calculator-box,
+    .info-box {
+        border: 1px solid #ddd;
+        background: #f9f9f9 !important;
+    }
+
+    .badge {
+        border: 1px solid #ddd;
+    }
+
+    .ros-grid {
+        display: block;
+    }
+
+    .ros-item {
+        display: inline-block;
+        margin: 2px;
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+
+    .ros-buttons {
+        display: inline;
+    }
+
+    .ros-btn span {
+        display: inline;
+        width: auto;
+        height: auto;
         border: none;
-        border-bottom: 1px solid #ddd;
-        background: transparent;
+        padding: 0;
+    }
+
+    .ros-btn input:checked + .tick::after {
+        content: ' ✓';
+    }
+
+    .ros-btn input:checked + .cross::after {
+        content: ' ✗';
+    }
+
+    .milestone-checklist {
+        display: block;
+    }
+
+    .milestone-checklist label {
+        display: inline-block;
+        margin: 2px;
+        padding: 4px 8px;
+        font-size: 0.8rem;
     }
 }
