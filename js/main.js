@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateVitalIndicators();
     interpretLabs();
     classifyNewborn();
+    updateHistorySummary(); // ← ADDED
 });
 
 // ============================================================================
@@ -64,7 +65,7 @@ function showTab(tabId) {
 function restoreActiveTab() {
     const savedTab = localStorage.getItem('activeTab') || 'patient-info';
     const tabToShow = document.getElementById(savedTab);
-    const buttonToActivate = document.querySelector(`[onclick="showTab('${savedTab}')"]`);
+    const buttonToActivate = document.querySelector(`[onclick*="${savedTab}"]`);
     
     if (tabToShow) {
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -156,6 +157,9 @@ function gatherFormData() {
     // Save dynamic tables state
     formData._dynamicTables = gatherDynamicTables();
     
+    // Save progress notes
+    formData._progressNotes = gatherProgressNotes();
+    
     return formData;
 }
 
@@ -168,7 +172,7 @@ function loadFormData() {
         
         // Restore regular form fields
         Object.keys(data).forEach(key => {
-            if (key === '_dynamicTables') return; // Handle separately
+            if (key === '_dynamicTables' || key === '_progressNotes') return; // Handle separately
             
             const el = document.getElementById(key);
             if (!el) {
@@ -192,6 +196,11 @@ function loadFormData() {
             restoreDynamicTables(data._dynamicTables);
         }
         
+        // Restore progress notes
+        if (data._progressNotes) {
+            restoreProgressNotes(data._progressNotes);
+        }
+        
         // Recalculate all computed fields
         calculateAge();
         calculateGrowth();
@@ -199,8 +208,9 @@ function loadFormData() {
         interpretLabs();
         classifyNewborn();
         toggleConditionalFields();
+        updateHistorySummary();
         
-        showToast('Data loaded successfully', 'success');
+        console.log('Data loaded successfully');
     } catch (e) {
         console.error('Error loading saved data:', e);
         showToast('Error loading saved data', 'danger');
@@ -269,9 +279,9 @@ function gatherDynamicTables() {
         const tbody = table.querySelector('tbody');
         
         tbody.querySelectorAll('tr').forEach(row => {
-            const rowData = {};
-            row.querySelectorAll('input, textarea, select').forEach((input, idx) => {
-                rowData[idx] = input.value;
+            const rowData = [];
+            row.querySelectorAll('input, textarea, select').forEach(input => {
+                rowData.push(input.value);
             });
             rows.push(rowData);
         });
@@ -290,39 +300,30 @@ function restoreDynamicTables(tablesData) {
         const tbody = table.querySelector('tbody');
         const rowsData = tablesData[tableId];
         
-        // Clear existing rows
+        // Keep first row as template
+        const firstRow = tbody.rows[0];
+        if (!firstRow) return;
+        
+        // Clear tbody
         tbody.innerHTML = '';
         
-        // Recreate rows
+        // Recreate all rows
         rowsData.forEach(rowData => {
-            const templateRow = tbody.rows[0] || createTemplateRow(tableId);
-            const newRow = templateRow.cloneNode(true);
-            
+            const newRow = firstRow.cloneNode(true);
             const inputs = newRow.querySelectorAll('input, textarea, select');
-            Object.keys(rowData).forEach(idx => {
-                if (inputs[idx]) inputs[idx].value = rowData[idx];
+            
+            rowData.forEach((value, idx) => {
+                if (inputs[idx]) inputs[idx].value = value;
             });
             
             tbody.appendChild(newRow);
         });
         
-        // Ensure at least one row exists
+        // Ensure at least one row
         if (tbody.rows.length === 0) {
-            tbody.appendChild(createTemplateRow(tableId));
+            tbody.appendChild(firstRow);
         }
     });
-}
-
-function createTemplateRow(tableId) {
-    // This creates a blank template row for each table type
-    // You'll need to customize based on your table structure
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td><input type="text" class="form-control"></td>
-        <td><input type="text" class="form-control"></td>
-        <td><button type="button" class="btn-remove" onclick="removeRow(this)">×</button></td>
-    `;
-    return row;
 }
 
 // ============================================================================
@@ -380,6 +381,68 @@ function removeProgressNote(btn) {
     }
 }
 
+function gatherProgressNotes() {
+    const container = document.getElementById('progressNotesContainer');
+    if (!container) return [];
+    
+    const notes = [];
+    container.querySelectorAll('.progress-note-card').forEach(card => {
+        const datetime = card.querySelector('input[type="datetime-local"]')?.value;
+        const textareas = card.querySelectorAll('textarea');
+        
+        notes.push({
+            datetime: datetime,
+            subjective: textareas[0]?.value || '',
+            objective: textareas[1]?.value || '',
+            assessment: textareas[2]?.value || '',
+            plan: textareas[3]?.value || ''
+        });
+    });
+    
+    return notes;
+}
+
+function restoreProgressNotes(notesData) {
+    const container = document.getElementById('progressNotesContainer');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    notesData.forEach((note, idx) => {
+        const noteCard = document.createElement('div');
+        noteCard.className = 'progress-note-card';
+        noteCard.innerHTML = `
+            <div class="note-header">
+                <h4>Progress Note #${idx + 1}</h4>
+                <button type="button" class="btn-remove" onclick="removeProgressNote(this)">×</button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date & Time</label>
+                    <input type="datetime-local" value="${note.datetime || ''}" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Subjective (S)</label>
+                <textarea class="form-control" rows="3" placeholder="Patient/parent report, symptoms, concerns...">${note.subjective}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Objective (O)</label>
+                <textarea class="form-control" rows="3" placeholder="Vitals, physical exam findings, lab results...">${note.objective}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Assessment (A)</label>
+                <textarea class="form-control" rows="3" placeholder="Clinical impression, differential diagnosis...">${note.assessment}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Plan (P)</label>
+                <textarea class="form-control" rows="3" placeholder="Treatment plan, investigations, follow-up...">${note.plan}</textarea>
+            </div>
+        `;
+        container.appendChild(noteCard);
+    });
+}
+
 // ============================================================================
 // DIFFERENTIAL DIAGNOSIS MANAGEMENT (Add more differentials)
 // ============================================================================
@@ -417,8 +480,34 @@ function addDifferential(containerId) {
 
 function removeDifferential(btn) {
     const item = btn.closest('.differential-item');
-    item.remove();
-    saveFormData(true);
+    if (confirm('Remove this differential?')) {
+        item.remove();
+        saveFormData(true);
+    }
+}
+
+// ============================================================================
+// AUTO-SUMMARY FOR DIFF DX (FINAL) - NEW FEATURE
+// ============================================================================
+
+function updateHistorySummary() {
+    const summaryList = document.getElementById('historySummary');
+    if (!summaryList) return;
+    
+    summaryList.innerHTML = '';
+    
+    for (let i = 1; i <= 5; i++) {
+        const feature = document.getElementById(`key_feature_${i}`)?.value;
+        if (feature && feature.trim()) {
+            const li = document.createElement('li');
+            li.textContent = feature;
+            summaryList.appendChild(li);
+        }
+    }
+    
+    if (summaryList.children.length === 0) {
+        summaryList.innerHTML = '<li><em>No key features recorded yet</em></li>';
+    }
 }
 
 // ============================================================================
@@ -481,13 +570,17 @@ function toggleConditionalFields() {
 // ============================================================================
 
 function updateProgress() {
-    const allInputs = document.querySelectorAll('input:not([type="button"]):not([type="submit"]), textarea, select');
+    const allInputs = document.querySelectorAll('input:not([type="button"]):not([type="submit"]):not([type="file"]), textarea, select');
     let filled = 0;
     let total = 0;
     
     allInputs.forEach(input => {
         // Skip hidden fields and buttons
         if (input.type === 'hidden' || input.offsetParent === null) return;
+        
+        // Skip inputs inside hidden conditional groups
+        const parentGroup = input.closest('[id$="_group"]');
+        if (parentGroup && parentGroup.style.display === 'none') return;
         
         total++;
         
@@ -557,6 +650,14 @@ function attachEventListeners() {
     document.querySelectorAll('input[type="radio"]').forEach(radio => {
         radio.addEventListener('change', toggleConditionalFields);
     });
+    
+    // Update history summary when key features change
+    for (let i = 1; i <= 5; i++) {
+        const field = document.getElementById(`key_feature_${i}`);
+        if (field) {
+            field.addEventListener('input', updateHistorySummary);
+        }
+    }
     
     // Initial toggle on load
     toggleConditionalFields();
