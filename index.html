@@ -783,6 +783,29 @@
                     </div>
 
                     <div class="card">
+                        <h2 class="card-title">HIV/RVD Status</h2>
+                        <div class="form-group">
+                            <label>HIV Status</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="hiv_status" value="Negative"> Negative</label>
+                                <label><input type="radio" name="hiv_status" value="Positive"> Positive</label>
+                                <label><input type="radio" name="hiv_status" value="Unknown"> Unknown</label>
+                                <label><input type="radio" name="hiv_status" value="Exposed"> Exposed (mother
+                                    HIV+)</label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="hiv_details_group" style="display:none;">
+                            <label for="hiv_details">HIV Details</label>
+                            <textarea id="hiv_details" rows="3"
+                                placeholder="CD4 count, viral load, ART regimen, adherence, OIs..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="hiv_test_date">Date of Last Test</label>
+                            <input type="date" id="hiv_test_date">
+                        </div>
+                    </div>
+
+                    <div class="card">
                         <h2 class="card-title">Feeding History</h2>
                         <div class="form-group">
                             <label>Breastfeeding?</label>
