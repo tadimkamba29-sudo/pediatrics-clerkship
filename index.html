@@ -1007,947 +1007,1044 @@
             <!-- TAB 6: PHYSICAL EXAM -->
             <!-- ============================================================ -->
             <div id="physical-exam" class="tab-content">
-                <div class="card">
-                    <h2 class="card-title">General Appearance</h2>
-                    <div class="form-group">
-                        <label for="general_appearance">Overall Impression</label>
-                        <textarea id="general_appearance" rows="2"
-                            placeholder="Well/ill-appearing, interactive, playful, etc."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>AVPU / Consciousness</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="avpu" value="Alert"> Alert</label>
-                            <label><input type="radio" name="avpu" value="Verbal"> Responds to Verbal</label>
-                            <label><input type="radio" name="avpu" value="Pain"> Responds to Pain</label>
-                            <label><input type="radio" name="avpu" value="Unresponsive"> Unresponsive</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Nutritional Status</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="nutritional_status" value="Well nourished"> Well
-                                nourished</label>
-                            <label><input type="radio" name="nutritional_status" value="Malnourished">
-                                Malnourished</label>
-                            <label><input type="radio" name="nutritional_status" value="Overweight/Obese">
-                                Overweight/Obese</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Hydration Status</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="hydration_status" value="Well hydrated"> Well
-                                hydrated</label>
-                            <label><input type="radio" name="hydration_status" value="Mild dehydration"> Mild
-                                dehydration</label>
-                            <label><input type="radio" name="hydration_status" value="Moderate dehydration"> Moderate
-                                dehydration</label>
-                            <label><input type="radio" name="hydration_status" value="Severe dehydration"> Severe
-                                dehydration</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Activity Level</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="activity_level" value="Active"> Active</label>
-                            <label><input type="radio" name="activity_level" value="Lethargic"> Lethargic</label>
-                            <label><input type="radio" name="activity_level" value="Unresponsive"> Unresponsive</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Distress</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="distress" value="No distress"> No distress</label>
-                            <label><input type="radio" name="distress" value="Mild distress"> Mild distress</label>
-                            <label><input type="radio" name="distress" value="Moderate distress"> Moderate
-                                distress</label>
-                            <label><input type="radio" name="distress" value="Severe distress"> Severe distress</label>
-                        </div>
-                    </div>
-                </div>
+                <!-- At the beginning of the Physical Exam tab content -->
+                <div id="physical-exam" class="tab-content">
 
-                <div class="card">
-                    <h2 class="card-title">Vital Signs</h2>
-                    <div class="form-row three-col">
-                        <div class="form-group">
-                            <label for="temp">Temperature (°C)</label>
-                            <div class="input-with-indicator">
-                                <input type="number" id="temp" step="0.1" placeholder="36.5">
-                                <span class="indicator" id="tempIndicator"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="hr">Heart Rate (bpm)</label>
-                            <div class="input-with-indicator">
-                                <input type="number" id="hr" placeholder="100">
-                                <span class="indicator" id="hrIndicator"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="rr">Respiratory Rate (/min)</label>
-                            <div class="input-with-indicator">
-                                <input type="number" id="rr" placeholder="20">
-                                <span class="indicator" id="rrIndicator"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="bp_systolic">Blood Pressure (mmHg)</label>
-                            <div class="bp-input">
-                                <input type="number" id="bp_systolic" placeholder="Systolic" style="width:48%;">
-                                <span>/</span>
-                                <input type="number" id="bp_diastolic" placeholder="Diastolic" style="width:48%;">
-                                <span class="indicator" id="bpIndicator"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="spo2">SpO₂ (%)</label>
-                            <input type="number" id="spo2" placeholder="98">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Oxygen Support</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="oxygen_support" value="No"> Room air</label>
-                            <label><input type="radio" name="oxygen_support" value="Yes"> On oxygen</label>
-                        </div>
-                    </div>
-                    <div class="form-group" id="oxygen_flow_group" style="display:none;">
-                        <label for="oxygen_flow">O₂ Flow Rate (L/min)</label>
-                        <input type="number" id="oxygen_flow" step="0.1" placeholder="e.g., 2.0">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Dehydration Assessment</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Sign</th>
-                                <th>0</th>
-                                <th>1</th>
-                                <th>2</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>General Appearance</strong></td>
-                                <td><label><input type="radio" name="dehy_appearance" value="0"> Normal</label></td>
-                                <td><label><input type="radio" name="dehy_appearance" value="1">
-                                        Thirsty/Restless</label></td>
-                                <td><label><input type="radio" name="dehy_appearance" value="2">
-                                        Lethargic/Unconscious</label></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Eyes</strong></td>
-                                <td><label><input type="radio" name="dehy_eyes" value="0"> Normal</label></td>
-                                <td><label><input type="radio" name="dehy_eyes" value="1"> Sunken</label></td>
-                                <td><label><input type="radio" name="dehy_eyes" value="2"> Very Sunken</label></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Mouth/Tongue</strong></td>
-                                <td><label><input type="radio" name="dehy_mucosa" value="0"> Moist</label></td>
-                                <td><label><input type="radio" name="dehy_mucosa" value="1"> Dry</label></td>
-                                <td><label><input type="radio" name="dehy_mucosa" value="2"> Very Dry</label></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Tears</strong></td>
-                                <td><label><input type="radio" name="dehy_tears" value="0"> Present</label></td>
-                                <td><label><input type="radio" name="dehy_tears" value="1"> Absent</label></td>
-                                <td><label><input type="radio" name="dehy_tears" value="2"> Absent</label></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="result-box" id="dehydrationResult"></div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Skin, Hair & Nails</h2>
-                    <div class="form-group">
-                        <label for="skin_findings">General Findings</label>
-                        <textarea id="skin_findings" rows="2" placeholder="Color, turgor, texture, lesions"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Rash Present?</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="rash" value="No"> No</label>
-                            <label><input type="radio" name="rash" value="Yes"> Yes</label>
-                        </div>
-                    </div>
-                    <div id="rash_details_group" style="display:none;">
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="rash_type" value="Maculopapular"> Maculopapular</label>
-                            <label><input type="checkbox" name="rash_type" value="Vesicular"> Vesicular</label>
-                            <label><input type="checkbox" name="rash_type" value="Petechial"> Petechial</label>
-                            <label><input type="checkbox" name="rash_type" value="Purpuric"> Purpuric</label>
-                            <label><input type="checkbox" name="rash_type" value="Urticarial"> Urticarial</label>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Jaundice</label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="jaundice" value="No"> No</label>
-                                <label><input type="radio" name="jaundice" value="Yes"> Yes</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Cyanosis</label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="cyanosis" value="No"> No</label>
-                                <label><input type="radio" name="cyanosis" value="Yes"> Yes</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Pallor</label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="pallor" value="No"> No</label>
-                                <label><input type="radio" name="pallor" value="Yes"> Yes</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Edema</label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="edema" value="No"> No</label>
-                                <label><input type="radio" name="edema" value="Yes"> Yes</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Head & Fontanelles</h2>
-                    <div class="form-group">
-                        <label for="head_findings">Findings</label>
-                        <textarea id="head_findings" rows="2"
-                            placeholder="Shape, fontanelles (open/closed, bulging/sunken), sutures"></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Eyes</h2>
-                    <div class="form-group">
-                        <label for="eyes_findings">Findings</label>
-                        <textarea id="eyes_findings" rows="2"
-                            placeholder="Conjunctiva, sclera, pupils, red reflex"></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Ears, Nose, Throat</h2>
-                    <div class="form-group">
-                        <label for="ent_findings">Findings</label>
-                        <textarea id="ent_findings" rows="3"
-                            placeholder="TMs, nasal discharge, pharynx, tonsils, oral thrush"></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Neck</h2>
-                    <div class="form-group">
-                        <label>Lymphadenopathy</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="lymph_nodes" value="No"> No</label>
-                            <label><input type="radio" name="lymph_nodes" value="Yes"> Yes</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Neck Stiffness</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="neck_stiffness" value="No"> No</label>
-                            <label><input type="radio" name="neck_stiffness" value="Yes"> Yes</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="neck_findings">Other Findings</label>
-                        <textarea id="neck_findings" rows="2" placeholder="Masses, thyroid, etc."></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Respiratory System</h2>
-                    <div class="form-group">
-                        <label for="resp_effort">Respiratory Effort</label>
-                        <input type="text" id="resp_effort"
-                            placeholder="Normal / Increased (retractions, nasal flaring, grunting)">
-                    </div>
-                    <div class="form-group">
-                        <label for="air_entry">Air Entry</label>
-                        <input type="text" id="air_entry" placeholder="Equal/Reduced, Bilateral">
-                    </div>
-                    <div class="form-group">
-                        <label for="breath_sounds">Breath Sounds</label>
-                        <input type="text" id="breath_sounds" placeholder="Vesicular / Bronchial">
-                    </div>
-                    <div class="form-group">
-                        <label for="added_sounds">Added Sounds</label>
-                        <input type="text" id="added_sounds" placeholder="Wheeze, crackles, rhonchi, stridor">
-                    </div>
-                    <div class="form-group">
-                        <label for="resp_findings">Additional Findings</label>
-                        <textarea id="resp_findings" rows="2" placeholder="Percussion, vocal fremitus, etc."></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Cardiovascular System</h2>
-                    <div class="form-group">
-                        <label for="heart_sounds">Heart Sounds</label>
-                        <input type="text" id="heart_sounds" placeholder="S1, S2 normal, gallop, etc.">
-                    </div>
-                    <div class="form-group">
-                        <label>Murmur</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="murmur" value="No"> No</label>
-                            <label><input type="radio" name="murmur" value="Yes"> Yes</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="pulses">Pulses</label>
-                        <input type="text" id="pulses" placeholder="Volume, symmetry, femoral pulses">
-                    </div>
-                    <div class="form-group">
-                        <label for="cap_refill">Capillary Refill Time</label>
-                        <input type="text" id="cap_refill" placeholder="< 2 sec / > 2 sec">
-                    </div>
-                    <div class="form-group">
-                        <label for="cvs_findings">Additional Findings</label>
-                        <textarea id="cvs_findings" rows="2"></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Abdomen</h2>
-                    <div class="form-group">
-                        <label for="abdomen_shape">Shape</label>
-                        <input type="text" id="abdomen_shape" placeholder="Flat, distended, scaphoid">
-                    </div>
-                    <div class="form-group">
-                        <label>Tenderness</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="tenderness" value="No"> No</label>
-                            <label><input type="radio" name="tenderness" value="Yes"> Yes</label>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Hepatomegaly</label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="hepatomegaly" value="No"> No</label>
-                                <label><input type="radio" name="hepatomegaly" value="Yes"> Yes</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Splenomegaly</label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="splenomegaly" value="No"> No</label>
-                                <label><input type="radio" name="splenomegaly" value="Yes"> Yes</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Masses</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="masses" value="No"> No</label>
-                            <label><input type="radio" name="masses" value="Yes"> Yes</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="abdomen_findings">Additional Findings</label>
-                        <textarea id="abdomen_findings" rows="2"
-                            placeholder="Bowel sounds, percussion, etc."></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Genitourinary</h2>
-                    <div class="form-group">
-                        <label for="gu_findings">Findings</label>
-                        <textarea id="gu_findings" rows="2"
-                            placeholder="External genitalia, hernias, tanner staging if applicable"></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Musculoskeletal & Neurological</h2>
-                    <div class="form-group">
-                        <label for="tone">Muscle Tone</label>
-                        <input type="text" id="tone" placeholder="Normal / Hypotonic / Hypertonic">
-                    </div>
-                    <div class="form-group">
-                        <label for="gait">Gait</label>
-                        <input type="text" id="gait" placeholder="If applicable - normal, antalgic, etc.">
-                    </div>
-                    <div class="form-group">
-                        <label for="reflexes">Reflexes</label>
-                        <input type="text" id="reflexes"
-                            placeholder="Deep tendon reflexes, primitive reflexes in infants">
-                    </div>
-                    <div class="form-group">
-                        <label>Meningeal Signs</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="meningeal_signs" value="Negative"> Negative</label>
-                            <label><input type="radio" name="meningeal_signs" value="Positive"> Positive</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="neuro_findings">Additional Findings</label>
-                        <textarea id="neuro_findings" rows="3"
-                            placeholder="Cranial nerves, motor/sensory exam, coordination"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ============================================================ -->
-            <!-- TAB 7: DIFFERENTIAL DIAGNOSIS (FINAL) -->
-            <!-- ============================================================ -->
-            <div id="diff-dx-final" class="tab-content">
-                <div class="card">
-                    <h2 class="card-title">Summary of Key Features</h2>
-                    <div class="info-box">
-                        <strong>From History:</strong>
-                        <ul id="historySummary">
-                            <li><em>Auto-populated from key features in History tab</em></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Comparison Table</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Differential</th>
-                                <th>Supported by History</th>
-                                <th>Supported by Exam</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><input type="text" class="form-control" placeholder="Diagnosis 1"></td>
-                                <td><textarea class="form-control" rows="2"></textarea></td>
-                                <td><textarea class="form-control" rows="2"></textarea></td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" class="form-control" placeholder="Diagnosis 2"></td>
-                                <td><textarea class="form-control" rows="2"></textarea></td>
-                                <td><textarea class="form-control" rows="2"></textarea></td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" class="form-control" placeholder="Diagnosis 3"></td>
-                                <td><textarea class="form-control" rows="2"></textarea></td>
-                                <td><textarea class="form-control" rows="2"></textarea></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Final Differential Diagnoses</h2>
-                    <div id="diffDxFinalContainer">
-                        <div class="differential-item">
-                            <div class="diff-header">
-                                <h4>Most Likely Diagnosis</h4>
+                    <!-- NEW: Anthropometry Card -->
+                    <div class="card">
+                        <h2 class="card-title">Anthropometry</h2>
+                        <div class="form-row three-col">
+                            <div class="form-group">
+                                <label for="weight" class="required">Weight (kg)</label>
+                                <input type="number" id="weight" step="0.1" placeholder="0.0">
                             </div>
                             <div class="form-group">
-                                <label>Diagnosis</label>
-                                <input type="text" class="form-control" placeholder="Primary diagnosis">
+                                <label for="height" class="required">Height/Length (cm)</label>
+                                <input type="number" id="height" step="0.1" placeholder="0.0">
                             </div>
                             <div class="form-group">
-                                <label>Supporting Evidence</label>
-                                <textarea class="form-control" rows="3"
-                                    placeholder="Comprehensive list of supporting features from history and exam"></textarea>
+                                <label for="head_circ">Head Circumference (cm)</label>
+                                <input type="number" id="head_circ" step="0.1" placeholder="0.0">
                             </div>
                         </div>
-
-                        <div class="differential-item">
-                            <div class="diff-header">
-                                <h4>Second Differential</h4>
-                            </div>
-                            <div class="form-group">
-                                <label>Diagnosis</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label>Supporting Evidence</label>
-                                <textarea class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="differential-item">
-                            <div class="diff-header">
-                                <h4>Third Differential</h4>
-                            </div>
-                            <div class="form-group">
-                                <label>Diagnosis</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label>Supporting Evidence</label>
-                                <textarea class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-outline" onclick="addDifferential('diffDxFinalContainer')">+
-                        Add Another Differential</button>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Working Diagnosis</h2>
-                    <div class="form-group">
-                        <label for="working_diagnosis">Primary Working Diagnosis</label>
-                        <input type="text" id="working_diagnosis" placeholder="Most likely diagnosis">
-                    </div>
-                    <div class="form-group">
-                        <label for="diagnosis_basis">Basis for Diagnosis</label>
-                        <textarea id="diagnosis_basis" rows="4"
-                            placeholder="Explain why this is your working diagnosis based on history, exam, and clinical reasoning"></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Clinical Reasoning</h2>
-                    <div class="form-group">
-                        <label for="clinical_reasoning_final">Synthesis & Justification</label>
-                        <textarea id="clinical_reasoning_final" rows="6"
-                            placeholder="Comprehensive clinical reasoning: How did history and physical exam findings change or confirm your differential? What made you prioritize this diagnosis? What are you still considering?"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ============================================================ -->
-            <!-- TAB 8: INVESTIGATIONS -->
-            <!-- ============================================================ -->
-            <div id="investigations" class="tab-content">
-                <div class="card">
-                    <h2 class="card-title">Investigation Plan</h2>
-                    <table id="investigationPlanTable">
-                        <thead>
-                            <tr>
-                                <th>Investigation</th>
-                                <th>Rationale</th>
-                                <th>Expected Findings</th>
-                                <th><button type="button" class="btn-add"
-                                        onclick="addRow('investigationPlanTable')">+</button></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><input type="text" class="form-control"></td>
-                                <td><textarea class="form-control" rows="1"></textarea></td>
-                                <td><textarea class="form-control" rows="1"></textarea></td>
-                                <td><button type="button" class="btn-remove" onclick="removeRow(this)">×</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Complete Blood Count (CBC)</h2>
-                    <div class="form-row three-col">
-                        <div class="form-group">
-                            <label for="wbc">WBC (×10⁹/L)</label>
-                            <input type="number" id="wbc" step="0.1" placeholder="4-15">
-                        </div>
-                        <div class="form-group">
-                            <label for="hb">Hemoglobin (g/dL)</label>
-                            <input type="number" id="hb" step="0.1" placeholder="11-16">
-                        </div>
-                        <div class="form-group">
-                            <label for="platelets">Platelets (×10⁹/L)</label>
-                            <input type="number" id="platelets" step="1" placeholder="150-450">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="neutrophils">Neutrophils (%)</label>
-                            <input type="number" id="neutrophils" step="0.1" placeholder="40-80">
-                        </div>
-                        <div class="form-group">
-                            <label for="lymphocytes">Lymphocytes (%)</label>
-                            <input type="number" id="lymphocytes" step="0.1" placeholder="20-40">
-                        </div>
-                    </div>
-                    <div class="result-box" id="cbcInterpretation"></div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Metabolic Panel</h2>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="glucose">Glucose (mmol/L)</label>
-                            <input type="number" id="glucose" step="0.1" placeholder="3.3-5.5">
-                        </div>
-                        <div class="form-group">
-                            <label for="sodium">Sodium (mmol/L)</label>
-                            <input type="number" id="sodium" step="0.1" placeholder="135-145">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="potassium">Potassium (mmol/L)</label>
-                            <input type="number" id="potassium" step="0.1" placeholder="3.5-5.0">
-                        </div>
-                        <div class="form-group">
-                            <label for="creatinine">Creatinine (μmol/L)</label>
-                            <input type="number" id="creatinine" step="1" placeholder="20-90">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="urea">Urea (mmol/L)</label>
-                        <input type="number" id="urea" step="0.1" placeholder="2.5-6.5">
-                    </div>
-                    <div class="result-box" id="metabolicInterpretation"></div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Imaging & Other Results</h2>
-                    <div class="form-group">
-                        <label for="imaging_results">Imaging Results</label>
-                        <textarea id="imaging_results" rows="4"
-                            placeholder="X-ray, ultrasound, CT, MRI findings"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="other_results">Other Investigation Results</label>
-                        <textarea id="other_results" rows="4"
-                            placeholder="Microbiology, serology, lumbar puncture, etc."></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Investigation Summary</h2>
-                    <div class="form-group">
-                        <label for="investigation_summary">Summary & Interpretation</label>
-                        <textarea id="investigation_summary" rows="5"
-                            placeholder="Overall interpretation of investigations and how they impact your diagnosis"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ============================================================ -->
-            <!-- TAB 9: MANAGEMENT -->
-            <!-- ============================================================ -->
-            <div id="management" class="tab-content">
-                <div class="card">
-                    <h2 class="card-title">Admission Decision</h2>
-                    <div class="form-group">
-                        <label>Disposition</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="admission_decision" value="Admit"> Admit</label>
-                            <label><input type="radio" name="admission_decision" value="Discharge"> Discharge</label>
-                            <label><input type="radio" name="admission_decision" value="Observe"> Observe</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="ward">Ward/Unit</label>
-                        <input type="text" id="ward" placeholder="e.g., Pediatric Ward, ICU, HDU">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Problem List</h2>
-                    <table id="problemListTable">
-                        <thead>
-                            <tr>
-                                <th>Problem</th>
-                                <th>Status</th>
-                                <th><button type="button" class="btn-add"
-                                        onclick="addRow('problemListTable')">+</button></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control" placeholder="Active/Resolved"></td>
-                                <td><button type="button" class="btn-remove" onclick="removeRow(this)">×</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Fluid Management</h2>
-                    <div class="calculator-box">
-                        <h4>Holliday-Segar Maintenance Fluid Calculator</h4>
-                        <div class="form-group">
-                            <label for="fluidWeight">Weight (kg)</label>
-                            <input type="number" id="fluidWeight" step="0.1" placeholder="Enter weight">
-                            <button type="button" class="btn btn-outline" onclick="calculateFluids()">Calculate</button>
-                        </div>
-                        <div class="result-box" id="fluidResult"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="fluid_plan">Fluid Plan Details</label>
-                        <textarea id="fluid_plan" rows="3"
-                            placeholder="Type of fluid, rate, boluses, considerations for dehydration/shock"></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Medications</h2>
-                    <table id="managementMedsTable">
-                        <thead>
-                            <tr>
-                                <th>Medication</th>
-                                <th>Dose</th>
-                                <th>Route</th>
-                                <th>Frequency</th>
-                                <th><button type="button" class="btn-add"
-                                        onclick="addRow('managementMedsTable')">+</button></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><button type="button" class="btn-remove" onclick="removeRow(this)">×</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="calculator-box">
-                        <h4>Dose Calculator</h4>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="doseWeight">Weight (kg)</label>
-                                <input type="number" id="doseWeight" step="0.1" placeholder="Weight">
+                                <label for="muac">MUAC (cm)</label>
+                                <input type="number" id="muac" step="0.1" placeholder="Mid-upper arm circumference">
+                            </div>
+                        </div>
+
+                        <div class="growth-display" id="growthDisplay" style="display:none;">
+                            <div class="growth-item">
+                                <div class="growth-value" id="bmiValue">--</div>
+                                <div class="growth-label">BMI</div>
+                            </div>
+                        </div>
+
+                        <h3>Z-Scores (Auto-Calculated)</h3>
+                        <div class="form-row three-col">
+                            <div class="form-group">
+                                <label for="waz">Weight-for-Age Z-score</label>
+                                <input type="text" id="waz" readonly placeholder="Auto-calculated">
+                                <div id="wazInterpretation"></div>
                             </div>
                             <div class="form-group">
-                                <label for="doseMg">Dose (mg/kg)</label>
-                                <input type="number" id="doseMg" step="0.1" placeholder="mg/kg">
+                                <label for="haz">Height-for-Age Z-score</label>
+                                <input type="text" id="haz" readonly placeholder="Auto-calculated">
+                                <div id="hazInterpretation"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="whz">Weight-for-Height Z-score</label>
+                                <input type="text" id="whz" readonly placeholder="Auto-calculated">
+                                <div id="whzInterpretation"></div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-outline" onclick="calculateDose()">Calculate</button>
-                        <div class="result-box" id="doseResult"></div>
+
+                        <h3>Percentiles (Auto-Calculated)</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="weight_percentile">Weight Percentile</label>
+                                <input type="text" id="weight_percentile" readonly placeholder="Auto-calculated">
+                            </div>
+                            <div class="form-group">
+                                <label for="height_percentile">Height Percentile</label>
+                                <input type="text" id="height_percentile" readonly placeholder="Auto-calculated">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW: General Inspection Card -->
+                    <div class="card">
+                        <h2 class="card-title">General Inspection</h2>
+                        <div class="form-group">
+                            <label for="general_inspection">Observations from End of Bed</label>
+                            <textarea id="general_inspection" rows="4"
+                                placeholder="Describe what you observe: position, comfort, alertness, color, breathing pattern, any obvious abnormalities, equipment/lines, parent-child interaction..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Keep the rest of your existing General Appearance card and other cards -->
+                    <div class="card">
+                        <h2 class="card-title">General Appearance</h2>
+                        <!-- ... rest of existing content ... -->
+                    </div>
+                    <div class="card">
+                        <h2 class="card-title">General Appearance</h2>
+                        <div class="form-group">
+                            <label for="general_appearance">Overall Impression</label>
+                            <textarea id="general_appearance" rows="2"
+                                placeholder="Well/ill-appearing, interactive, playful, etc."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>AVPU / Consciousness</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="avpu" value="Alert"> Alert</label>
+                                <label><input type="radio" name="avpu" value="Verbal"> Responds to Verbal</label>
+                                <label><input type="radio" name="avpu" value="Pain"> Responds to Pain</label>
+                                <label><input type="radio" name="avpu" value="Unresponsive"> Unresponsive</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Nutritional Status</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="nutritional_status" value="Well nourished"> Well
+                                    nourished</label>
+                                <label><input type="radio" name="nutritional_status" value="Malnourished">
+                                    Malnourished</label>
+                                <label><input type="radio" name="nutritional_status" value="Overweight/Obese">
+                                    Overweight/Obese</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Hydration Status</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="hydration_status" value="Well hydrated"> Well
+                                    hydrated</label>
+                                <label><input type="radio" name="hydration_status" value="Mild dehydration"> Mild
+                                    dehydration</label>
+                                <label><input type="radio" name="hydration_status" value="Moderate dehydration">
+                                    Moderate
+                                    dehydration</label>
+                                <label><input type="radio" name="hydration_status" value="Severe dehydration"> Severe
+                                    dehydration</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Activity Level</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="activity_level" value="Active"> Active</label>
+                                <label><input type="radio" name="activity_level" value="Lethargic"> Lethargic</label>
+                                <label><input type="radio" name="activity_level" value="Unresponsive">
+                                    Unresponsive</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Distress</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="distress" value="No distress"> No distress</label>
+                                <label><input type="radio" name="distress" value="Mild distress"> Mild distress</label>
+                                <label><input type="radio" name="distress" value="Moderate distress"> Moderate
+                                    distress</label>
+                                <label><input type="radio" name="distress" value="Severe distress"> Severe
+                                    distress</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Vital Signs</h2>
+                        <div class="form-row three-col">
+                            <div class="form-group">
+                                <label for="temp">Temperature (°C)</label>
+                                <div class="input-with-indicator">
+                                    <input type="number" id="temp" step="0.1" placeholder="36.5">
+                                    <span class="indicator" id="tempIndicator"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="hr">Heart Rate (bpm)</label>
+                                <div class="input-with-indicator">
+                                    <input type="number" id="hr" placeholder="100">
+                                    <span class="indicator" id="hrIndicator"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="rr">Respiratory Rate (/min)</label>
+                                <div class="input-with-indicator">
+                                    <input type="number" id="rr" placeholder="20">
+                                    <span class="indicator" id="rrIndicator"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bp_systolic">Blood Pressure (mmHg)</label>
+                                <div class="bp-input">
+                                    <input type="number" id="bp_systolic" placeholder="Systolic" style="width:48%;">
+                                    <span>/</span>
+                                    <input type="number" id="bp_diastolic" placeholder="Diastolic" style="width:48%;">
+                                    <span class="indicator" id="bpIndicator"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="spo2">SpO₂ (%)</label>
+                                <input type="number" id="spo2" placeholder="98">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Oxygen Support</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="oxygen_support" value="No"> Room air</label>
+                                <label><input type="radio" name="oxygen_support" value="Yes"> On oxygen</label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="oxygen_flow_group" style="display:none;">
+                            <label for="oxygen_flow">O₂ Flow Rate (L/min)</label>
+                            <input type="number" id="oxygen_flow" step="0.1" placeholder="e.g., 2.0">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Dehydration Assessment</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sign</th>
+                                    <th>0</th>
+                                    <th>1</th>
+                                    <th>2</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>General Appearance</strong></td>
+                                    <td><label><input type="radio" name="dehy_appearance" value="0"> Normal</label></td>
+                                    <td><label><input type="radio" name="dehy_appearance" value="1">
+                                            Thirsty/Restless</label></td>
+                                    <td><label><input type="radio" name="dehy_appearance" value="2">
+                                            Lethargic/Unconscious</label></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Eyes</strong></td>
+                                    <td><label><input type="radio" name="dehy_eyes" value="0"> Normal</label></td>
+                                    <td><label><input type="radio" name="dehy_eyes" value="1"> Sunken</label></td>
+                                    <td><label><input type="radio" name="dehy_eyes" value="2"> Very Sunken</label></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mouth/Tongue</strong></td>
+                                    <td><label><input type="radio" name="dehy_mucosa" value="0"> Moist</label></td>
+                                    <td><label><input type="radio" name="dehy_mucosa" value="1"> Dry</label></td>
+                                    <td><label><input type="radio" name="dehy_mucosa" value="2"> Very Dry</label></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tears</strong></td>
+                                    <td><label><input type="radio" name="dehy_tears" value="0"> Present</label></td>
+                                    <td><label><input type="radio" name="dehy_tears" value="1"> Absent</label></td>
+                                    <td><label><input type="radio" name="dehy_tears" value="2"> Absent</label></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="result-box" id="dehydrationResult"></div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Skin, Hair & Nails</h2>
+                        <div class="form-group">
+                            <label for="skin_findings">General Findings</label>
+                            <textarea id="skin_findings" rows="2"
+                                placeholder="Color, turgor, texture, lesions"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Rash Present?</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="rash" value="No"> No</label>
+                                <label><input type="radio" name="rash" value="Yes"> Yes</label>
+                            </div>
+                        </div>
+                        <div id="rash_details_group" style="display:none;">
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="rash_type" value="Maculopapular">
+                                    Maculopapular</label>
+                                <label><input type="checkbox" name="rash_type" value="Vesicular"> Vesicular</label>
+                                <label><input type="checkbox" name="rash_type" value="Petechial"> Petechial</label>
+                                <label><input type="checkbox" name="rash_type" value="Purpuric"> Purpuric</label>
+                                <label><input type="checkbox" name="rash_type" value="Urticarial"> Urticarial</label>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Jaundice</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="jaundice" value="No"> No</label>
+                                    <label><input type="radio" name="jaundice" value="Yes"> Yes</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Cyanosis</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="cyanosis" value="No"> No</label>
+                                    <label><input type="radio" name="cyanosis" value="Yes"> Yes</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Pallor</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="pallor" value="No"> No</label>
+                                    <label><input type="radio" name="pallor" value="Yes"> Yes</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Edema</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="edema" value="No"> No</label>
+                                    <label><input type="radio" name="edema" value="Yes"> Yes</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Head & Fontanelles</h2>
+                        <div class="form-group">
+                            <label for="head_findings">Findings</label>
+                            <textarea id="head_findings" rows="2"
+                                placeholder="Shape, fontanelles (open/closed, bulging/sunken), sutures"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Eyes</h2>
+                        <div class="form-group">
+                            <label for="eyes_findings">Findings</label>
+                            <textarea id="eyes_findings" rows="2"
+                                placeholder="Conjunctiva, sclera, pupils, red reflex"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Ears, Nose, Throat</h2>
+                        <div class="form-group">
+                            <label for="ent_findings">Findings</label>
+                            <textarea id="ent_findings" rows="3"
+                                placeholder="TMs, nasal discharge, pharynx, tonsils, oral thrush"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Neck</h2>
+                        <div class="form-group">
+                            <label>Lymphadenopathy</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="lymph_nodes" value="No"> No</label>
+                                <label><input type="radio" name="lymph_nodes" value="Yes"> Yes</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Neck Stiffness</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="neck_stiffness" value="No"> No</label>
+                                <label><input type="radio" name="neck_stiffness" value="Yes"> Yes</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="neck_findings">Other Findings</label>
+                            <textarea id="neck_findings" rows="2" placeholder="Masses, thyroid, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Respiratory System</h2>
+                        <div class="form-group">
+                            <label for="resp_effort">Respiratory Effort</label>
+                            <input type="text" id="resp_effort"
+                                placeholder="Normal / Increased (retractions, nasal flaring, grunting)">
+                        </div>
+                        <div class="form-group">
+                            <label for="air_entry">Air Entry</label>
+                            <input type="text" id="air_entry" placeholder="Equal/Reduced, Bilateral">
+                        </div>
+                        <div class="form-group">
+                            <label for="breath_sounds">Breath Sounds</label>
+                            <input type="text" id="breath_sounds" placeholder="Vesicular / Bronchial">
+                        </div>
+                        <div class="form-group">
+                            <label for="added_sounds">Added Sounds</label>
+                            <input type="text" id="added_sounds" placeholder="Wheeze, crackles, rhonchi, stridor">
+                        </div>
+                        <div class="form-group">
+                            <label for="resp_findings">Additional Findings</label>
+                            <textarea id="resp_findings" rows="2"
+                                placeholder="Percussion, vocal fremitus, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Cardiovascular System</h2>
+                        <div class="form-group">
+                            <label for="heart_sounds">Heart Sounds</label>
+                            <input type="text" id="heart_sounds" placeholder="S1, S2 normal, gallop, etc.">
+                        </div>
+                        <div class="form-group">
+                            <label>Murmur</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="murmur" value="No"> No</label>
+                                <label><input type="radio" name="murmur" value="Yes"> Yes</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pulses">Pulses</label>
+                            <input type="text" id="pulses" placeholder="Volume, symmetry, femoral pulses">
+                        </div>
+                        <div class="form-group">
+                            <label for="cap_refill">Capillary Refill Time</label>
+                            <input type="text" id="cap_refill" placeholder="< 2 sec / > 2 sec">
+                        </div>
+                        <div class="form-group">
+                            <label for="cvs_findings">Additional Findings</label>
+                            <textarea id="cvs_findings" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Abdomen</h2>
+                        <div class="form-group">
+                            <label for="abdomen_shape">Shape</label>
+                            <input type="text" id="abdomen_shape" placeholder="Flat, distended, scaphoid">
+                        </div>
+                        <div class="form-group">
+                            <label>Tenderness</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="tenderness" value="No"> No</label>
+                                <label><input type="radio" name="tenderness" value="Yes"> Yes</label>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Hepatomegaly</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="hepatomegaly" value="No"> No</label>
+                                    <label><input type="radio" name="hepatomegaly" value="Yes"> Yes</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Splenomegaly</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="splenomegaly" value="No"> No</label>
+                                    <label><input type="radio" name="splenomegaly" value="Yes"> Yes</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Masses</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="masses" value="No"> No</label>
+                                <label><input type="radio" name="masses" value="Yes"> Yes</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="abdomen_findings">Additional Findings</label>
+                            <textarea id="abdomen_findings" rows="2"
+                                placeholder="Bowel sounds, percussion, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Genitourinary</h2>
+                        <div class="form-group">
+                            <label for="gu_findings">Findings</label>
+                            <textarea id="gu_findings" rows="2"
+                                placeholder="External genitalia, hernias, tanner staging if applicable"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Musculoskeletal & Neurological</h2>
+                        <div class="form-group">
+                            <label for="tone">Muscle Tone</label>
+                            <input type="text" id="tone" placeholder="Normal / Hypotonic / Hypertonic">
+                        </div>
+                        <div class="form-group">
+                            <label for="gait">Gait</label>
+                            <input type="text" id="gait" placeholder="If applicable - normal, antalgic, etc.">
+                        </div>
+                        <div class="form-group">
+                            <label for="reflexes">Reflexes</label>
+                            <input type="text" id="reflexes"
+                                placeholder="Deep tendon reflexes, primitive reflexes in infants">
+                        </div>
+                        <div class="form-group">
+                            <label>Meningeal Signs</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="meningeal_signs" value="Negative"> Negative</label>
+                                <label><input type="radio" name="meningeal_signs" value="Positive"> Positive</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="neuro_findings">Additional Findings</label>
+                            <textarea id="neuro_findings" rows="3"
+                                placeholder="Cranial nerves, motor/sensory exam, coordination"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h2 class="card-title">Nutritional Management</h2>
-                    <div class="form-group">
-                        <label for="nutrition_plan">Feeding Plan</label>
-                        <textarea id="nutrition_plan" rows="3"
-                            placeholder="Diet orders, NPO status, feeding tube, TPN, etc."></textarea>
+                <!-- ============================================================ -->
+                <!-- TAB 7: DIFFERENTIAL DIAGNOSIS (FINAL) -->
+                <!-- ============================================================ -->
+                <div id="diff-dx-final" class="tab-content">
+                    <div class="card">
+                        <h2 class="card-title">Summary of Key Features</h2>
+                        <div class="info-box">
+                            <strong>From History:</strong>
+                            <ul id="historySummary">
+                                <li><em>Auto-populated from key features in History tab</em></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Comparison Table</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Differential</th>
+                                    <th>Supported by History</th>
+                                    <th>Supported by Exam</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="text" class="form-control" placeholder="Diagnosis 1"></td>
+                                    <td><textarea class="form-control" rows="2"></textarea></td>
+                                    <td><textarea class="form-control" rows="2"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="text" class="form-control" placeholder="Diagnosis 2"></td>
+                                    <td><textarea class="form-control" rows="2"></textarea></td>
+                                    <td><textarea class="form-control" rows="2"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="text" class="form-control" placeholder="Diagnosis 3"></td>
+                                    <td><textarea class="form-control" rows="2"></textarea></td>
+                                    <td><textarea class="form-control" rows="2"></textarea></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Final Differential Diagnoses</h2>
+                        <div id="diffDxFinalContainer">
+                            <div class="differential-item">
+                                <div class="diff-header">
+                                    <h4>Most Likely Diagnosis</h4>
+                                </div>
+                                <div class="form-group">
+                                    <label>Diagnosis</label>
+                                    <input type="text" class="form-control" placeholder="Primary diagnosis">
+                                </div>
+                                <div class="form-group">
+                                    <label>Supporting Evidence</label>
+                                    <textarea class="form-control" rows="3"
+                                        placeholder="Comprehensive list of supporting features from history and exam"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="differential-item">
+                                <div class="diff-header">
+                                    <h4>Second Differential</h4>
+                                </div>
+                                <div class="form-group">
+                                    <label>Diagnosis</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Supporting Evidence</label>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="differential-item">
+                                <div class="diff-header">
+                                    <h4>Third Differential</h4>
+                                </div>
+                                <div class="form-group">
+                                    <label>Diagnosis</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Supporting Evidence</label>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline"
+                            onclick="addDifferential('diffDxFinalContainer')">+
+                            Add Another Differential</button>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Working Diagnosis</h2>
+                        <div class="form-group">
+                            <label for="working_diagnosis">Primary Working Diagnosis</label>
+                            <input type="text" id="working_diagnosis" placeholder="Most likely diagnosis">
+                        </div>
+                        <div class="form-group">
+                            <label for="diagnosis_basis">Basis for Diagnosis</label>
+                            <textarea id="diagnosis_basis" rows="4"
+                                placeholder="Explain why this is your working diagnosis based on history, exam, and clinical reasoning"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Clinical Reasoning</h2>
+                        <div class="form-group">
+                            <label for="clinical_reasoning_final">Synthesis & Justification</label>
+                            <textarea id="clinical_reasoning_final" rows="6"
+                                placeholder="Comprehensive clinical reasoning: How did history and physical exam findings change or confirm your differential? What made you prioritize this diagnosis? What are you still considering?"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h2 class="card-title">Monitoring & Nursing Orders</h2>
-                    <div class="form-group">
-                        <label for="monitoring_plan">Monitoring Plan</label>
-                        <textarea id="monitoring_plan" rows="3"
-                            placeholder="Vitals frequency, intake/output, glucose checks, etc."></textarea>
+                <!-- ============================================================ -->
+                <!-- TAB 8: INVESTIGATIONS -->
+                <!-- ============================================================ -->
+                <div id="investigations" class="tab-content">
+                    <div class="card">
+                        <h2 class="card-title">Investigation Plan</h2>
+                        <table id="investigationPlanTable">
+                            <thead>
+                                <tr>
+                                    <th>Investigation</th>
+                                    <th>Rationale</th>
+                                    <th>Expected Findings</th>
+                                    <th><button type="button" class="btn-add"
+                                            onclick="addRow('investigationPlanTable')">+</button></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><textarea class="form-control" rows="1"></textarea></td>
+                                    <td><textarea class="form-control" rows="1"></textarea></td>
+                                    <td><button type="button" class="btn-remove" onclick="removeRow(this)">×</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="form-group">
-                        <label for="nursing_orders">Nursing Orders</label>
-                        <textarea id="nursing_orders" rows="3"
-                            placeholder="Isolation, positioning, special care instructions"></textarea>
+
+                    <div class="card">
+                        <h2 class="card-title">Complete Blood Count (CBC)</h2>
+                        <div class="form-row three-col">
+                            <div class="form-group">
+                                <label for="wbc">WBC (×10⁹/L)</label>
+                                <input type="number" id="wbc" step="0.1" placeholder="4-15">
+                            </div>
+                            <div class="form-group">
+                                <label for="hb">Hemoglobin (g/dL)</label>
+                                <input type="number" id="hb" step="0.1" placeholder="11-16">
+                            </div>
+                            <div class="form-group">
+                                <label for="platelets">Platelets (×10⁹/L)</label>
+                                <input type="number" id="platelets" step="1" placeholder="150-450">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="neutrophils">Neutrophils (%)</label>
+                                <input type="number" id="neutrophils" step="0.1" placeholder="40-80">
+                            </div>
+                            <div class="form-group">
+                                <label for="lymphocytes">Lymphocytes (%)</label>
+                                <input type="number" id="lymphocytes" step="0.1" placeholder="20-40">
+                            </div>
+                        </div>
+                        <div class="result-box" id="cbcInterpretation"></div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Metabolic Panel</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="glucose">Glucose (mmol/L)</label>
+                                <input type="number" id="glucose" step="0.1" placeholder="3.3-5.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="sodium">Sodium (mmol/L)</label>
+                                <input type="number" id="sodium" step="0.1" placeholder="135-145">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="potassium">Potassium (mmol/L)</label>
+                                <input type="number" id="potassium" step="0.1" placeholder="3.5-5.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="creatinine">Creatinine (μmol/L)</label>
+                                <input type="number" id="creatinine" step="1" placeholder="20-90">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="urea">Urea (mmol/L)</label>
+                            <input type="number" id="urea" step="0.1" placeholder="2.5-6.5">
+                        </div>
+                        <div class="result-box" id="metabolicInterpretation"></div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Imaging & Other Results</h2>
+                        <div class="form-group">
+                            <label for="imaging_results">Imaging Results</label>
+                            <textarea id="imaging_results" rows="4"
+                                placeholder="X-ray, ultrasound, CT, MRI findings"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="other_results">Other Investigation Results</label>
+                            <textarea id="other_results" rows="4"
+                                placeholder="Microbiology, serology, lumbar puncture, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Investigation Summary</h2>
+                        <div class="form-group">
+                            <label for="investigation_summary">Summary & Interpretation</label>
+                            <textarea id="investigation_summary" rows="5"
+                                placeholder="Overall interpretation of investigations and how they impact your diagnosis"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h2 class="card-title">Problem-Based Plans</h2>
-                    <div class="form-group">
-                        <label for="problem_plans">Detailed Management for Each Problem</label>
-                        <textarea id="problem_plans" rows="6"
-                            placeholder="Address each problem on your problem list with specific interventions"></textarea>
+                <!-- ============================================================ -->
+                <!-- TAB 9: MANAGEMENT -->
+                <!-- ============================================================ -->
+                <div id="management" class="tab-content">
+                    <div class="card">
+                        <h2 class="card-title">Admission Decision</h2>
+                        <div class="form-group">
+                            <label>Disposition</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="admission_decision" value="Admit"> Admit</label>
+                                <label><input type="radio" name="admission_decision" value="Discharge">
+                                    Discharge</label>
+                                <label><input type="radio" name="admission_decision" value="Observe"> Observe</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ward">Ward/Unit</label>
+                            <input type="text" id="ward" placeholder="e.g., Pediatric Ward, ICU, HDU">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Problem List</h2>
+                        <table id="problemListTable">
+                            <thead>
+                                <tr>
+                                    <th>Problem</th>
+                                    <th>Status</th>
+                                    <th><button type="button" class="btn-add"
+                                            onclick="addRow('problemListTable')">+</button></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control" placeholder="Active/Resolved"></td>
+                                    <td><button type="button" class="btn-remove" onclick="removeRow(this)">×</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Fluid Management</h2>
+                        <div class="calculator-box">
+                            <h4>Holliday-Segar Maintenance Fluid Calculator</h4>
+                            <div class="form-group">
+                                <label for="fluidWeight">Weight (kg)</label>
+                                <input type="number" id="fluidWeight" step="0.1" placeholder="Enter weight">
+                                <button type="button" class="btn btn-outline"
+                                    onclick="calculateFluids()">Calculate</button>
+                            </div>
+                            <div class="result-box" id="fluidResult"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="fluid_plan">Fluid Plan Details</label>
+                            <textarea id="fluid_plan" rows="3"
+                                placeholder="Type of fluid, rate, boluses, considerations for dehydration/shock"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Medications</h2>
+                        <table id="managementMedsTable">
+                            <thead>
+                                <tr>
+                                    <th>Medication</th>
+                                    <th>Dose</th>
+                                    <th>Route</th>
+                                    <th>Frequency</th>
+                                    <th><button type="button" class="btn-add"
+                                            onclick="addRow('managementMedsTable')">+</button></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><button type="button" class="btn-remove" onclick="removeRow(this)">×</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="calculator-box">
+                            <h4>Dose Calculator</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="doseWeight">Weight (kg)</label>
+                                    <input type="number" id="doseWeight" step="0.1" placeholder="Weight">
+                                </div>
+                                <div class="form-group">
+                                    <label for="doseMg">Dose (mg/kg)</label>
+                                    <input type="number" id="doseMg" step="0.1" placeholder="mg/kg">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline" onclick="calculateDose()">Calculate</button>
+                            <div class="result-box" id="doseResult"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Nutritional Management</h2>
+                        <div class="form-group">
+                            <label for="nutrition_plan">Feeding Plan</label>
+                            <textarea id="nutrition_plan" rows="3"
+                                placeholder="Diet orders, NPO status, feeding tube, TPN, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Monitoring & Nursing Orders</h2>
+                        <div class="form-group">
+                            <label for="monitoring_plan">Monitoring Plan</label>
+                            <textarea id="monitoring_plan" rows="3"
+                                placeholder="Vitals frequency, intake/output, glucose checks, etc."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="nursing_orders">Nursing Orders</label>
+                            <textarea id="nursing_orders" rows="3"
+                                placeholder="Isolation, positioning, special care instructions"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Problem-Based Plans</h2>
+                        <div class="form-group">
+                            <label for="problem_plans">Detailed Management for Each Problem</label>
+                            <textarea id="problem_plans" rows="6"
+                                placeholder="Address each problem on your problem list with specific interventions"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Discharge Planning</h2>
+                        <div class="form-group">
+                            <label for="discharge_diagnosis">Discharge Diagnosis</label>
+                            <input type="text" id="discharge_diagnosis" placeholder="Final diagnosis">
+                        </div>
+                        <div class="form-group">
+                            <label for="discharge_condition">Condition at Discharge</label>
+                            <input type="text" id="discharge_condition" placeholder="Improved, stable, etc.">
+                        </div>
+                        <div class="form-group">
+                            <label for="discharge_medications">Discharge Medications</label>
+                            <textarea id="discharge_medications" rows="3"
+                                placeholder="Medications to continue at home"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="discharge_followup">Follow-up Plan</label>
+                            <textarea id="discharge_followup" rows="2"
+                                placeholder="When and where to follow up"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="discharge_instructions">Home Care Instructions</label>
+                            <textarea id="discharge_instructions" rows="4"
+                                placeholder="Red flags, when to return, home care instructions for parents"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h2 class="card-title">Discharge Planning</h2>
-                    <div class="form-group">
-                        <label for="discharge_diagnosis">Discharge Diagnosis</label>
-                        <input type="text" id="discharge_diagnosis" placeholder="Final diagnosis">
-                    </div>
-                    <div class="form-group">
-                        <label for="discharge_condition">Condition at Discharge</label>
-                        <input type="text" id="discharge_condition" placeholder="Improved, stable, etc.">
-                    </div>
-                    <div class="form-group">
-                        <label for="discharge_medications">Discharge Medications</label>
-                        <textarea id="discharge_medications" rows="3"
-                            placeholder="Medications to continue at home"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="discharge_followup">Follow-up Plan</label>
-                        <textarea id="discharge_followup" rows="2" placeholder="When and where to follow up"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="discharge_instructions">Home Care Instructions</label>
-                        <textarea id="discharge_instructions" rows="4"
-                            placeholder="Red flags, when to return, home care instructions for parents"></textarea>
+                <!-- ============================================================ -->
+                <!-- TAB 10: PROGRESS NOTES -->
+                <!-- ============================================================ -->
+                <div id="progress" class="tab-content">
+                    <div class="card">
+                        <h2 class="card-title">Progress Notes (SOAP Format)</h2>
+                        <button type="button" class="btn btn-primary" onclick="addProgressNote()">+ Add Progress
+                            Note</button>
+                        <div id="progressNotesContainer">
+                            <!-- Progress notes will be added dynamically here -->
+                        </div>
                     </div>
                 </div>
+
+                <!-- ============================================================ -->
+                <!-- TAB 11: NEONATAL -->
+                <!-- ============================================================ -->
+                <div id="neonatal" class="tab-content">
+                    <div class="card">
+                        <h2 class="card-title">Neonatal Identification</h2>
+                        <div class="form-group">
+                            <label for="neonatal_baby_id">Baby Identification</label>
+                            <input type="text" id="neonatal_baby_id"
+                                placeholder="e.g., Baby Boy/Girl of [Mother's Name]">
+                        </div>
+                        <div class="form-group">
+                            <label for="neonatal_mother_name">Mother's Full Name</label>
+                            <input type="text" id="neonatal_mother_name" placeholder="Mother's name">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="neonatal_dob">Date & Time of Birth</label>
+                                <input type="datetime-local" id="neonatal_dob">
+                            </div>
+                            <div class="form-group">
+                                <label for="neonatal_admission_datetime">Admission Date & Time</label>
+                                <input type="datetime-local" id="neonatal_admission_datetime">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="neonatal_age_at_admission">Age at Admission</label>
+                            <input type="text" id="neonatal_age_at_admission" readonly placeholder="Auto-calculated">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Maternal/Obstetric History</h2>
+                        <div class="form-group">
+                            <label for="neonatal_maternal_history">Summary</label>
+                            <textarea id="neonatal_maternal_history" rows="4"
+                                placeholder="Maternal age, parity, ANC, complications, medications, blood type, infections"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Delivery Details</h2>
+                        <div class="form-group">
+                            <label>Mode of Delivery</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="neonatal_delivery_mode" value="SVD"> SVD</label>
+                                <label><input type="radio" name="neonatal_delivery_mode" value="Assisted">
+                                    Assisted</label>
+                                <label><input type="radio" name="neonatal_delivery_mode" value="LSCS"> LSCS</label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="neonatal_lscs_indication_group" style="display:none;">
+                            <label for="neonatal_lscs_indication">Indication for LSCS</label>
+                            <input type="text" id="neonatal_lscs_indication" placeholder="Reason">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="neonatal_birth_weight">Birth Weight (kg)</label>
+                                <input type="number" id="neonatal_birth_weight" step="0.01" placeholder="e.g., 2.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="neonatal_ga">Gestational Age (weeks)</label>
+                                <input type="number" id="neonatal_ga" step="0.1" placeholder="e.g., 37.0">
+                            </div>
+                        </div>
+                        <div class="result-box" id="neonatalClassification"></div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Neonatal Physical Examination</h2>
+                        <div class="form-group">
+                            <label for="neonatal_exam_findings">General Exam Findings</label>
+                            <textarea id="neonatal_exam_findings" rows="6"
+                                placeholder="Appearance, activity, cry, vitals, skin color (jaundice, cyanosis), respiratory effort, cardiovascular exam, abdomen, genitalia, extremities, neurological exam"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="neonatal_reflexes">Primitive Reflexes</label>
+                            <textarea id="neonatal_reflexes" rows="2"
+                                placeholder="Moro, grasp, rooting, sucking, stepping"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Neonatal Medications</h2>
+                        <table id="neonatalMedicationsTable">
+                            <thead>
+                                <tr>
+                                    <th>Medication</th>
+                                    <th>Dose</th>
+                                    <th>Route</th>
+                                    <th><button type="button" class="btn-add"
+                                            onclick="addRow('neonatalMedicationsTable')">+</button></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><button type="button" class="btn-remove" onclick="removeRow(this)">×</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Diagnosis & Plan</h2>
+                        <div class="form-group">
+                            <label for="neonatal_diagnosis_plan">Working Diagnosis & Management Plan</label>
+                            <textarea id="neonatal_diagnosis_plan" rows="5"
+                                placeholder="Primary neonatal diagnosis and detailed management plan"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Family Counselling & Discharge</h2>
+                        <div class="form-group">
+                            <label for="neonatal_counselling">Counselling Provided</label>
+                            <textarea id="neonatal_counselling" rows="4"
+                                placeholder="Education provided to parents, discharge instructions, follow-up plans"></textarea>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- ============================================================ -->
-            <!-- TAB 10: PROGRESS NOTES -->
+            <!-- BOTTOM ACTION BAR -->
             <!-- ============================================================ -->
-            <div id="progress" class="tab-content">
-                <div class="card">
-                    <h2 class="card-title">Progress Notes (SOAP Format)</h2>
-                    <button type="button" class="btn btn-primary" onclick="addProgressNote()">+ Add Progress
-                        Note</button>
-                    <div id="progressNotesContainer">
-                        <!-- Progress notes will be added dynamically here -->
-                    </div>
-                </div>
+            <div class="action-buttons">
+                <button class="btn btn-outline" onclick="saveFormData()">💾 Save (Local)</button>
+                <button class="btn btn-outline" onclick="clearAllData()">🗑️ Clear All</button>
+                <button class="btn btn-outline" onclick="downloadTXT()">📄 Download TXT</button>
+                <button class="btn btn-outline" onclick="downloadJSON()">💾 Backup (JSON)</button>
+                <button class="btn btn-outline" onclick="importJSON()">📥 Import Backup</button>
+                <button class="btn btn-primary" onclick="printForm()">🖨️ Print / PDF</button>
             </div>
 
             <!-- ============================================================ -->
-            <!-- TAB 11: NEONATAL -->
+            <!-- TOAST NOTIFICATION (Hidden by default) -->
             <!-- ============================================================ -->
-            <div id="neonatal" class="tab-content">
-                <div class="card">
-                    <h2 class="card-title">Neonatal Identification</h2>
-                    <div class="form-group">
-                        <label for="neonatal_baby_id">Baby Identification</label>
-                        <input type="text" id="neonatal_baby_id" placeholder="e.g., Baby Boy/Girl of [Mother's Name]">
-                    </div>
-                    <div class="form-group">
-                        <label for="neonatal_mother_name">Mother's Full Name</label>
-                        <input type="text" id="neonatal_mother_name" placeholder="Mother's name">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="neonatal_dob">Date & Time of Birth</label>
-                            <input type="datetime-local" id="neonatal_dob">
-                        </div>
-                        <div class="form-group">
-                            <label for="neonatal_admission_datetime">Admission Date & Time</label>
-                            <input type="datetime-local" id="neonatal_admission_datetime">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="neonatal_age_at_admission">Age at Admission</label>
-                        <input type="text" id="neonatal_age_at_admission" readonly placeholder="Auto-calculated">
-                    </div>
-                </div>
+            <div id="toast" class="toast"></div>
 
-                <div class="card">
-                    <h2 class="card-title">Maternal/Obstetric History</h2>
-                    <div class="form-group">
-                        <label for="neonatal_maternal_history">Summary</label>
-                        <textarea id="neonatal_maternal_history" rows="4"
-                            placeholder="Maternal age, parity, ANC, complications, medications, blood type, infections"></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Delivery Details</h2>
-                    <div class="form-group">
-                        <label>Mode of Delivery</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="neonatal_delivery_mode" value="SVD"> SVD</label>
-                            <label><input type="radio" name="neonatal_delivery_mode" value="Assisted"> Assisted</label>
-                            <label><input type="radio" name="neonatal_delivery_mode" value="LSCS"> LSCS</label>
-                        </div>
-                    </div>
-                    <div class="form-group" id="neonatal_lscs_indication_group" style="display:none;">
-                        <label for="neonatal_lscs_indication">Indication for LSCS</label>
-                        <input type="text" id="neonatal_lscs_indication" placeholder="Reason">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="neonatal_birth_weight">Birth Weight (kg)</label>
-                            <input type="number" id="neonatal_birth_weight" step="0.01" placeholder="e.g., 2.5">
-                        </div>
-                        <div class="form-group">
-                            <label for="neonatal_ga">Gestational Age (weeks)</label>
-                            <input type="number" id="neonatal_ga" step="0.1" placeholder="e.g., 37.0">
-                        </div>
-                    </div>
-                    <div class="result-box" id="neonatalClassification"></div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Neonatal Physical Examination</h2>
-                    <div class="form-group">
-                        <label for="neonatal_exam_findings">General Exam Findings</label>
-                        <textarea id="neonatal_exam_findings" rows="6"
-                            placeholder="Appearance, activity, cry, vitals, skin color (jaundice, cyanosis), respiratory effort, cardiovascular exam, abdomen, genitalia, extremities, neurological exam"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="neonatal_reflexes">Primitive Reflexes</label>
-                        <textarea id="neonatal_reflexes" rows="2"
-                            placeholder="Moro, grasp, rooting, sucking, stepping"></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Neonatal Medications</h2>
-                    <table id="neonatalMedicationsTable">
-                        <thead>
-                            <tr>
-                                <th>Medication</th>
-                                <th>Dose</th>
-                                <th>Route</th>
-                                <th><button type="button" class="btn-add"
-                                        onclick="addRow('neonatalMedicationsTable')">+</button></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><button type="button" class="btn-remove" onclick="removeRow(this)">×</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Diagnosis & Plan</h2>
-                    <div class="form-group">
-                        <label for="neonatal_diagnosis_plan">Working Diagnosis & Management Plan</label>
-                        <textarea id="neonatal_diagnosis_plan" rows="5"
-                            placeholder="Primary neonatal diagnosis and detailed management plan"></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Family Counselling & Discharge</h2>
-                    <div class="form-group">
-                        <label for="neonatal_counselling">Counselling Provided</label>
-                        <textarea id="neonatal_counselling" rows="4"
-                            placeholder="Education provided to parents, discharge instructions, follow-up plans"></textarea>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- BOTTOM ACTION BAR -->
-        <!-- ============================================================ -->
-        <div class="action-buttons">
-            <button class="btn btn-outline" onclick="saveFormData()">💾 Save (Local)</button>
-            <button class="btn btn-outline" onclick="clearAllData()">🗑️ Clear All</button>
-            <button class="btn btn-outline" onclick="downloadTXT()">📄 Download TXT</button>
-            <button class="btn btn-outline" onclick="downloadJSON()">💾 Backup (JSON)</button>
-            <button class="btn btn-outline" onclick="importJSON()">📥 Import Backup</button>
-            <button class="btn btn-primary" onclick="printForm()">🖨️ Print / PDF</button>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- TOAST NOTIFICATION (Hidden by default) -->
-        <!-- ============================================================ -->
-        <div id="toast" class="toast"></div>
-
-        <!-- ============================================================ -->
-        <!-- SCRIPTS -->
-        <!-- ============================================================ -->
-        <script src="js/utils.js"></script>
-        <script src="js/export.js"></script>
-        <script src="js/main.js"></script>
+            <!-- ============================================================ -->
+            <!-- SCRIPTS -->
+            <!-- ============================================================ -->
+            <script src="js/utils.js"></script>
+            <script src="js/export.js"></script>
+            <script src="js/main.js"></script>
 </body>
 
 </html>
