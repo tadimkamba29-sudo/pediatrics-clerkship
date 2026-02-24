@@ -1,6 +1,6 @@
 /**
  * Export and Print logic
- * Handles TXT download, JSON backup/restore, and printing
+ * Handles TXT download, JSON backup/restore, printing, and Neonatal-only exports
  */
 
 // ============================================================================
@@ -47,6 +47,9 @@ function generateTXTContent() {
     txt += `Date of Birth: ${getValue('dob')}\n`;
     txt += `Age: ${getValue('age')}\n`;
     txt += `Sex: ${getRadioValue('sex')}\n`;
+    txt += `Religion: ${getValue('religion')}\n`;
+    txt += `Place of Birth: ${getValue('place_of_birth')}\n`;
+    txt += `Place of Residence: ${getValue('place_of_residence')}\n`;
     txt += `Weight: ${getValue('weight')} kg\n`;
     txt += `Height: ${getValue('height')} cm\n`;
     txt += `Head Circumference: ${getValue('head_circ')} cm\n`;
@@ -61,6 +64,15 @@ function generateTXTContent() {
     txt += `Informant: ${getValue('informant')}\n`;
     txt += `Informant Reliability: ${getValue('informant_reliability')}\n`;
     txt += `Attending Physician: ${getValue('attending')}\n`;
+    txt += '\n';
+    
+    // === HIV/RVD STATUS ===
+    txt += '━━━ HIV/RVD STATUS ━━━\n';
+    txt += `HIV Status: ${getRadioValue('hiv_status')}\n`;
+    if (getRadioValue('hiv_status') === 'Positive') {
+        txt += `Details: ${getValue('hiv_details')}\n`;
+    }
+    txt += `Date of Last Test: ${getValue('hiv_test_date')}\n`;
     txt += '\n';
     
     // === CHIEF COMPLAINT ===
@@ -96,20 +108,9 @@ function generateTXTContent() {
     txt += getTableContent('priorTreatmentTable', ['Medication/Treatment', 'Dose/Frequency', 'Response']);
     txt += '\n';
     
-    // === REVIEW OF SYSTEMS ===
+    // === REVIEW OF SYSTEMS (Fixed X/Tick model) ===
     txt += '━━━ REVIEW OF SYSTEMS ━━━\n';
-    txt += getCheckedBoxes('General', 'ros_general');
-    txt += getCheckedBoxes('Respiratory', 'ros_respiratory');
-    txt += getCheckedBoxes('Cardiovascular', 'ros_cvs');
-    txt += getCheckedBoxes('GI', 'ros_gi');
-    txt += getCheckedBoxes('GU', 'ros_gu');
-    txt += getCheckedBoxes('Neurological', 'ros_neuro');
-    txt += getCheckedBoxes('MSK', 'ros_msk');
-    txt += getCheckedBoxes('Skin', 'ros_skin');
-    txt += getCheckedBoxes('HEENT', 'ros_heent');
-    txt += getCheckedBoxes('Endocrine', 'ros_endocrine');
-    txt += getCheckedBoxes('Hematologic', 'ros_hematologic');
-    txt += getCheckedBoxes('Psychiatric', 'ros_psychiatric');
+    txt += getROSFindings();
     txt += `Details: ${getValue('ros_details')}\n`;
     txt += '\n';
     
@@ -231,7 +232,11 @@ function generateTXTContent() {
     
     // === PHYSICAL EXAMINATION ===
     txt += '━━━ PHYSICAL EXAMINATION ━━━\n';
-    txt += `General Appearance: ${getValue('general_appearance')}\n`;
+    
+    txt += '\n━━━ GENERAL INSPECTION ━━━\n';
+    txt += getValue('general_inspection') + '\n';
+    
+    txt += `\nGeneral Appearance: ${getValue('general_appearance')}\n`;
     txt += `AVPU: ${getRadioValue('avpu')}\n`;
     txt += `Nutritional Status: ${getRadioValue('nutritional_status')}\n`;
     txt += `Hydration: ${getRadioValue('hydration_status')}\n`;
@@ -394,9 +399,14 @@ function generateTXTContent() {
     
     txt += '\nDelivery Details:\n';
     txt += `Mode: ${getRadioValue('neonatal_delivery_mode')}\n`;
+    if (getRadioValue('neonatal_delivery_mode') === 'LSCS') {
+        txt += `LSCS Indication: ${getValue('neonatal_lscs_indication')}\n`;
+    }
     txt += `Birth Weight: ${getValue('neonatal_birth_weight')} kg\n`;
+    txt += `Birth Length: ${getValue('neonatal_birth_length')} cm\n`;
+    txt += `Birth Head Circumference: ${getValue('neonatal_birth_hc')} cm\n`;
     txt += `Gestational Age: ${getValue('neonatal_ga')} weeks\n`;
-    const neonatalClass = document.getElementById('neonatalClassification')?.innerHTML;
+    const neonatalClass = document.getElementById('neonatalClassification')?.textContent;
     if (neonatalClass) txt += `Classification: ${neonatalClass}\n`;
     
     txt += `\nNeonatal Exam Findings: ${getValue('neonatal_exam_findings')}\n`;
@@ -416,7 +426,221 @@ function generateTXTContent() {
     return txt;
 }
 
+// ============================================================================
+// NEONATAL-ONLY EXPORT - TXT
+// ============================================================================
+
+function downloadNeonatalTXT() {
+    const content = generateNeonatalTXTContent();
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    
+    const babyId = document.getElementById('neonatal_baby_id')?.value || 'Neonate';
+    const fileName = `${babyId.replace(/\s+/g, '_')}_Neonatal_Clerkship.txt`;
+    
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showToast('Neonatal TXT downloaded!', 'success');
+}
+
+function generateNeonatalTXTContent() {
+    let txt = '';
+    
+    txt += '═══════════════════════════════════════════════════════════\n';
+    txt += '           NEONATAL CLERKSHIP SUMMARY\n';
+    txt += '═══════════════════════════════════════════════════════════\n\n';
+    
+    txt += '━━━ IDENTIFICATION ━━━\n';
+    txt += `Baby Identification: ${getValue('neonatal_baby_id')}\n`;
+    txt += `Mother's Name: ${getValue('neonatal_mother_name')}\n`;
+    txt += `Date of Birth: ${getValue('neonatal_dob')}\n`;
+    txt += `Admission Date/Time: ${getValue('neonatal_admission_datetime')}\n`;
+    txt += `Age at Admission: ${getValue('neonatal_age_at_admission')}\n`;
+    txt += '\n';
+    
+    txt += '━━━ MATERNAL/OBSTETRIC HISTORY ━━━\n';
+    txt += getValue('neonatal_maternal_history') + '\n';
+    txt += '\n';
+    
+    txt += '━━━ DELIVERY DETAILS ━━━\n';
+    txt += `Mode of Delivery: ${getRadioValue('neonatal_delivery_mode')}\n`;
+    if (getRadioValue('neonatal_delivery_mode') === 'LSCS') {
+        txt += `LSCS Indication: ${getValue('neonatal_lscs_indication')}\n`;
+    }
+    txt += '\n';
+    
+    txt += '━━━ BIRTH MEASUREMENTS ━━━\n';
+    txt += `Birth Weight: ${getValue('neonatal_birth_weight')} kg\n`;
+    txt += `Birth Length: ${getValue('neonatal_birth_length')} cm\n`;
+    txt += `Birth Head Circumference: ${getValue('neonatal_birth_hc')} cm\n`;
+    txt += `Gestational Age: ${getValue('neonatal_ga')} weeks\n`;
+    
+    const classification = document.getElementById('neonatalClassification')?.textContent;
+    if (classification) {
+        txt += `Classification: ${classification}\n`;
+    }
+    txt += '\n';
+    
+    txt += '━━━ PHYSICAL EXAMINATION ━━━\n';
+    txt += getValue('neonatal_exam_findings') + '\n';
+    txt += '\n';
+    
+    txt += '━━━ PRIMITIVE REFLEXES ━━━\n';
+    txt += getValue('neonatal_reflexes') + '\n';
+    txt += '\n';
+    
+    txt += '━━━ MEDICATIONS ━━━\n';
+    txt += getTableContent('neonatalMedicationsTable', ['Medication', 'Dose', 'Route']);
+    txt += '\n';
+    
+    txt += '━━━ DIAGNOSIS & PLAN ━━━\n';
+    txt += getValue('neonatal_diagnosis_plan') + '\n';
+    txt += '\n';
+    
+    txt += '━━━ FAMILY COUNSELLING ━━━\n';
+    txt += getValue('neonatal_counselling') + '\n';
+    txt += '\n';
+    
+    txt += '═══════════════════════════════════════════════════════════\n';
+    txt += `Generated: ${new Date().toLocaleString()}\n`;
+    txt += '═══════════════════════════════════════════════════════════\n';
+    
+    return txt;
+}
+
+// ============================================================================
+// NEONATAL-ONLY EXPORT - JSON
+// ============================================================================
+
+function downloadNeonatalJSON() {
+    const neonatalFields = [
+        'neonatal_baby_id', 'neonatal_mother_name', 'neonatal_dob',
+        'neonatal_admission_datetime', 'neonatal_age_at_admission',
+        'neonatal_maternal_history', 'neonatal_delivery_mode',
+        'neonatal_lscs_indication', 'neonatal_birth_weight',
+        'neonatal_birth_length', 'neonatal_birth_hc', 'neonatal_ga',
+        'neonatal_exam_findings', 'neonatal_reflexes',
+        'neonatal_diagnosis_plan', 'neonatal_counselling'
+    ];
+    
+    const data = {};
+    neonatalFields.forEach(field => {
+        const el = document.getElementById(field);
+        if (el) data[field] = el.value;
+    });
+    
+    // Get radio values for neonatal delivery mode
+    data.neonatal_delivery_mode = getRadioValue('neonatal_delivery_mode');
+    
+    // Get neonatal medications table
+    data._neonatalMedications = [];
+    const table = document.getElementById('neonatalMedicationsTable');
+    if (table) {
+        table.querySelectorAll('tbody tr').forEach(row => {
+            const inputs = row.querySelectorAll('input');
+            data._neonatalMedications.push([
+                inputs[0]?.value || '',
+                inputs[1]?.value || '',
+                inputs[2]?.value || ''
+            ]);
+        });
+    }
+    
+    const jsonString = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    
+    const babyId = document.getElementById('neonatal_baby_id')?.value || 'Neonate';
+    const fileName = `${babyId.replace(/\s+/g, '_')}_Neonatal_Backup.json`;
+    
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showToast('Neonatal JSON backup downloaded!', 'success');
+}
+
+// ============================================================================
+// FIX: Get ROS values with X/Tick model
+// ============================================================================
+
+function getROSFindings() {
+    const rosItems = [
+        { name: 'ros_fever', label: 'Fever' },
+        { name: 'ros_weight_loss', label: 'Weight Loss' },
+        { name: 'ros_fatigue', label: 'Fatigue' },
+        { name: 'ros_night_sweats', label: 'Night Sweats' },
+        { name: 'ros_poor_appetite', label: 'Poor Appetite' },
+        { name: 'ros_cough', label: 'Cough' },
+        { name: 'ros_dyspnea', label: 'Difficulty Breathing' },
+        { name: 'ros_wheeze', label: 'Wheezing' },
+        { name: 'ros_chest_pain', label: 'Chest Pain' },
+        { name: 'ros_palpitations', label: 'Palpitations' },
+        { name: 'ros_syncope', label: 'Syncope' },
+        { name: 'ros_edema', label: 'Edema' },
+        { name: 'ros_cyanosis', label: 'Cyanosis' },
+        { name: 'ros_nausea', label: 'Nausea' },
+        { name: 'ros_vomiting', label: 'Vomiting' },
+        { name: 'ros_diarrhea', label: 'Diarrhea' },
+        { name: 'ros_constipation', label: 'Constipation' },
+        { name: 'ros_abdo_pain', label: 'Abdominal Pain' },
+        { name: 'ros_blood_stool', label: 'Blood in Stool' },
+        { name: 'ros_dysuria', label: 'Dysuria' },
+        { name: 'ros_frequency', label: 'Urinary Frequency' },
+        { name: 'ros_hematuria', label: 'Hematuria' },
+        { name: 'ros_bedwetting', label: 'Bedwetting' },
+        { name: 'ros_headache', label: 'Headache' },
+        { name: 'ros_seizures', label: 'Seizures' },
+        { name: 'ros_weakness', label: 'Weakness' },
+        { name: 'ros_altered_consc', label: 'Altered Consciousness' },
+        { name: 'ros_joint_pain', label: 'Joint Pain' },
+        { name: 'ros_joint_swelling', label: 'Joint Swelling' },
+        { name: 'ros_limping', label: 'Limping' },
+        { name: 'ros_rash', label: 'Rash' },
+        { name: 'ros_itching', label: 'Itching' },
+        { name: 'ros_bruising', label: 'Bruising' },
+        { name: 'ros_vision', label: 'Vision Changes' },
+        { name: 'ros_ear_pain', label: 'Ear Pain' },
+        { name: 'ros_sore_throat', label: 'Sore Throat' },
+        { name: 'ros_runny_nose', label: 'Runny Nose' }
+    ];
+    
+    let positives = [];
+    let negatives = [];
+    
+    rosItems.forEach(item => {
+        const value = getRadioValue(item.name);
+        if (value === 'yes') {
+            positives.push(item.label);
+        } else if (value === 'no') {
+            negatives.push(item.label);
+        }
+    });
+    
+    let result = '';
+    if (positives.length > 0) {
+        result += `Positive: ${positives.join(', ')}\n`;
+    }
+    if (negatives.length > 0) {
+        result += `Negative: ${negatives.join(', ')}\n`;
+    }
+    if (result === '') {
+        result = 'Not assessed\n';
+    }
+    
+    return result;
+}
+
+// ============================================================================
 // Helper functions for TXT generation
+// ============================================================================
+
 function getValue(id) {
     return document.getElementById(id)?.value || '';
 }
