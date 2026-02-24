@@ -2243,6 +2243,31 @@
                         </div>
 
                         <div class="card">
+                            <h2 class="card-title">Birth Measurements</h2>
+                            <div class="form-row three-col">
+                                <div class="form-group">
+                                    <label for="neonatal_birth_weight">Birth Weight (kg)</label>
+                                    <input type="number" id="neonatal_birth_weight" step="0.01" placeholder="e.g., 2.5">
+                                </div>
+                                <div class="form-group">
+                                    <label for="neonatal_birth_length">Birth Length (cm)</label>
+                                    <input type="number" id="neonatal_birth_length" step="0.1" placeholder="e.g., 48">
+                                </div>
+                                <div class="form-group">
+                                    <label for="neonatal_birth_hc">Birth Head Circumference (cm)</label>
+                                    <input type="number" id="neonatal_birth_hc" step="0.1" placeholder="e.g., 33">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="neonatal_ga">Gestational Age (weeks)</label>
+                                    <input type="number" id="neonatal_ga" step="0.1" placeholder="e.g., 37.0">
+                                </div>
+                            </div>
+                            <div class="result-box" id="neonatalClassification"></div>
+                        </div>
+
+                        <div class="card">
                             <h2 class="card-title">Maternal/Obstetric History</h2>
                             <div class="form-group">
                                 <label for="neonatal_maternal_history">Summary</label>
@@ -2334,6 +2359,16 @@
                                 <textarea id="neonatal_counselling" rows="4"
                                     placeholder="Education provided to parents, discharge instructions, follow-up plans"></textarea>
                             </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h2 class="card-title">Save Neonatal Clerkship Only</h2>
+                        <p>Export only the neonatal section without other tabs.</p>
+                        <div class="form-row">
+                            <button type="button" class="btn btn-primary" onclick="downloadNeonatalTXT()">📄 Download
+                                Neonatal TXT</button>
+                            <button type="button" class="btn btn-outline" onclick="downloadNeonatalJSON()">💾 Backup
+                                Neonatal (JSON)</button>
                         </div>
                     </div>
 
