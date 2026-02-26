@@ -151,27 +151,27 @@ function calculateZScore(value, L, M, S) {
 
 function getClosestAge(ageMonths, lmsTable) {
     const ages = Object.keys(lmsTable).map(Number).sort((a, b) => a - b);
-    
-    // Exact match
-    if (lmsTable[ageMonths]) return ageMonths;
-    
-    // Find surrounding bracket for interpolation
+
+    // Exact match — return the params object directly
+    if (lmsTable[ageMonths] !== undefined) return lmsTable[ageMonths];
+
+    // Find surrounding bracket
     let lower = ages[0];
     let upper = ages[ages.length - 1];
-    
+
     for (const age of ages) {
         if (age <= ageMonths) lower = age;
-        if (age >= ageMonths && age < upper) upper = age;
+        if (age >= ageMonths) { upper = age; break; }
     }
-    
-    // If at or beyond boundaries, return boundary
-    if (lower === upper) return lower;
-    
-    // Linearly interpolate L, M, S
+
+    // At or beyond a boundary — return boundary params object
+    if (lower === upper) return lmsTable[lower];
+
+    // Linearly interpolate L, M, S and return an object
     const t = (ageMonths - lower) / (upper - lower);
     const lo = lmsTable[lower];
     const hi = lmsTable[upper];
-    
+
     return {
         L: lo.L + t * (hi.L - lo.L),
         M: lo.M + t * (hi.M - lo.M),
@@ -188,10 +188,12 @@ function calculateAllZScores() {
     
     if (!dobValue || !sex) return;
     
-    // Calculate age in months
+    // Calculate age in months (accounting for day-of-month)
     const dob = new Date(dobValue);
     const now = new Date();
-    const ageMonths = (now.getFullYear() - dob.getFullYear()) * 12 + (now.getMonth() - dob.getMonth());
+    let ageMonths = (now.getFullYear() - dob.getFullYear()) * 12 + (now.getMonth() - dob.getMonth());
+    // Subtract a month if birthday hasn't occurred yet this month
+    if (now.getDate() < dob.getDate()) ageMonths--;
     
     // Only calculate for children under 5 years (60 months)
     if (ageMonths > 60) {
