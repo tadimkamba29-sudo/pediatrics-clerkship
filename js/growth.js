@@ -151,15 +151,32 @@ function calculateZScore(value, L, M, S) {
 
 function getClosestAge(ageMonths, lmsTable) {
     const ages = Object.keys(lmsTable).map(Number).sort((a, b) => a - b);
-    let closest = ages[0];
+    
+    // Exact match
+    if (lmsTable[ageMonths]) return ageMonths;
+    
+    // Find surrounding bracket for interpolation
+    let lower = ages[0];
+    let upper = ages[ages.length - 1];
     
     for (const age of ages) {
-        if (Math.abs(age - ageMonths) < Math.abs(closest - ageMonths)) {
-            closest = age;
-        }
+        if (age <= ageMonths) lower = age;
+        if (age >= ageMonths && age < upper) upper = age;
     }
     
-    return closest;
+    // If at or beyond boundaries, return boundary
+    if (lower === upper) return lower;
+    
+    // Linearly interpolate L, M, S
+    const t = (ageMonths - lower) / (upper - lower);
+    const lo = lmsTable[lower];
+    const hi = lmsTable[upper];
+    
+    return {
+        L: lo.L + t * (hi.L - lo.L),
+        M: lo.M + t * (hi.M - lo.M),
+        S: lo.S + t * (hi.S - lo.S)
+    };
 }
 
 function calculateAllZScores() {
@@ -185,23 +202,20 @@ function calculateAllZScores() {
     }
     
     const isMale = sex === 'Male';
-    const closestAge = getClosestAge(ageMonths, isMale ? WFA_BOYS : WFA_GIRLS);
+    const wfaParams = getClosestAge(ageMonths, isMale ? WFA_BOYS : WFA_GIRLS);
     
     // Weight-for-Age Z-score
     if (weight) {
-        const wfaTable = isMale ? WFA_BOYS : WFA_GIRLS;
-        const wfaParams = wfaTable[closestAge];
         const waz = calculateZScore(weight, wfaParams.L, wfaParams.M, wfaParams.S);
-        document.getElementById('waz').value = waz ? waz.toFixed(2) : '';
+        document.getElementById('waz').value = waz !== null ? waz.toFixed(2) : '';
         interpretWAZ(waz);
     }
     
     // Height-for-Age Z-score
     if (height) {
-        const hfaTable = isMale ? HFA_BOYS : HFA_GIRLS;
-        const hfaParams = hfaTable[closestAge];
+        const hfaParams = getClosestAge(ageMonths, isMale ? HFA_BOYS : HFA_GIRLS);
         const haz = calculateZScore(height, hfaParams.L, hfaParams.M, hfaParams.S);
-        document.getElementById('haz').value = haz ? haz.toFixed(2) : '';
+        document.getElementById('haz').value = haz !== null ? haz.toFixed(2) : '';
         interpretHAZ(haz);
     }
     
@@ -209,21 +223,19 @@ function calculateAllZScores() {
     if (weight && height) {
         const heightM = height / 100;
         const bmi = weight / (heightM * heightM);
-        const bmiTable = isMale ? BMI_BOYS : BMI_GIRLS;
-        const bmiParams = bmiTable[closestAge];
+        const bmiParams = getClosestAge(ageMonths, isMale ? BMI_BOYS : BMI_GIRLS);
         const whz = calculateZScore(bmi, bmiParams.L, bmiParams.M, bmiParams.S);
-        document.getElementById('whz').value = whz ? whz.toFixed(2) : '';
+        document.getElementById('whz').value = whz !== null ? whz.toFixed(2) : '';
         interpretWHZ(whz);
     }
     
-    // Head Circumference Z-score (if field exists)
+    // Head Circumference Z-score
     if (headCirc) {
-        const hcTable = isMale ? HC_BOYS : HC_GIRLS;
-        const hcParams = hcTable[closestAge];
+        const hcParams = getClosestAge(ageMonths, isMale ? HC_BOYS : HC_GIRLS);
         const hcz = calculateZScore(headCirc, hcParams.L, hcParams.M, hcParams.S);
         const hczField = document.getElementById('hcz');
         if (hczField) {
-            hczField.value = hcz ? hcz.toFixed(2) : '';
+            hczField.value = hcz !== null ? hcz.toFixed(2) : '';
         }
     }
     
@@ -513,20 +525,9 @@ function updateDevelopmentalMilestones() {
         `;
     }
     
-    // Add developmental concerns section
+    // Add developmental concerns section (no regression radios - those exist in static HTML below)
     milestonesHTML += `
         <div class="form-group" style="margin-top: 15px;">
-            <label>Developmental Regression?</label>
-            <div class="radio-group">
-                <label><input type="radio" name="dev_regression" value="No"> No</label>
-                <label><input type="radio" name="dev_regression" value="Yes"> Yes</label>
-            </div>
-        </div>
-        <div class="form-group" id="regression_details_group" style="display:none;">
-            <label for="regression_details">Details of Regression</label>
-            <textarea id="regression_details" class="form-control" rows="2" placeholder="Which skills were lost and when?"></textarea>
-        </div>
-        <div class="form-group">
             <label for="developmental_concerns">Developmental Concerns</label>
             <textarea id="developmental_concerns" class="form-control" rows="2" placeholder="Any concerns about development?"></textarea>
         </div>
