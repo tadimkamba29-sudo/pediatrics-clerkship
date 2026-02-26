@@ -383,9 +383,9 @@ function interpretMetabolic() {
         else interpretation.push('✓ Potassium normal');
     }
 
-    // Creatinine (simplified pediatric ranges)
+    // Creatinine (pediatric range in μmol/L)
     if (creatinine) {
-        if (creatinine > 1.2) interpretation.push('⚠️ Elevated creatinine');
+        if (creatinine > 90) interpretation.push('⚠️ Elevated creatinine');
         else interpretation.push('✓ Creatinine normal');
     }
 
@@ -491,24 +491,32 @@ function getAllFormData() {
     return formData;
 }
 
-// Helper to set all form data from object
+// Helper to set all form data from object (used by importJSON in export.js)
 function setAllFormData(data) {
     Object.keys(data).forEach(key => {
-        const element = document.getElementById(key) || document.querySelector(`[name="${key}"]`);
-        if (!element) return;
-        
-        if (element.type === 'radio') {
-            const radio = document.querySelector(`input[name="${key}"][value="${data[key]}"]`);
-            if (radio) radio.checked = true;
-        } else if (element.type === 'checkbox') {
-            if (Array.isArray(data[key])) {
-                data[key].forEach(value => {
-                    const checkbox = document.querySelector(`input[name="${key}"][value="${value}"]`);
-                    if (checkbox) checkbox.checked = true;
-                });
+        if (key.startsWith('_')) return; // skip meta keys
+
+        // Handle grouped checkbox arrays
+        if (Array.isArray(data[key])) {
+            data[key].forEach(value => {
+                const cb = document.querySelector(`input[type="checkbox"][name="${key}"][value="${value}"]`);
+                if (cb) cb.checked = true;
+            });
+            return;
+        }
+
+        // Try by id first, then by radio name
+        const element = document.getElementById(key);
+        if (element) {
+            if (element.type === 'checkbox') {
+                element.checked = !!data[key];
+            } else {
+                element.value = data[key];
             }
         } else {
-            element.value = data[key];
+            // Attempt radio match by name + value
+            const radio = document.querySelector(`input[type="radio"][name="${key}"][value="${data[key]}"]`);
+            if (radio) radio.checked = true;
         }
     });
 }
