@@ -42,15 +42,15 @@ document.addEventListener('DOMContentLoaded', () => {
 // TAB SYSTEM WITH MEMORY
 // ============================================================================
 
-function showTab(tabId) {
+function showTab(tabId, btn) {
     // Hide all contents
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
     
     // Deactivate all tab buttons
-    document.querySelectorAll('.nav-tab').forEach(btn => {
-        btn.classList.remove('active');
+    document.querySelectorAll('.nav-tab').forEach(b => {
+        b.classList.remove('active');
     });
 
     // Show selected tab
@@ -59,10 +59,9 @@ function showTab(tabId) {
         selectedTab.classList.add('active');
     }
     
-    // Find and activate the clicked button
-    const clickedButton = event?.currentTarget;
-    if (clickedButton) {
-        clickedButton.classList.add('active');
+    // Activate the clicked button (passed as argument for reliability)
+    if (btn) {
+        btn.classList.add('active');
     }
     
     // Save active tab to localStorage
@@ -156,7 +155,12 @@ function gatherFormData() {
         if (!key) return;
         
         if (input.type === 'checkbox') {
-            formData[key] = input.checked;
+            // Group checkboxes by name into arrays
+            const name = input.name || input.id;
+            if (name) {
+                if (!formData[name]) formData[name] = [];
+                if (input.checked) formData[name].push(input.value);
+            }
         } else if (input.type === 'radio') {
             if (input.checked) formData[input.name] = input.value;
         } else {
@@ -183,6 +187,15 @@ function loadFormData() {
         // Restore regular form fields
         Object.keys(data).forEach(key => {
             if (key === '_dynamicTables' || key === '_progressNotes') return; // Handle separately
+            
+            // Handle grouped checkbox arrays
+            if (Array.isArray(data[key])) {
+                data[key].forEach(value => {
+                    const cb = document.querySelector(`input[type="checkbox"][name="${key}"][value="${value}"]`);
+                    if (cb) cb.checked = true;
+                });
+                return;
+            }
             
             const el = document.getElementById(key);
             if (!el) {
@@ -600,6 +613,7 @@ function updateProgress() {
     const allInputs = document.querySelectorAll('input:not([type="button"]):not([type="submit"]):not([type="file"]), textarea, select');
     let filled = 0;
     let total = 0;
+    const countedRadioNames = new Set();
     
     allInputs.forEach(input => {
         // Skip hidden fields and buttons
@@ -609,15 +623,28 @@ function updateProgress() {
         const parentGroup = input.closest('[id$="_group"]');
         if (parentGroup && parentGroup.style.display === 'none') return;
         
-        total++;
-        
-        if (input.type === 'checkbox' || input.type === 'radio') {
-            const name = input.name;
-            if (document.querySelector(`input[name="${name}"]:checked`)) {
+        if (input.type === 'radio') {
+            // Count each radio group only once
+            if (countedRadioNames.has(input.name)) return;
+            countedRadioNames.add(input.name);
+            total++;
+            if (document.querySelector(`input[name="${input.name}"]:checked`)) {
                 filled++;
             }
-        } else if (input.value.trim() !== '') {
-            filled++;
+        } else if (input.type === 'checkbox') {
+            // Count each checkbox group (by name) only once
+            const groupName = input.name || input.id;
+            if (groupName && countedRadioNames.has('cb_' + groupName)) return;
+            if (groupName) countedRadioNames.add('cb_' + groupName);
+            total++;
+            if (document.querySelector(`input[name="${groupName}"]:checked`)) {
+                filled++;
+            }
+        } else {
+            total++;
+            if (input.value.trim() !== '') {
+                filled++;
+            }
         }
     });
     
@@ -648,14 +675,15 @@ function attachEventListeners() {
         });
     }
     
-    // Sex radio buttons → Z-scores
-    document.querySelectorAll('input[name="sex"]').forEach(radio => {
-        radio.addEventListener('change', () => {
+    // Sex select → Z-scores
+    const sexSelect = document.getElementById('sex');
+    if (sexSelect) {
+        sexSelect.addEventListener('change', () => {
             if (typeof calculateAllZScores === 'function') {
                 calculateAllZScores();
             }
         });
-    });
+    }
     
     // Weight/Height/HC → BMI AND Z-scores
     const weightField = document.getElementById('weight');
@@ -750,14 +778,4 @@ function attachEventListeners() {
 // TOAST NOTIFICATION SYSTEM
 // ============================================================================
 
-function showToast(message, type = 'info') {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    
-    toast.textContent = message;
-    toast.className = `toast toast-${type} show`;
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
+// showToast is defined in export.js — no duplicate needed here
