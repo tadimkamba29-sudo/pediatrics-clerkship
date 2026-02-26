@@ -46,7 +46,7 @@ function generateTXTContent() {
     txt += `MRN: ${getValue('mrn')}\n`;
     txt += `Date of Birth: ${getValue('dob')}\n`;
     txt += `Age: ${getValue('age')}\n`;
-    txt += `Sex: ${getRadioValue('sex')}\n`;
+    txt += `Sex: ${getValue('sex')}\n`;
     txt += `Religion: ${getValue('religion')}\n`;
     txt += `Place of Birth: ${getValue('place_of_birth')}\n`;
     txt += `Place of Residence: ${getValue('place_of_residence')}\n`;
@@ -61,9 +61,9 @@ function generateTXTContent() {
     txt += `Exam Date: ${getValue('exam_date')}\n`;
     txt += `Hospital/Facility: ${getValue('hospital')}\n`;
     txt += `Admission Date: ${getValue('admission_date')}\n`;
+    txt += `Attending Physician: ${getValue('attending')}\n`;
     txt += `Informant: ${getValue('informant')}\n`;
     txt += `Informant Reliability: ${getValue('informant_reliability')}\n`;
-    txt += `Attending Physician: ${getValue('attending')}\n`;
     txt += '\n';
     
     // === HIV/RVD STATUS ===
@@ -355,7 +355,7 @@ function generateTXTContent() {
     // === MANAGEMENT ===
     txt += '━━━ MANAGEMENT PLAN ━━━\n';
     txt += `Admission Decision: ${getRadioValue('admission_decision')}\n`;
-    txt += `Ward: ${getValue('ward')}\n`;
+    txt += `Ward: ${getValue('ward_management')}\n`;
     
     txt += '\nProblem List:\n';
     txt += getTableContent('problemListTable', ['Problem', 'Status']);
@@ -790,6 +790,11 @@ function importJSON() {
                     restoreDynamicTables(data._dynamicTables);
                 }
                 
+                // Restore progress notes (was missing!)
+                if (data._progressNotes) {
+                    restoreProgressNotes(data._progressNotes);
+                }
+                
                 // Save to localStorage
                 localStorage.setItem('clerkshipData', JSON.stringify(data));
                 
@@ -817,23 +822,22 @@ function importJSON() {
 }
 
 // ============================================================================
-// TOAST NOTIFICATION SYSTEM
+// TOAST NOTIFICATION SYSTEM (canonical - shared with main.js)
 // ============================================================================
 
 function showToast(message, type = 'info') {
-    const toast = document.getElementById('toast') || createToastElement();
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+    }
+    
     toast.textContent = message;
     toast.className = `toast toast-${type} show`;
     
     setTimeout(() => {
         toast.classList.remove('show');
     }, 3000);
-}
-
-function createToastElement() {
-    const t = document.createElement('div');
-    t.id = 'toast';
-    t.className = 'toast';
-    document.body.appendChild(t);
-    return t;
 }
