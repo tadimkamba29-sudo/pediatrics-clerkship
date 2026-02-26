@@ -25,17 +25,17 @@
     <div class="autosave-indicator" id="autosaveIndicator">✓ Saved</div>
 
     <div class="nav-tabs" id="navTabs">
-        <button class="nav-tab active" onclick="showTab('patient-info')">Patient Info</button>
-        <button class="nav-tab" onclick="showTab('chief-complaint')">Chief Complaint</button>
-        <button class="nav-tab" onclick="showTab('past-medical')">Past Medical Hx</button>
-        <button class="nav-tab" onclick="showTab('family-social')">Family/Social Hx</button>
-        <button class="nav-tab" onclick="showTab('diff-dx-history')">⭐ Diff Dx (History)</button>
-        <button class="nav-tab" onclick="showTab('physical-exam')">Physical Exam</button>
-        <button class="nav-tab" onclick="showTab('diff-dx-final')">⭐ Diff Dx (Final)</button>
-        <button class="nav-tab" onclick="showTab('investigations')">Investigations</button>
-        <button class="nav-tab" onclick="showTab('management')">Management</button>
-        <button class="nav-tab" onclick="showTab('progress')">Progress Notes</button>
-        <button class="nav-tab" onclick="showTab('neonatal')">👶 Neonatal</button>
+        <button class="nav-tab active" onclick="showTab('patient-info', this)">Patient Info</button>
+        <button class="nav-tab" onclick="showTab('chief-complaint', this)">Chief Complaint</button>
+        <button class="nav-tab" onclick="showTab('past-medical', this)">Past Medical Hx</button>
+        <button class="nav-tab" onclick="showTab('family-social', this)">Family/Social Hx</button>
+        <button class="nav-tab" onclick="showTab('diff-dx-history', this)">⭐ Diff Dx (History)</button>
+        <button class="nav-tab" onclick="showTab('physical-exam', this)">Physical Exam</button>
+        <button class="nav-tab" onclick="showTab('diff-dx-final', this)">⭐ Diff Dx (Final)</button>
+        <button class="nav-tab" onclick="showTab('investigations', this)">Investigations</button>
+        <button class="nav-tab" onclick="showTab('management', this)">Management</button>
+        <button class="nav-tab" onclick="showTab('progress', this)">Progress Notes</button>
+        <button class="nav-tab" onclick="showTab('neonatal', this)">👶 Neonatal</button>
     </div>
 
     <div class="container">
@@ -124,6 +124,10 @@
                             <option value="Unreliable">Unreliable</option>
                         </select>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="attending">Attending Physician</label>
+                    <input type="text" id="attending" placeholder="Name of attending physician">
                 </div>
             </div>
         </div>
@@ -709,6 +713,16 @@
                     <div class="form-group">
                         <label for="birth_weight">Birth Weight (kg)</label>
                         <input type="number" id="birth_weight" step="0.01" placeholder="e.g., 3.2">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="birth_length">Birth Length (cm)</label>
+                        <input type="number" id="birth_length" step="0.1" placeholder="e.g., 50.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="birth_hc">Birth Head Circumference (cm)</label>
+                        <input type="number" id="birth_hc" step="0.1" placeholder="e.g., 34.0">
                     </div>
                 </div>
                 <div class="form-row">
@@ -1311,6 +1325,12 @@
                         <label for="whz">Weight-for-Height Z-score</label>
                         <input type="text" id="whz" readonly placeholder="Auto-calculated">
                         <div id="whzInterpretation"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hcz">Head Circumference Z-score</label>
+                        <input type="text" id="hcz" readonly placeholder="Auto-calculated">
                     </div>
                 </div>
 
@@ -1962,8 +1982,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="ward">Ward/Unit</label>
-                    <input type="text" id="ward" placeholder="e.g., Pediatric Ward, ICU, HDU">
+                    <label for="ward_management">Ward/Unit</label>
+                    <input type="text" id="ward_management" placeholder="e.g., Pediatric Ward, ICU, HDU">
                 </div>
             </div>
 
