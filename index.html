@@ -8,7 +8,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <title>Pediatrics Clerkship Sheet</title>
 
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -1310,6 +1310,9 @@
                 </div>
 
                 <h3>Z-Scores (Auto-Calculated)</h3>
+                <div id="zScoreHint" class="info-text" style="display:none; color:#e67e22; margin-bottom:8px;">
+                    ⚠️ <strong>Enter Date of Birth and Sex</strong> (Patient Info tab) to enable automatic Z-score calculation.
+                </div>
                 <div class="form-row three-col">
                     <div class="form-group">
                         <label for="waz">Weight-for-Age Z-score</label>
@@ -2300,10 +2303,10 @@
 
     <div id="toast" class="toast"></div>
 
-    <script src="js/utils.js"></script>
-    <script src="js/growth.js"></script>
-    <script src="js/export.js"></script>
-    <script src="js/main.js"></script>
+    <script src="utils.js"></script>
+    <script src="growth.js"></script>
+    <script src="export.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>
