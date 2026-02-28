@@ -1,6 +1,9 @@
 /**
  * Growth Standards and Z-Score Calculations
  * Based on WHO Child Growth Standards
+ * 
+ * v2 — Fixed: null safety, user feedback for missing prerequisites,
+ *             clear fields when inputs are removed
  */
 
 // ============================================================================
@@ -136,13 +139,28 @@ const HC_GIRLS = {
 };
 
 // ============================================================================
+// HELPER: Clear Z-Score Fields
+// ============================================================================
+
+function clearZScoreFields() {
+    ['waz', 'haz', 'whz', 'hcz', 'weight_percentile', 'height_percentile'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    ['wazInterpretation', 'hazInterpretation', 'whzInterpretation'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+    });
+}
+
+// ============================================================================
 // Z-SCORE CALCULATION FUNCTIONS
 // ============================================================================
 
 function calculateZScore(value, L, M, S) {
-    if (!value || !M || !S) return null;
-    
-    if (L === 0) {
+    if (value == null || isNaN(value) || !M || !S) return null;
+
+    if (Math.abs(L) < 0.0001) {
         return Math.log(value / M) / S;
     } else {
         return (Math.pow(value / M, L) - 1) / (L * S);
@@ -152,7 +170,7 @@ function calculateZScore(value, L, M, S) {
 function getClosestAge(ageMonths, lmsTable) {
     const ages = Object.keys(lmsTable).map(Number).sort((a, b) => a - b);
 
-    // Exact match — return the params object directly
+    // Exact match
     if (lmsTable[ageMonths] !== undefined) return lmsTable[ageMonths];
 
     // Find surrounding bracket
@@ -164,10 +182,10 @@ function getClosestAge(ageMonths, lmsTable) {
         if (age >= ageMonths) { upper = age; break; }
     }
 
-    // At or beyond a boundary — return boundary params object
+    // At or beyond a boundary
     if (lower === upper) return lmsTable[lower];
 
-    // Linearly interpolate L, M, S and return an object
+    // Linearly interpolate
     const t = (ageMonths - lower) / (upper - lower);
     const lo = lmsTable[lower];
     const hi = lmsTable[upper];
@@ -180,67 +198,101 @@ function getClosestAge(ageMonths, lmsTable) {
 }
 
 function calculateAllZScores() {
-    const dobValue = document.getElementById('dob')?.value;
-    const sex = document.getElementById('sex')?.value;
-    const weight = parseFloat(document.getElementById('weight')?.value);
-    const height = parseFloat(document.getElementById('height')?.value);
-    const headCirc = parseFloat(document.getElementById('head_circ')?.value);
-    
-    if (!dobValue || !sex) return;
-    
-    // Calculate age in months (accounting for day-of-month)
+    const dobEl = document.getElementById('dob');
+    const sexEl = document.getElementById('sex');
+    const weightEl = document.getElementById('weight');
+    const heightEl = document.getElementById('height');
+    const headCircEl = document.getElementById('head_circ');
+
+    const dobValue = dobEl?.value;
+    const sex = sexEl?.value;
+
+    // Show hint if prerequisites are missing
+    const hintEl = document.getElementById('zScoreHint');
+    if (!dobValue || !sex) {
+        if (hintEl) hintEl.style.display = 'block';
+        // Clear stale z-scores when prerequisites are removed
+        clearZScoreFields();
+        return;
+    }
+    if (hintEl) hintEl.style.display = 'none';
+
+    // Calculate age in months
     const dob = new Date(dobValue);
     const now = new Date();
     let ageMonths = (now.getFullYear() - dob.getFullYear()) * 12 + (now.getMonth() - dob.getMonth());
-    // Subtract a month if birthday hasn't occurred yet this month
     if (now.getDate() < dob.getDate()) ageMonths--;
-    
-    // Only calculate for children under 5 years (60 months)
+    if (ageMonths < 0) ageMonths = 0;
+
+    // WHO standards only valid 0-60 months
     if (ageMonths > 60) {
-        document.getElementById('waz').value = 'N/A (>5 years)';
-        document.getElementById('haz').value = 'N/A (>5 years)';
-        document.getElementById('whz').value = 'N/A (>5 years)';
+        ['waz', 'haz', 'whz'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = 'N/A (age > 5 yrs)';
+        });
+        ['wazInterpretation', 'hazInterpretation', 'whzInterpretation'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = '';
+        });
         return;
     }
-    
+
     const isMale = sex === 'Male';
-    const wfaParams = getClosestAge(ageMonths, isMale ? WFA_BOYS : WFA_GIRLS);
-    
+    const weight = parseFloat(weightEl?.value);
+    const height = parseFloat(heightEl?.value);
+    const headCirc = parseFloat(headCircEl?.value);
+
     // Weight-for-Age Z-score
-    if (weight) {
-        const waz = calculateZScore(weight, wfaParams.L, wfaParams.M, wfaParams.S);
-        document.getElementById('waz').value = waz !== null ? waz.toFixed(2) : '';
+    const wazEl = document.getElementById('waz');
+    if (weight && wazEl) {
+        const params = getClosestAge(ageMonths, isMale ? WFA_BOYS : WFA_GIRLS);
+        const waz = calculateZScore(weight, params.L, params.M, params.S);
+        wazEl.value = waz !== null ? waz.toFixed(2) : '';
         interpretWAZ(waz);
+    } else if (wazEl) {
+        wazEl.value = '';
+        const el = document.getElementById('wazInterpretation');
+        if (el) el.innerHTML = '';
     }
-    
+
     // Height-for-Age Z-score
-    if (height) {
-        const hfaParams = getClosestAge(ageMonths, isMale ? HFA_BOYS : HFA_GIRLS);
-        const haz = calculateZScore(height, hfaParams.L, hfaParams.M, hfaParams.S);
-        document.getElementById('haz').value = haz !== null ? haz.toFixed(2) : '';
+    const hazEl = document.getElementById('haz');
+    if (height && hazEl) {
+        const params = getClosestAge(ageMonths, isMale ? HFA_BOYS : HFA_GIRLS);
+        const haz = calculateZScore(height, params.L, params.M, params.S);
+        hazEl.value = haz !== null ? haz.toFixed(2) : '';
         interpretHAZ(haz);
+    } else if (hazEl) {
+        hazEl.value = '';
+        const el = document.getElementById('hazInterpretation');
+        if (el) el.innerHTML = '';
     }
-    
-    // BMI-for-Age Z-score (WHZ proxy)
-    if (weight && height) {
+
+    // BMI-for-Age Z-score (proxy for WHZ)
+    const whzEl = document.getElementById('whz');
+    if (weight && height && whzEl) {
         const heightM = height / 100;
         const bmi = weight / (heightM * heightM);
-        const bmiParams = getClosestAge(ageMonths, isMale ? BMI_BOYS : BMI_GIRLS);
-        const whz = calculateZScore(bmi, bmiParams.L, bmiParams.M, bmiParams.S);
-        document.getElementById('whz').value = whz !== null ? whz.toFixed(2) : '';
+        const params = getClosestAge(ageMonths, isMale ? BMI_BOYS : BMI_GIRLS);
+        const whz = calculateZScore(bmi, params.L, params.M, params.S);
+        whzEl.value = whz !== null ? whz.toFixed(2) : '';
         interpretWHZ(whz);
+    } else if (whzEl) {
+        whzEl.value = '';
+        const el = document.getElementById('whzInterpretation');
+        if (el) el.innerHTML = '';
     }
-    
+
     // Head Circumference Z-score
-    if (headCirc) {
-        const hcParams = getClosestAge(ageMonths, isMale ? HC_BOYS : HC_GIRLS);
-        const hcz = calculateZScore(headCirc, hcParams.L, hcParams.M, hcParams.S);
-        const hczField = document.getElementById('hcz');
-        if (hczField) {
-            hczField.value = hcz !== null ? hcz.toFixed(2) : '';
-        }
+    const hczEl = document.getElementById('hcz');
+    if (headCirc && hczEl) {
+        const params = getClosestAge(ageMonths, isMale ? HC_BOYS : HC_GIRLS);
+        const hcz = calculateZScore(headCirc, params.L, params.M, params.S);
+        hczEl.value = hcz !== null ? hcz.toFixed(2) : '';
+    } else if (hczEl) {
+        hczEl.value = '';
     }
-    
+
     // Update percentiles
     updatePercentiles();
 }
@@ -251,79 +303,62 @@ function calculateAllZScores() {
 
 function interpretWAZ(waz) {
     const display = document.getElementById('wazInterpretation');
-    if (!display || waz === null) return;
-    
-    let interpretation = '';
-    let className = '';
-    
+    if (!display || waz === null || isNaN(waz)) return;
+
+    let interpretation, className;
+
     if (waz < -3) {
-        interpretation = 'Severely Underweight';
-        className = 'badge-danger';
+        interpretation = 'Severely Underweight'; className = 'badge-danger';
     } else if (waz < -2) {
-        interpretation = 'Underweight';
-        className = 'badge-warning';
+        interpretation = 'Underweight'; className = 'badge-warning';
     } else if (waz <= 2) {
-        interpretation = 'Normal Weight';
-        className = 'badge-success';
+        interpretation = 'Normal Weight'; className = 'badge-success';
     } else {
-        interpretation = 'Overweight';
-        className = 'badge-warning';
+        interpretation = 'Possible Overweight'; className = 'badge-warning';
     }
-    
+
     display.innerHTML = `<span class="badge ${className}">${interpretation}</span>`;
 }
 
 function interpretHAZ(haz) {
     const display = document.getElementById('hazInterpretation');
-    if (!display || haz === null) return;
-    
-    let interpretation = '';
-    let className = '';
-    
+    if (!display || haz === null || isNaN(haz)) return;
+
+    let interpretation, className;
+
     if (haz < -3) {
-        interpretation = 'Severely Stunted';
-        className = 'badge-danger';
+        interpretation = 'Severely Stunted'; className = 'badge-danger';
     } else if (haz < -2) {
-        interpretation = 'Stunted';
-        className = 'badge-warning';
+        interpretation = 'Stunted'; className = 'badge-warning';
     } else if (haz <= 2) {
-        interpretation = 'Normal Height';
-        className = 'badge-success';
+        interpretation = 'Normal Height'; className = 'badge-success';
     } else {
-        interpretation = 'Tall';
-        className = 'badge-primary';
+        interpretation = 'Tall for Age'; className = 'badge-primary';
     }
-    
+
     display.innerHTML = `<span class="badge ${className}">${interpretation}</span>`;
 }
 
 function interpretWHZ(whz) {
     const display = document.getElementById('whzInterpretation');
-    if (!display || whz === null) return;
-    
-    let interpretation = '';
-    let className = '';
-    
+    if (!display || whz === null || isNaN(whz)) return;
+
+    let interpretation, className;
+
     if (whz < -3) {
-        interpretation = 'Severe Acute Malnutrition (SAM)';
-        className = 'badge-danger';
+        interpretation = 'Severe Acute Malnutrition (SAM)'; className = 'badge-danger';
     } else if (whz < -2) {
-        interpretation = 'Moderate Acute Malnutrition (MAM)';
-        className = 'badge-warning';
+        interpretation = 'Moderate Acute Malnutrition (MAM)'; className = 'badge-warning';
     } else if (whz <= 1) {
-        interpretation = 'Normal';
-        className = 'badge-success';
+        interpretation = 'Normal'; className = 'badge-success';
     } else if (whz <= 2) {
-        interpretation = 'Possible Risk of Overweight';
-        className = 'badge-primary';
+        interpretation = 'Possible Risk of Overweight'; className = 'badge-primary';
     } else if (whz <= 3) {
-        interpretation = 'Overweight';
-        className = 'badge-warning';
+        interpretation = 'Overweight'; className = 'badge-warning';
     } else {
-        interpretation = 'Obese';
-        className = 'badge-danger';
+        interpretation = 'Obese'; className = 'badge-danger';
     }
-    
+
     display.innerHTML = `<span class="badge ${className}">${interpretation}</span>`;
 }
 
@@ -332,40 +367,33 @@ function interpretWHZ(whz) {
 // ============================================================================
 
 function zScoreToPercentile(z) {
-    // Approximation of the cumulative normal distribution
     if (z === null || isNaN(z)) return null;
-    
-    const a1 = 0.254829592;
-    const a2 = -0.284496736;
-    const a3 = 1.421413741;
-    const a4 = -1.453152027;
-    const a5 = 1.061405429;
-    const p = 0.3275911;
-    
+
+    const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741;
+    const a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+
     const sign = z < 0 ? -1 : 1;
-    z = Math.abs(z) / Math.sqrt(2);
-    
-    const t = 1.0 / (1.0 + p * z);
-    const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
-    
-    const percentile = (0.5 * (1.0 + sign * y)) * 100;
-    return Math.round(percentile);
+    const absZ = Math.abs(z) / Math.sqrt(2);
+
+    const t = 1.0 / (1.0 + p * absZ);
+    const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-absZ * absZ);
+
+    return Math.round((0.5 * (1.0 + sign * y)) * 100);
 }
 
 function updatePercentiles() {
-    const waz = parseFloat(document.getElementById('waz')?.value);
-    const haz = parseFloat(document.getElementById('haz')?.value);
-    const whz = parseFloat(document.getElementById('whz')?.value);
-    
-    const weightPercentile = document.getElementById('weight_percentile');
-    const heightPercentile = document.getElementById('height_percentile');
-    
-    if (weightPercentile && !isNaN(waz)) {
-        weightPercentile.value = zScoreToPercentile(waz) + 'th percentile';
+    const wazVal = parseFloat(document.getElementById('waz')?.value);
+    const hazVal = parseFloat(document.getElementById('haz')?.value);
+
+    const weightPercentileEl = document.getElementById('weight_percentile');
+    const heightPercentileEl = document.getElementById('height_percentile');
+
+    if (weightPercentileEl) {
+        weightPercentileEl.value = !isNaN(wazVal) ? zScoreToPercentile(wazVal) + 'th percentile' : '';
     }
-    
-    if (heightPercentile && !isNaN(haz)) {
-        heightPercentile.value = zScoreToPercentile(haz) + 'th percentile';
+
+    if (heightPercentileEl) {
+        heightPercentileEl.value = !isNaN(hazVal) ? zScoreToPercentile(hazVal) + 'th percentile' : '';
     }
 }
 
@@ -374,112 +402,97 @@ function updatePercentiles() {
 // ============================================================================
 
 function updateDevelopmentalMilestones() {
-    const dobValue = document.getElementById('dob')?.value;
-    if (!dobValue) return;
-    
-    const dob = new Date(dobValue);
+    const dobEl = document.getElementById('dob');
+    if (!dobEl || !dobEl.value) return;
+
+    const dob = new Date(dobEl.value);
     const now = new Date();
     const ageMonths = (now.getFullYear() - dob.getFullYear()) * 12 + (now.getMonth() - dob.getMonth());
-    
+
     const container = document.getElementById('milestonesContainer');
     if (!container) return;
-    
+
     let milestonesHTML = '';
-    
+
     if (ageMonths <= 3) {
-        // 0-3 months
         milestonesHTML = `
-            <h4>Expected Milestones (0-3 months)</h4>
+            <h4>Expected Milestones (0–3 months)</h4>
             <div class="milestone-checklist">
-                <label><input type="checkbox" name="milestone" value="social_smile"> Social smile (6-8 weeks)</label>
-                <label><input type="checkbox" name="milestone" value="head_control_prone"> Head control in prone (4-6 weeks)</label>
-                <label><input type="checkbox" name="milestone" value="follows_face"> Follows face (4-6 weeks)</label>
-                <label><input type="checkbox" name="milestone" value="coos"> Cooing sounds (6-8 weeks)</label>
+                <label><input type="checkbox" name="milestone" value="social_smile"> Social smile (6–8 weeks)</label>
+                <label><input type="checkbox" name="milestone" value="head_control_prone"> Head control in prone (4–6 weeks)</label>
+                <label><input type="checkbox" name="milestone" value="follows_face"> Follows face (4–6 weeks)</label>
+                <label><input type="checkbox" name="milestone" value="coos"> Cooing sounds (6–8 weeks)</label>
                 <label><input type="checkbox" name="milestone" value="hands_open"> Hands open most of time (3 months)</label>
-            </div>
-        `;
+            </div>`;
     } else if (ageMonths <= 6) {
-        // 4-6 months
         milestonesHTML = `
-            <h4>Expected Milestones (4-6 months)</h4>
+            <h4>Expected Milestones (4–6 months)</h4>
             <div class="milestone-checklist">
                 <label><input type="checkbox" name="milestone" value="head_control_sitting"> Good head control when sitting</label>
                 <label><input type="checkbox" name="milestone" value="reaches_objects"> Reaches for objects</label>
-                <label><input type="checkbox" name="milestone" value="rolls_over"> Rolls over (4-5 months)</label>
+                <label><input type="checkbox" name="milestone" value="rolls_over"> Rolls over (4–5 months)</label>
                 <label><input type="checkbox" name="milestone" value="laughs"> Laughs aloud</label>
-                <label><input type="checkbox" name="milestone" value="transfers_hand"> Transfers objects hand to hand (5-6 months)</label>
-                <label><input type="checkbox" name="milestone" value="babbles"> Babbles (5-6 months)</label>
-            </div>
-        `;
+                <label><input type="checkbox" name="milestone" value="transfers_hand"> Transfers objects hand to hand (5–6 months)</label>
+                <label><input type="checkbox" name="milestone" value="babbles"> Babbles (5–6 months)</label>
+            </div>`;
     } else if (ageMonths <= 9) {
-        // 7-9 months
         milestonesHTML = `
-            <h4>Expected Milestones (7-9 months)</h4>
+            <h4>Expected Milestones (7–9 months)</h4>
             <div class="milestone-checklist">
-                <label><input type="checkbox" name="milestone" value="sits_unsupported"> Sits without support (6-8 months)</label>
-                <label><input type="checkbox" name="milestone" value="crawls"> Crawls (8-9 months)</label>
-                <label><input type="checkbox" name="milestone" value="pincer_grasp"> Pincer grasp developing (8-9 months)</label>
-                <label><input type="checkbox" name="milestone" value="stranger_anxiety"> Stranger anxiety (7-9 months)</label>
-                <label><input type="checkbox" name="milestone" value="says_dada"> Says "mama/dada" non-specifically (8-9 months)</label>
+                <label><input type="checkbox" name="milestone" value="sits_unsupported"> Sits without support (6–8 months)</label>
+                <label><input type="checkbox" name="milestone" value="crawls"> Crawls (8–9 months)</label>
+                <label><input type="checkbox" name="milestone" value="pincer_grasp"> Pincer grasp developing (8–9 months)</label>
+                <label><input type="checkbox" name="milestone" value="stranger_anxiety"> Stranger anxiety (7–9 months)</label>
+                <label><input type="checkbox" name="milestone" value="says_dada"> Says "mama/dada" non-specifically (8–9 months)</label>
                 <label><input type="checkbox" name="milestone" value="waves_bye"> Waves bye-bye (9 months)</label>
-            </div>
-        `;
+            </div>`;
     } else if (ageMonths <= 12) {
-        // 10-12 months
         milestonesHTML = `
-            <h4>Expected Milestones (10-12 months)</h4>
+            <h4>Expected Milestones (10–12 months)</h4>
             <div class="milestone-checklist">
-                <label><input type="checkbox" name="milestone" value="pulls_stand"> Pulls to stand (9-10 months)</label>
-                <label><input type="checkbox" name="milestone" value="cruises"> Cruises furniture (10-11 months)</label>
-                <label><input type="checkbox" name="milestone" value="stands_alone"> Stands alone briefly (11-12 months)</label>
+                <label><input type="checkbox" name="milestone" value="pulls_stand"> Pulls to stand (9–10 months)</label>
+                <label><input type="checkbox" name="milestone" value="cruises"> Cruises furniture (10–11 months)</label>
+                <label><input type="checkbox" name="milestone" value="stands_alone"> Stands alone briefly (11–12 months)</label>
                 <label><input type="checkbox" name="milestone" value="first_words"> First words with meaning (12 months)</label>
                 <label><input type="checkbox" name="milestone" value="understands_no"> Understands "no"</label>
                 <label><input type="checkbox" name="milestone" value="points"> Points to objects</label>
-            </div>
-        `;
+            </div>`;
     } else if (ageMonths <= 18) {
-        // 13-18 months
         milestonesHTML = `
-            <h4>Expected Milestones (13-18 months)</h4>
+            <h4>Expected Milestones (13–18 months)</h4>
             <div class="milestone-checklist">
-                <label><input type="checkbox" name="milestone" value="walks_alone"> Walks alone (12-15 months)</label>
-                <label><input type="checkbox" name="milestone" value="runs_stiffly"> Runs stiffly (15-18 months)</label>
+                <label><input type="checkbox" name="milestone" value="walks_alone"> Walks alone (12–15 months)</label>
+                <label><input type="checkbox" name="milestone" value="runs_stiffly"> Runs stiffly (15–18 months)</label>
                 <label><input type="checkbox" name="milestone" value="builds_tower_2"> Builds tower of 2 cubes (15 months)</label>
                 <label><input type="checkbox" name="milestone" value="10_words"> Uses 10+ words (18 months)</label>
                 <label><input type="checkbox" name="milestone" value="points_body"> Points to body parts (18 months)</label>
-                <label><input type="checkbox" name="milestone" value="feeds_self"> Feeds self with spoon (15-18 months)</label>
-            </div>
-        `;
+                <label><input type="checkbox" name="milestone" value="feeds_self"> Feeds self with spoon (15–18 months)</label>
+            </div>`;
     } else if (ageMonths <= 24) {
-        // 19-24 months
         milestonesHTML = `
-            <h4>Expected Milestones (19-24 months)</h4>
+            <h4>Expected Milestones (19–24 months)</h4>
             <div class="milestone-checklist">
                 <label><input type="checkbox" name="milestone" value="runs_well"> Runs well</label>
-                <label><input type="checkbox" name="milestone" value="kicks_ball"> Kicks ball (18-24 months)</label>
+                <label><input type="checkbox" name="milestone" value="kicks_ball"> Kicks ball (18–24 months)</label>
                 <label><input type="checkbox" name="milestone" value="tower_6"> Builds tower of 6 cubes (24 months)</label>
                 <label><input type="checkbox" name="milestone" value="2_word_phrases"> Uses 2-word phrases (24 months)</label>
                 <label><input type="checkbox" name="milestone" value="50_words"> 50+ word vocabulary (24 months)</label>
                 <label><input type="checkbox" name="milestone" value="parallel_play"> Parallel play</label>
-            </div>
-        `;
+            </div>`;
     } else if (ageMonths <= 36) {
-        // 25-36 months
         milestonesHTML = `
-            <h4>Expected Milestones (2-3 years)</h4>
+            <h4>Expected Milestones (2–3 years)</h4>
             <div class="milestone-checklist">
                 <label><input type="checkbox" name="milestone" value="climbs_stairs_alt"> Climbs stairs alternating feet (3 years)</label>
-                <label><input type="checkbox" name="milestone" value="jumps_both_feet"> Jumps with both feet (2-3 years)</label>
+                <label><input type="checkbox" name="milestone" value="jumps_both_feet"> Jumps with both feet (2–3 years)</label>
                 <label><input type="checkbox" name="milestone" value="copies_circle"> Copies circle (3 years)</label>
-                <label><input type="checkbox" name="milestone" value="3_word_sentences"> 3-word sentences (2-3 years)</label>
+                <label><input type="checkbox" name="milestone" value="3_word_sentences"> 3-word sentences (2–3 years)</label>
                 <label><input type="checkbox" name="milestone" value="knows_name"> Knows full name (3 years)</label>
-                <label><input type="checkbox" name="milestone" value="toilet_trained_day"> Toilet trained (day) (2-3 years)</label>
-            </div>
-        `;
+                <label><input type="checkbox" name="milestone" value="toilet_trained_day"> Toilet trained (day) (2–3 years)</label>
+            </div>`;
     } else if (ageMonths <= 48) {
-        // 37-48 months
         milestonesHTML = `
-            <h4>Expected Milestones (3-4 years)</h4>
+            <h4>Expected Milestones (3–4 years)</h4>
             <div class="milestone-checklist">
                 <label><input type="checkbox" name="milestone" value="hops_one_foot"> Hops on one foot (4 years)</label>
                 <label><input type="checkbox" name="milestone" value="catches_ball"> Catches ball (4 years)</label>
@@ -487,23 +500,19 @@ function updateDevelopmentalMilestones() {
                 <label><input type="checkbox" name="milestone" value="tells_stories"> Tells stories</label>
                 <label><input type="checkbox" name="milestone" value="counts_to_10"> Counts to 10</label>
                 <label><input type="checkbox" name="milestone" value="dresses_self"> Dresses self (4 years)</label>
-            </div>
-        `;
+            </div>`;
     } else if (ageMonths <= 60) {
-        // 49-60 months
         milestonesHTML = `
-            <h4>Expected Milestones (4-5 years)</h4>
+            <h4>Expected Milestones (4–5 years)</h4>
             <div class="milestone-checklist">
                 <label><input type="checkbox" name="milestone" value="skips"> Skips (5 years)</label>
                 <label><input type="checkbox" name="milestone" value="copies_square"> Copies square (5 years)</label>
                 <label><input type="checkbox" name="milestone" value="draws_person_6"> Draws person (6 parts)</label>
                 <label><input type="checkbox" name="milestone" value="knows_address"> Knows address</label>
                 <label><input type="checkbox" name="milestone" value="understands_rules"> Understands rules of games</label>
-                <label><input type="checkbox" name="milestone" value="ties_shoes"> Ties shoelaces (5-6 years)</label>
-            </div>
-        `;
+                <label><input type="checkbox" name="milestone" value="ties_shoes"> Ties shoelaces (5–6 years)</label>
+            </div>`;
     } else {
-        // Older children
         milestonesHTML = `
             <h4>School-Age Development</h4>
             <div class="form-group">
@@ -522,18 +531,15 @@ function updateDevelopmentalMilestones() {
             </div>
             <div class="form-group">
                 <label for="social_development">Social Development</label>
-                <textarea id="social_development" class="form-control" rows="2" placeholder="Friendships, behavior at school..."></textarea>
-            </div>
-        `;
+                <textarea id="social_development" class="form-control" rows="2" placeholder="Friendships, behaviour at school..."></textarea>
+            </div>`;
     }
-    
-    // Add developmental concerns section (no regression radios - those exist in static HTML below)
+
     milestonesHTML += `
         <div class="form-group" style="margin-top: 15px;">
             <label for="developmental_concerns">Developmental Concerns</label>
             <textarea id="developmental_concerns" class="form-control" rows="2" placeholder="Any concerns about development?"></textarea>
-        </div>
-    `;
-    
+        </div>`;
+
     container.innerHTML = milestonesHTML;
 }
