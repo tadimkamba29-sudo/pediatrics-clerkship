@@ -1,33 +1,29 @@
 /**
  * Main UI Logic for Pediatrics & Obs_Gyn Clerkship Sheets
- * v4 — Universal Support:
- *   ✦ Supports separate save slots via window.CUSTOM_SAVE_KEY
+ * v5 — Universal Support:
+ *   ✦ SAVE_KEY defined globally at start
  *   ✦ Safe initialization (won't crash on Obs&Gyn page)
- *   ✦ Fixed tab switching and event listeners
+ *   ✦ Robust Tab switching
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-    // =========================================================================
-    // 1. DETERMINE SAVE KEY
-    // =========================================================================
-    // If the page defines a specific key (like for Obs&Gyn), use it.
-    // Otherwise, default to 'clerkshipData' (for Paeds).
-    window.SAVE_KEY = window.CUSTOM_SAVE_KEY || 'clerkshipData';
+// =========================================================================
+// GLOBAL CONFIGURATION
+// =========================================================================
+// Determine Save Key immediately upon script load.
+// Obs_Gyn page sets window.CUSTOM_SAVE_KEY before loading this script.
+window.SAVE_KEY = window.CUSTOM_SAVE_KEY || 'clerkshipData';
 
-    // =========================================================================
-    // 2. INITIALIZATION SEQUENCE
-    // =========================================================================
+// =========================================================================
+// MAIN INITIALIZATION
+// =========================================================================
+document.addEventListener('DOMContentLoaded', () => {
     loadFormData();
     restoreActiveTab();
     updateProgress();
     setupAutosave();
     attachEventListeners();
 
-    // =========================================================================
-    // 3. SAFE CALCULATIONS (PAGE SPECIFIC)
-    // =========================================================================
-    // Only run Paediatric calculations if we are on the Paeds page (where 'dob' exists).
-    // This prevents the script from crashing on the Obs & Gyn page.
+    // Safe Calculations: Only run if 'dob' exists (Paeds page)
     if (document.getElementById('dob')) {
         calculateAge();
         calculateGrowth();
@@ -42,33 +38,36 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================================================
-// TAB SYSTEM WITH MEMORY
+// TAB SYSTEM
 // ============================================================================
 
 function showTab(tabId, btn) {
+    // Hide all tabs and deactivate buttons
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
 
+    // Activate selected
     const selectedTab = document.getElementById(tabId);
     if (selectedTab) selectedTab.classList.add('active');
     if (btn) btn.classList.add('active');
 
+    // Save tab state
     localStorage.setItem('activeTab_' + window.SAVE_KEY, tabId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restoreActiveTab() {
-    const savedTab = localStorage.getItem('activeTab_' + window.SAVE_KEY) || 'patient-info';
+    // Get saved tab or default
+    const savedTab = localStorage.getItem('activeTab_' + window.SAVE_KEY);
     
-    // Handle default tab IDs for Obs & Gyn
-    const defaultOGTab = 'og-patient-info';
-    const targetTabId = (window.SAVE_KEY === 'obsGynData') ? defaultOGTab : savedTab;
+    // Determine default tab based on page
+    const defaultTab = (window.SAVE_KEY === 'obsGynData') ? 'og-patient-info' : 'patient-info';
+    const targetTabId = savedTab || defaultTab;
 
     const tabToShow = document.getElementById(targetTabId);
-    // Try finding button by exact ID, then fallback to selector
-    let buttonToActivate = document.querySelector(`[onclick*="${targetTabId}"]`);
-    
-    // Fallback if nothing found (try first tab)
+    const buttonToActivate = document.querySelector(`[onclick*="${targetTabId}"]`);
+
+    // If saved tab doesn't exist on this page (e.g. switched depts), use default
     if (!tabToShow) {
          const firstTab = document.querySelector('.tab-content');
          const firstBtn = document.querySelector('.nav-tab');
@@ -110,19 +109,23 @@ function handleFormChange() {
 
 function saveFormData(silent = false) {
     const data = gatherFormData();
-    localStorage.setItem(window.SAVE_KEY, JSON.stringify(data));
+    try {
+        localStorage.setItem(window.SAVE_KEY, JSON.stringify(data));
+        lastSaveTime = new Date();
+        updateSaveTimestamp();
 
-    lastSaveTime = new Date();
-    updateSaveTimestamp();
+        if (!silent) {
+            showToast('Data saved successfully!', 'success');
+        }
 
-    if (!silent) {
-        showToast('Data saved successfully!', 'success');
-    }
-
-    const indicator = document.getElementById('autosaveIndicator');
-    if (indicator && silent) {
-        indicator.style.opacity = '1';
-        setTimeout(() => { indicator.style.opacity = '0'; }, 1500);
+        const indicator = document.getElementById('autosaveIndicator');
+        if (indicator && silent) {
+            indicator.style.opacity = '1';
+            setTimeout(() => { indicator.style.opacity = '0'; }, 1500);
+        }
+    } catch (e) {
+        console.error("Save failed", e);
+        showToast('Save failed (storage full?)', 'danger');
     }
 }
 
@@ -209,10 +212,7 @@ function loadFormData() {
         if (data._dynamicTables) restoreDynamicTables(data._dynamicTables);
         if (data._progressNotes) restoreProgressNotes(data._progressNotes);
 
-        // =====================================================================
-        // SAFE CALCULATIONS ON LOAD
-        // =====================================================================
-        // Only run Paediatric calcs if 'dob' exists.
+        // Safe Calculations on Load
         if (document.getElementById('dob')) {
             calculateAge();
             calculateGrowth();
@@ -220,18 +220,14 @@ function loadFormData() {
             interpretLabs();
             classifyNewborn();
             updateHistorySummary();
-            
             if (typeof calculateAllZScores === 'function') calculateAllZScores();
             if (typeof updateDevelopmentalMilestones === 'function') updateDevelopmentalMilestones();
         }
         
-        // Run generic toggles on both pages
         toggleConditionalFields();
 
-        console.log('Data loaded successfully from ' + window.SAVE_KEY);
     } catch (e) {
         console.error('Error loading saved data:', e);
-        showToast('Error loading saved data', 'danger');
     }
 }
 
@@ -271,7 +267,6 @@ function removeRow(btn) {
 
 function gatherDynamicTables() {
     const tables = {};
-    // Includes both Paeds and Obs&Gyn table IDs
     const tableIds = [
         'priorTreatmentTable', 'pastIllnessesTable', 'currentMedicationsTable',
         'siblingsTable', 'problemListTable', 'managementMedsTable',
@@ -576,8 +571,6 @@ function updateProgress() {
 
 function attachEventListeners() {
     // --- PAEDS SPECIFIC LISTENERS ---
-    
-    // DOB → Age + Milestones + Z-scores
     const dobField = document.getElementById('dob');
     if (dobField) {
         dobField.addEventListener('change', () => {
@@ -587,7 +580,6 @@ function attachEventListeners() {
         });
     }
 
-    // Sex → Z-scores
     const sexSelect = document.getElementById('sex');
     if (sexSelect) {
         sexSelect.addEventListener('change', () => {
@@ -595,7 +587,6 @@ function attachEventListeners() {
         });
     }
 
-    // Weight → BMI + Z-scores
     const weightField = document.getElementById('weight');
     if (weightField) {
         weightField.addEventListener('input', () => {
@@ -603,7 +594,6 @@ function attachEventListeners() {
         });
     }
 
-    // Height → BMI + Z-scores
     const heightField = document.getElementById('height');
     if (heightField) {
         heightField.addEventListener('input', () => {
@@ -611,7 +601,6 @@ function attachEventListeners() {
         });
     }
 
-    // Head circ → Z-score
     const headCircField = document.getElementById('head_circ');
     if (headCircField) {
         headCircField.addEventListener('input', () => {
@@ -619,42 +608,35 @@ function attachEventListeners() {
         });
     }
 
-    // Vitals → Color indicators
     ['hr', 'rr', 'bp_systolic', 'temp'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('input', updateVitalIndicators);
     });
 
-    // Dehydration score
     document.querySelectorAll('input[name^="dehy_"]').forEach(input => {
         input.addEventListener('change', calculateDehydration);
     });
 
-    // Lab values → Interpretation
     ['wbc', 'hb', 'platelets', 'neutrophils', 'glucose', 'sodium', 'potassium', 'creatinine'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('input', interpretLabs);
     });
 
-    // Neonatal classification
     ['neonatal_birth_weight', 'neonatal_ga'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('input', classifyNewborn);
     });
 
-    // Neonatal admission age
     ['neonatal_dob', 'neonatal_admission_datetime'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('change', calculateAdmissionAge);
     });
 
-    // History summary update on key features
     for (let i = 1; i <= 5; i++) {
         const field = document.getElementById(`key_feature_${i}`);
         if (field) field.addEventListener('input', updateHistorySummary);
     }
 
-    // Fluid and dose weight fields
     ['fluidWeight', 'doseWeight'].forEach(id => {
         const field = document.getElementById(id);
         if (field) {
@@ -673,12 +655,9 @@ function attachEventListeners() {
     if (doseMgEl) doseMgEl.addEventListener('input', calculateDose);
 
     // --- GENERIC LISTENERS (Both Pages) ---
-
-    // Conditional field toggles on all radio changes
     document.querySelectorAll('input[type="radio"]').forEach(radio => {
         radio.addEventListener('change', toggleConditionalFields);
     });
 
-    // Initial toggle on load
     toggleConditionalFields();
 }
