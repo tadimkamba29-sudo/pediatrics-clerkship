@@ -1,12 +1,14 @@
 /**
- * Main UI Logic for Pediatrics Clerkship Sheet
- * Handles Tabs, Autosave, Table Management, Dynamic Fields, and Event Listeners
- *
- * v2 — Fixed: progress bar listens to 'change' events (radio/checkbox),
- *             null-safe DOM queries throughout, weight auto-populate trigger
+ * Main UI Logic for Pediatrics & Obs_Gyn Clerkship Sheets
+ * v3 — Fixed: Supports separate save slots for different departments.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // DETERMINE SAVE KEY
+    // If the page defines a specific key (like for Obs&Gyn), use it.
+    // Otherwise, default to 'clerkshipData' (for Paeds).
+    window.SAVE_KEY = window.CUSTOM_SAVE_KEY || 'clerkshipData';
+
     loadFormData();
     restoreActiveTab();
     updateProgress();
@@ -25,40 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof updateDevelopmentalMilestones === 'function') updateDevelopmentalMilestones();
 });
 
-// ============================================================================
-// TAB SYSTEM WITH MEMORY
-// ============================================================================
-
-function showTab(tabId, btn) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
-
-    const selectedTab = document.getElementById(tabId);
-    if (selectedTab) selectedTab.classList.add('active');
-    if (btn) btn.classList.add('active');
-
-    localStorage.setItem('activeTab', tabId);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function restoreActiveTab() {
-    const savedTab = localStorage.getItem('activeTab') || 'patient-info';
-    const tabToShow = document.getElementById(savedTab);
-    const buttonToActivate = document.querySelector(`[onclick*="${savedTab}"]`);
-
-    if (tabToShow) {
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        tabToShow.classList.add('active');
-    }
-
-    if (buttonToActivate) {
-        document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
-        buttonToActivate.classList.add('active');
-    }
-}
+// ... (Keep the rest of your functions exactly the same until save/load) ...
 
 // ============================================================================
-// AUTOSAVE SYSTEM
+// AUTOSAVE SYSTEM (MODIFIED)
 // ============================================================================
 
 let autosaveInterval;
@@ -69,7 +41,6 @@ function setupAutosave() {
         saveFormData(true);
     }, 3000);
 
-    // FIX: listen to both 'input' (text fields) AND 'change' (radio, checkbox, select)
     document.addEventListener('input', handleFormChange);
     document.addEventListener('change', handleFormChange);
 }
@@ -80,7 +51,8 @@ function handleFormChange() {
 
 function saveFormData(silent = false) {
     const data = gatherFormData();
-    localStorage.setItem('clerkshipData', JSON.stringify(data));
+    // CHANGE: Uses the dynamic SAVE_KEY
+    localStorage.setItem(window.SAVE_KEY, JSON.stringify(data));
 
     lastSaveTime = new Date();
     updateSaveTimestamp();
@@ -105,14 +77,15 @@ function updateSaveTimestamp() {
 
 function clearAllData() {
     if (confirm('⚠️ Are you sure you want to clear ALL data? This cannot be undone!')) {
-        localStorage.removeItem('clerkshipData');
+        // CHANGE: Clears the dynamic SAVE_KEY
+        localStorage.removeItem(window.SAVE_KEY);
         localStorage.removeItem('activeTab');
         location.reload();
     }
 }
 
 // ============================================================================
-// FORM DATA GATHERING & LOADING
+// FORM DATA GATHERING & LOADING (MODIFIED)
 // ============================================================================
 
 function gatherFormData() {
@@ -143,7 +116,8 @@ function gatherFormData() {
 }
 
 function loadFormData() {
-    const saved = localStorage.getItem('clerkshipData');
+    // CHANGE: Loads from the dynamic SAVE_KEY
+    const saved = localStorage.getItem(window.SAVE_KEY);
     if (!saved) return;
 
     try {
@@ -191,7 +165,7 @@ function loadFormData() {
         if (typeof calculateAllZScores === 'function') calculateAllZScores();
         if (typeof updateDevelopmentalMilestones === 'function') updateDevelopmentalMilestones();
 
-        console.log('Data loaded successfully');
+        console.log('Data loaded successfully from ' + window.SAVE_KEY);
     } catch (e) {
         console.error('Error loading saved data:', e);
         showToast('Error loading saved data', 'danger');
@@ -234,10 +208,11 @@ function removeRow(btn) {
 
 function gatherDynamicTables() {
     const tables = {};
+    // Note: Added Obs&Gyn tables to this list if you create specific IDs for them later
     const tableIds = [
         'priorTreatmentTable', 'pastIllnessesTable', 'currentMedicationsTable',
         'siblingsTable', 'problemListTable', 'managementMedsTable',
-        'investigationPlanTable', 'neonatalMedicationsTable'
+        'investigationPlanTable', 'neonatalMedicationsTable', 'obstetricHistoryTable'
     ];
 
     tableIds.forEach(tableId => {
@@ -503,7 +478,6 @@ function updateProgress() {
     const countedNames = new Set();
 
     allInputs.forEach(input => {
-        // Skip visually hidden / inside hidden conditional groups
         if (input.offsetParent === null) return;
         const parentGroup = input.closest('[id$="_group"]');
         if (parentGroup && parentGroup.style.display === 'none') return;
@@ -538,7 +512,6 @@ function updateProgress() {
 // ============================================================================
 
 function attachEventListeners() {
-    // DOB → Age + Milestones + Z-scores
     const dobField = document.getElementById('dob');
     if (dobField) {
         dobField.addEventListener('change', () => {
@@ -548,7 +521,6 @@ function attachEventListeners() {
         });
     }
 
-    // Sex → Z-scores
     const sexSelect = document.getElementById('sex');
     if (sexSelect) {
         sexSelect.addEventListener('change', () => {
@@ -556,15 +528,13 @@ function attachEventListeners() {
         });
     }
 
-    // Weight → BMI + Z-scores + auto-populate calculators
     const weightField = document.getElementById('weight');
     if (weightField) {
         weightField.addEventListener('input', () => {
-            calculateGrowth(); // calculateGrowth now chains into calculateAllZScores
+            calculateGrowth();
         });
     }
 
-    // Height → BMI + Z-scores
     const heightField = document.getElementById('height');
     if (heightField) {
         heightField.addEventListener('input', () => {
@@ -572,7 +542,6 @@ function attachEventListeners() {
         });
     }
 
-    // Head circ → Z-score
     const headCircField = document.getElementById('head_circ');
     if (headCircField) {
         headCircField.addEventListener('input', () => {
@@ -580,47 +549,39 @@ function attachEventListeners() {
         });
     }
 
-    // Vitals → Color indicators
     ['hr', 'rr', 'bp_systolic', 'temp'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('input', updateVitalIndicators);
     });
 
-    // Dehydration score
     document.querySelectorAll('input[name^="dehy_"]').forEach(input => {
         input.addEventListener('change', calculateDehydration);
     });
 
-    // Lab values → Interpretation
     ['wbc', 'hb', 'platelets', 'neutrophils', 'glucose', 'sodium', 'potassium', 'creatinine'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('input', interpretLabs);
     });
 
-    // Neonatal classification
     ['neonatal_birth_weight', 'neonatal_ga'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('input', classifyNewborn);
     });
 
-    // Neonatal admission age
     ['neonatal_dob', 'neonatal_admission_datetime'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('change', calculateAdmissionAge);
     });
 
-    // Conditional field toggles on all radio changes
     document.querySelectorAll('input[type="radio"]').forEach(radio => {
         radio.addEventListener('change', toggleConditionalFields);
     });
 
-    // History summary update on key features
     for (let i = 1; i <= 5; i++) {
         const field = document.getElementById(`key_feature_${i}`);
         if (field) field.addEventListener('input', updateHistorySummary);
     }
 
-    // Fluid and dose weight fields: clear autofill flag if user manually edits
     ['fluidWeight', 'doseWeight'].forEach(id => {
         const field = document.getElementById(id);
         if (field) {
@@ -630,16 +591,13 @@ function attachEventListeners() {
         }
     });
 
-    // Fluid calculator auto-run when weight changed manually
     const fluidWeightEl = document.getElementById('fluidWeight');
     if (fluidWeightEl) {
         fluidWeightEl.addEventListener('input', calculateFluids);
     }
 
-    // Dose calculator auto-run
     const doseMgEl = document.getElementById('doseMg');
     if (doseMgEl) doseMgEl.addEventListener('input', calculateDose);
 
-    // Initial toggle on load
     toggleConditionalFields();
 }
