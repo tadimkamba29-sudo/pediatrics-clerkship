@@ -258,14 +258,19 @@
 
     </div>
 
-    <div class="action-buttons">
+        <div class="action-buttons">
         <button class="btn btn-outline" onclick="saveFormData()">💾 Save (Local)</button>
         <button class="btn btn-outline" onclick="clearAllData()">🗑️ Clear All</button>
         <button class="btn btn-outline" onclick="downloadTXT()">📄 Download TXT</button>
+        <button class="btn btn-outline" onclick="downloadJSON()">💾 Backup (JSON)</button>
+        <button class="btn btn-outline" onclick="importJSON()">📥 Import Backup</button>
         <button class="btn btn-primary" onclick="printForm()">🖨️ Print / PDF</button>
     </div>
 
-        <div id="toast" class="toast"></div>
+    <!-- Hidden file input for Import Backup -->
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleFileImport(event)">
+
+    <div id="toast" class="toast"></div>
 
     <!-- 1. Define the Save Key for this page -->
     <script> window.CUSTOM_SAVE_KEY = 'obsGynData'; </script>
