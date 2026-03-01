@@ -265,18 +265,21 @@
         <button class="btn btn-primary" onclick="printForm()">🖨️ Print / PDF</button>
     </div>
 
-    <div id="toast" class="toast"></div>
+        <div id="toast" class="toast"></div>
 
-    <!-- Using the same JS files ensures the Save/Load logic works here too -->
-   <script> window.CUSTOM_SAVE_KEY = 'obsGynData'; </script>
+    <!-- 1. Define the Save Key for this page -->
+    <script> window.CUSTOM_SAVE_KEY = 'obsGynData'; </script>
 
+    <!-- 2. Load Utilities -->
     <script src="js/utils.js"></script>
+    
+    <!-- 3. Load Main JS (Must be before export.js) -->
+    <script src="js/main.js"></script>
+    
+    <!-- 4. Load Export JS -->
     <script src="js/export.js"></script>
-    <script src="js/main.js"></script>
-        <!-- ... existing scripts ... -->
-    <script src="js/main.js"></script>
 
-    <!-- ADD THIS SCRIPT FOR AUTO-CALCULATION -->
+    <!-- 5. Obs & Gyn Specific Auto-Calculations -->
     <script>
         // Auto-calculate EDD from LMP
         const lmpInput = document.getElementById('og_lmp');
@@ -301,7 +304,5 @@
             });
         }
     </script>
-</body>
-</html>
 </body>
 </html>
