@@ -1,36 +1,95 @@
 /**
  * Main UI Logic for Pediatrics & Obs_Gyn Clerkship Sheets
- * v3 — Fixed: Supports separate save slots for different departments.
+ * v4 — Universal Support:
+ *   ✦ Supports separate save slots via window.CUSTOM_SAVE_KEY
+ *   ✦ Safe initialization (won't crash on Obs&Gyn page)
+ *   ✦ Fixed tab switching and event listeners
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // DETERMINE SAVE KEY
+    // =========================================================================
+    // 1. DETERMINE SAVE KEY
+    // =========================================================================
     // If the page defines a specific key (like for Obs&Gyn), use it.
     // Otherwise, default to 'clerkshipData' (for Paeds).
     window.SAVE_KEY = window.CUSTOM_SAVE_KEY || 'clerkshipData';
 
+    // =========================================================================
+    // 2. INITIALIZATION SEQUENCE
+    // =========================================================================
     loadFormData();
     restoreActiveTab();
     updateProgress();
     setupAutosave();
     attachEventListeners();
 
-    // Initial calculations on load
-    calculateAge();
-    calculateGrowth();
-    updateVitalIndicators();
-    interpretLabs();
-    classifyNewborn();
-    updateHistorySummary();
+    // =========================================================================
+    // 3. SAFE CALCULATIONS (PAGE SPECIFIC)
+    // =========================================================================
+    // Only run Paediatric calculations if we are on the Paeds page (where 'dob' exists).
+    // This prevents the script from crashing on the Obs & Gyn page.
+    if (document.getElementById('dob')) {
+        calculateAge();
+        calculateGrowth();
+        updateVitalIndicators();
+        interpretLabs();
+        classifyNewborn();
+        updateHistorySummary();
 
-    if (typeof calculateAllZScores === 'function') calculateAllZScores();
-    if (typeof updateDevelopmentalMilestones === 'function') updateDevelopmentalMilestones();
+        if (typeof calculateAllZScores === 'function') calculateAllZScores();
+        if (typeof updateDevelopmentalMilestones === 'function') updateDevelopmentalMilestones();
+    }
 });
 
-// ... (Keep the rest of your functions exactly the same until save/load) ...
+// ============================================================================
+// TAB SYSTEM WITH MEMORY
+// ============================================================================
+
+function showTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+
+    const selectedTab = document.getElementById(tabId);
+    if (selectedTab) selectedTab.classList.add('active');
+    if (btn) btn.classList.add('active');
+
+    localStorage.setItem('activeTab_' + window.SAVE_KEY, tabId);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restoreActiveTab() {
+    const savedTab = localStorage.getItem('activeTab_' + window.SAVE_KEY) || 'patient-info';
+    
+    // Handle default tab IDs for Obs & Gyn
+    const defaultOGTab = 'og-patient-info';
+    const targetTabId = (window.SAVE_KEY === 'obsGynData') ? defaultOGTab : savedTab;
+
+    const tabToShow = document.getElementById(targetTabId);
+    // Try finding button by exact ID, then fallback to selector
+    let buttonToActivate = document.querySelector(`[onclick*="${targetTabId}"]`);
+    
+    // Fallback if nothing found (try first tab)
+    if (!tabToShow) {
+         const firstTab = document.querySelector('.tab-content');
+         const firstBtn = document.querySelector('.nav-tab');
+         if (firstTab) firstTab.classList.add('active');
+         if (firstBtn) firstBtn.classList.add('active');
+         return;
+    }
+
+    if (tabToShow) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        tabToShow.classList.add('active');
+    }
+
+    if (buttonToActivate) {
+        document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+        buttonToActivate.classList.add('active');
+    }
+}
 
 // ============================================================================
-// AUTOSAVE SYSTEM (MODIFIED)
+// AUTOSAVE SYSTEM
 // ============================================================================
 
 let autosaveInterval;
@@ -51,7 +110,6 @@ function handleFormChange() {
 
 function saveFormData(silent = false) {
     const data = gatherFormData();
-    // CHANGE: Uses the dynamic SAVE_KEY
     localStorage.setItem(window.SAVE_KEY, JSON.stringify(data));
 
     lastSaveTime = new Date();
@@ -77,15 +135,14 @@ function updateSaveTimestamp() {
 
 function clearAllData() {
     if (confirm('⚠️ Are you sure you want to clear ALL data? This cannot be undone!')) {
-        // CHANGE: Clears the dynamic SAVE_KEY
         localStorage.removeItem(window.SAVE_KEY);
-        localStorage.removeItem('activeTab');
+        localStorage.removeItem('activeTab_' + window.SAVE_KEY);
         location.reload();
     }
 }
 
 // ============================================================================
-// FORM DATA GATHERING & LOADING (MODIFIED)
+// FORM DATA GATHERING & LOADING
 // ============================================================================
 
 function gatherFormData() {
@@ -116,7 +173,6 @@ function gatherFormData() {
 }
 
 function loadFormData() {
-    // CHANGE: Loads from the dynamic SAVE_KEY
     const saved = localStorage.getItem(window.SAVE_KEY);
     if (!saved) return;
 
@@ -153,17 +209,24 @@ function loadFormData() {
         if (data._dynamicTables) restoreDynamicTables(data._dynamicTables);
         if (data._progressNotes) restoreProgressNotes(data._progressNotes);
 
-        // Recalculate everything after loading
-        calculateAge();
-        calculateGrowth();
-        updateVitalIndicators();
-        interpretLabs();
-        classifyNewborn();
+        // =====================================================================
+        // SAFE CALCULATIONS ON LOAD
+        // =====================================================================
+        // Only run Paediatric calcs if 'dob' exists.
+        if (document.getElementById('dob')) {
+            calculateAge();
+            calculateGrowth();
+            updateVitalIndicators();
+            interpretLabs();
+            classifyNewborn();
+            updateHistorySummary();
+            
+            if (typeof calculateAllZScores === 'function') calculateAllZScores();
+            if (typeof updateDevelopmentalMilestones === 'function') updateDevelopmentalMilestones();
+        }
+        
+        // Run generic toggles on both pages
         toggleConditionalFields();
-        updateHistorySummary();
-
-        if (typeof calculateAllZScores === 'function') calculateAllZScores();
-        if (typeof updateDevelopmentalMilestones === 'function') updateDevelopmentalMilestones();
 
         console.log('Data loaded successfully from ' + window.SAVE_KEY);
     } catch (e) {
@@ -208,7 +271,7 @@ function removeRow(btn) {
 
 function gatherDynamicTables() {
     const tables = {};
-    // Note: Added Obs&Gyn tables to this list if you create specific IDs for them later
+    // Includes both Paeds and Obs&Gyn table IDs
     const tableIds = [
         'priorTreatmentTable', 'pastIllnessesTable', 'currentMedicationsTable',
         'siblingsTable', 'problemListTable', 'managementMedsTable',
@@ -512,6 +575,9 @@ function updateProgress() {
 // ============================================================================
 
 function attachEventListeners() {
+    // --- PAEDS SPECIFIC LISTENERS ---
+    
+    // DOB → Age + Milestones + Z-scores
     const dobField = document.getElementById('dob');
     if (dobField) {
         dobField.addEventListener('change', () => {
@@ -521,6 +587,7 @@ function attachEventListeners() {
         });
     }
 
+    // Sex → Z-scores
     const sexSelect = document.getElementById('sex');
     if (sexSelect) {
         sexSelect.addEventListener('change', () => {
@@ -528,6 +595,7 @@ function attachEventListeners() {
         });
     }
 
+    // Weight → BMI + Z-scores
     const weightField = document.getElementById('weight');
     if (weightField) {
         weightField.addEventListener('input', () => {
@@ -535,6 +603,7 @@ function attachEventListeners() {
         });
     }
 
+    // Height → BMI + Z-scores
     const heightField = document.getElementById('height');
     if (heightField) {
         heightField.addEventListener('input', () => {
@@ -542,6 +611,7 @@ function attachEventListeners() {
         });
     }
 
+    // Head circ → Z-score
     const headCircField = document.getElementById('head_circ');
     if (headCircField) {
         headCircField.addEventListener('input', () => {
@@ -549,39 +619,42 @@ function attachEventListeners() {
         });
     }
 
+    // Vitals → Color indicators
     ['hr', 'rr', 'bp_systolic', 'temp'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('input', updateVitalIndicators);
     });
 
+    // Dehydration score
     document.querySelectorAll('input[name^="dehy_"]').forEach(input => {
         input.addEventListener('change', calculateDehydration);
     });
 
+    // Lab values → Interpretation
     ['wbc', 'hb', 'platelets', 'neutrophils', 'glucose', 'sodium', 'potassium', 'creatinine'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('input', interpretLabs);
     });
 
+    // Neonatal classification
     ['neonatal_birth_weight', 'neonatal_ga'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('input', classifyNewborn);
     });
 
+    // Neonatal admission age
     ['neonatal_dob', 'neonatal_admission_datetime'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.addEventListener('change', calculateAdmissionAge);
     });
 
-    document.querySelectorAll('input[type="radio"]').forEach(radio => {
-        radio.addEventListener('change', toggleConditionalFields);
-    });
-
+    // History summary update on key features
     for (let i = 1; i <= 5; i++) {
         const field = document.getElementById(`key_feature_${i}`);
         if (field) field.addEventListener('input', updateHistorySummary);
     }
 
+    // Fluid and dose weight fields
     ['fluidWeight', 'doseWeight'].forEach(id => {
         const field = document.getElementById(id);
         if (field) {
@@ -599,5 +672,13 @@ function attachEventListeners() {
     const doseMgEl = document.getElementById('doseMg');
     if (doseMgEl) doseMgEl.addEventListener('input', calculateDose);
 
+    // --- GENERIC LISTENERS (Both Pages) ---
+
+    // Conditional field toggles on all radio changes
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', toggleConditionalFields);
+    });
+
+    // Initial toggle on load
     toggleConditionalFields();
 }
