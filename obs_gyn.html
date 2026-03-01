@@ -273,5 +273,35 @@
     <script src="js/utils.js"></script>
     <script src="js/export.js"></script>
     <script src="js/main.js"></script>
+        <!-- ... existing scripts ... -->
+    <script src="js/main.js"></script>
+
+    <!-- ADD THIS SCRIPT FOR AUTO-CALCULATION -->
+    <script>
+        // Auto-calculate EDD from LMP
+        const lmpInput = document.getElementById('og_lmp');
+        const eddInput = document.getElementById('og_edd');
+
+        if (lmpInput && eddInput) {
+            lmpInput.addEventListener('change', () => {
+                const lmpDate = new Date(lmpInput.value);
+                if (!isNaN(lmpDate.getTime())) {
+                    // Add 280 days (40 weeks)
+                    lmpDate.setDate(lmpDate.getDate() + 280);
+                    
+                    // Format as YYYY-MM-DD
+                    const year = lmpDate.getFullYear();
+                    const month = String(lmpDate.getMonth() + 1).padStart(2, '0');
+                    const day = String(lmpDate.getDate()).padStart(2, '0');
+                    
+                    eddInput.value = `${year}-${month}-${day}`;
+                    // Trigger save
+                    saveFormData(true);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
 </body>
 </html>
