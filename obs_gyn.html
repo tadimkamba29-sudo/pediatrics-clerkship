@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Obs & Gyn Clerkship Sheet</title>
+    <!-- Using the same CSS as the Paeds sheet -->
+    <link rel="stylesheet" href="css/styles.css"> 
+</head>
+
+<body>
+
+    <div class="header">
+        <!-- Added a Back Button to switch departments -->
+        <div style="position: absolute; top: 15px; left: 20px;">
+            <a href="index.html" class="btn btn-outline" style="text-decoration: none; font-size: 0.9em;">&larr; Paeds</a>
+        </div>
+        <h1>Obs & Gyn Clerkship Sheet</h1>
+        <div class="header-subtitle">Clinical Documentation Tool</div>
+        <div class="header-meta" id="lastSaved"></div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+    </div>
+
+    <div class="autosave-indicator" id="autosaveIndicator">✓ Saved</div>
+
+    <div class="nav-tabs" id="navTabs">
+        <button class="nav-tab active" onclick="showTab('og-patient-info', this)">Patient Info</button>
+        <button class="nav-tab" onclick="showTab('og-antenatal', this)">Antenatal</button>
+        <button class="nav-tab" onclick="showTab('og-gyn', this)">Gyn History</button>
+        <button class="nav-tab" onclick="showTab('og-exam', this)">Examination</button>
+        <button class="nav-tab" onclick="showTab('og-management', this)">Management</button>
+    </div>
+
+    <div class="container">
+
+        <!-- PATIENT INFO TAB -->
+        <div id="og-patient-info" class="tab-content active">
+            <div class="card">
+                <h2 class="card-title">Patient Identification</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="og_patient_name">Patient Name</label>
+                        <input type="text" id="og_patient_name" placeholder="Full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="og_mrn">Medical Record No.</label>
+                        <input type="text" id="og_mrn" placeholder="MRN">
+                    </div>
+                </div>
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="og_age">Age</label>
+                        <input type="number" id="og_age" placeholder="Years">
+                    </div>
+                    <div class="form-group">
+                        <label for="og_gravida">Gravida</label>
+                        <input type="number" id="og_gravida" placeholder="G">
+                    </div>
+                    <div class="form-group">
+                        <label for="og_para">Para</label>
+                        <input type="number" id="og_para" placeholder="P">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="og_lmp">LMP (Last Menstrual Period)</label>
+                        <input type="date" id="og_lmp">
+                    </div>
+                    <div class="form-group">
+                        <label for="og_edd">EDD (Expected Date of Delivery)</label>
+                        <input type="text" id="og_edd" readonly placeholder="Auto-calculated">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="og_ga">Gestational Age (GA)</label>
+                    <input type="text" id="og_ga" placeholder="e.g., 28 weeks + 3 days">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Chief Complaint</h2>
+                <div class="form-group">
+                    <label for="og_chief_complaint">Presenting Complaint</label>
+                    <textarea id="og_chief_complaint" rows="3" placeholder="e.g., Lower abdominal pain for 2 days"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="og_hpc">History of Presenting Complaint (HPC)</label>
+                    <textarea id="og_hpc" rows="5" placeholder="Details of current symptoms..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANTENATAL TAB -->
+        <div id="og-antenatal" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Antenatal History</h2>
+                <div class="form-group">
+                    <label for="og_anc_visits">ANC Visits</label>
+                    <input type="text" id="og_anc_visits" placeholder="Number of visits and where">
+                </div>
+                <div class="form-group">
+                    <label for="og_anc_notes">Antenatal Course</label>
+                    <textarea id="og_anc_notes" rows="4" placeholder="Any complications? (PIH, GDM, Bleeding)"></textarea>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">Obstetric History (Past)</h2>
+                <table id="obstetricHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Gest. Age</th>
+                            <th>Mode of Delivery</th>
+                            <th>Outcome</th>
+                            <th><button type="button" class="btn-add" onclick="addRow('obstetricHistoryTable')">+</button></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" class="form-control"></td>
+                            <td><input type="text" class="form-control"></td>
+                            <td><input type="text" class="form-control"></td>
+                            <td><input type="text" class="form-control"></td>
+                            <td><button type="button" class="btn-remove" onclick="removeRow(this)">×</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- GYNAE HISTORY TAB -->
+        <div id="og-gyn" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Menstrual & Gyn History</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="og_cycle">Menstrual Cycle</label>
+                        <input type="text" id="og_cycle" placeholder="e.g., 28 days, Regular">
+                    </div>
+                    <div class="form-group">
+                        <label for="og_duration">Duration</label>
+                        <input type="text" id="og_duration" placeholder="e.g., 4-5 days">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="og_contraception">Contraception History</label>
+                    <input type="text" id="og_contraception" placeholder="Method used">
+                </div>
+                <div class="form-group">
+                    <label for="og_sexual_history">Sexual History</label>
+                    <textarea id="og_sexual_history" rows="2" placeholder="Partner status, dyspareunia, etc."></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Past Medical History</h2>
+                <div class="form-group">
+                    <label for="og_pmh">Medical Conditions / Surgeries</label>
+                    <textarea id="og_pmh" rows="3" placeholder="Diabetes, Hypertension, Previous surgeries..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMINATION TAB -->
+        <div id="og-exam" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">General Examination</h2>
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="og_bp">BP (mmHg)</label>
+                        <input type="text" id="og_bp" placeholder="120/80">
+                    </div>
+                    <div class="form-group">
+                        <label for="og_pulse">Pulse (bpm)</label>
+                        <input type="number" id="og_pulse" placeholder="80">
+                    </div>
+                    <div class="form-group">
+                        <label for="og_temp">Temp (°C)</label>
+                        <input type="number" id="og_temp" step="0.1" placeholder="37.0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="og_general_findings">General Findings</label>
+                    <textarea id="og_general_findings" rows="2" placeholder="Pallor, Jaundice, Edema..."></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Abdominal Examination</h2>
+                <div class="form-group">
+                    <label for="og_sfh">Fundal Height (cm)</label>
+                    <input type="number" id="og_sfh" placeholder="Symphysis-fundal height">
+                </div>
+                <div class="form-group">
+                    <label for="og_presentation">Presentation</label>
+                    <input type="text" id="og_presentation" placeholder="Cephalic / Breech / Transverse">
+                </div>
+                <div class="form-group">
+                    <label for="og_fetal_heart">Fetal Heart Rate</label>
+                    <input type="text" id="og_fetal_heart" placeholder="Present? Rate?">
+                </div>
+                <div class="form-group">
+                    <label for="og_abdominal_findings">Other Findings</label>
+                    <textarea id="og_abdominal_findings" rows="3" placeholder="Tenderness, Scars, Palpable contractions"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Vaginal Examination (PV)</h2>
+                <div class="form-group">
+                    <label for="og_cervix">Cervical Dilation</label>
+                    <input type="text" id="og_cervix" placeholder="e.g., 4cm">
+                </div>
+                <div class="form-group">
+                    <label for="og_effacement">Effacement</label>
+                    <input type="text" id="og_effacement" placeholder="%">
+                </div>
+                <div class="form-group">
+                    <label for="og_station">Station</label>
+                    <input type="text" id="og_station" placeholder="-3 to +3">
+                </div>
+                <div class="form-group">
+                    <label for="og_membranes">Membranes</label>
+                    <input type="text" id="og_membranes" placeholder="Intact / Ruptured">
+                </div>
+            </div>
+        </div>
+
+        <!-- MANAGEMENT TAB -->
+        <div id="og-management" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Working Diagnosis</h2>
+                <div class="form-group">
+                    <label for="og_diagnosis">Diagnosis</label>
+                    <input type="text" id="og_diagnosis" placeholder="Primary diagnosis">
+                </div>
+                <div class="form-group">
+                    <label for="og_differentials">Differential Diagnoses</label>
+                    <textarea id="og_differentials" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Plan</h2>
+                <div class="form-group">
+                    <label for="og_plan">Management Plan</label>
+                    <textarea id="og_plan" rows="5" placeholder="Investigations, Medications, Delivery plan..."></textarea>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn btn-outline" onclick="saveFormData()">💾 Save (Local)</button>
+        <button class="btn btn-outline" onclick="clearAllData()">🗑️ Clear All</button>
+        <button class="btn btn-outline" onclick="downloadTXT()">📄 Download TXT</button>
+        <button class="btn btn-primary" onclick="printForm()">🖨️ Print / PDF</button>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- Using the same JS files ensures the Save/Load logic works here too -->
+    <script src="js/utils.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
