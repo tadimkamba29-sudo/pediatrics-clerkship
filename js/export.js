@@ -1,8 +1,7 @@
 /**
- * Export and Print logic
- * Handles TXT download, JSON backup/restore, printing, and Neonatal-only exports
- *
- * v2 — Fixed: importJSON now calls calculateAllZScores, minor improvements
+ * Export and Print logic (UNIVERSAL VERSION)
+ * Handles TXT download, JSON backup/restore, printing.
+ * Works for both Pediatrics and Obs_Gyn sheets.
  */
 
 // ============================================================================
@@ -14,26 +13,102 @@ function printForm() {
 }
 
 // ============================================================================
-// DOWNLOAD AS TXT
+// DOWNLOAD AS TXT (ROUTER)
 // ============================================================================
 
 function downloadTXT() {
-    const content = generateTXTContent();
+    // Check which page we are on using the SAVE_KEY defined in main.js
+    const isObsGyn = (window.SAVE_KEY === 'obsGynData');
+    
+    // Generate content based on the page
+    const content = isObsGyn ? generateOGTXTContent() : generatePaedsTXTContent();
+    
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
 
-    const patientName = document.getElementById('patient_name')?.value || 'Patient';
+    // Determine filename
+    const patientId = isObsGyn 
+        ? (document.getElementById('og_patient_name')?.value || 'Patient')
+        : (document.getElementById('patient_name')?.value || 'Patient');
+        
     const date = new Date().toISOString().slice(0, 10);
     a.href = url;
-    a.download = `${patientName.replace(/\s+/g, '_')}_Clerkship_${date}.txt`;
+    a.download = `${patientId.replace(/\s+/g, '_')}_Clerkship_${date}.txt`;
     a.click();
     URL.revokeObjectURL(url);
 
     showToast('TXT file downloaded!', 'success');
 }
 
-function generateTXTContent() {
+// ============================================================================
+// OBS & GYN TXT GENERATOR
+// ============================================================================
+
+function generateOGTXTContent() {
+    let txt = '';
+    txt += '═══════════════════════════════════════════════════════════\n';
+    txt += '           OBS & GYN CLERKSHIP SUMMARY\n';
+    txt += '═══════════════════════════════════════════════════════════\n\n';
+
+    txt += '━━━ PATIENT INFORMATION ━━━\n';
+    txt += `Name: ${getValue('og_patient_name')}\n`;
+    txt += `MRN: ${getValue('og_mrn')}\n`;
+    txt += `Age: ${getValue('og_age')} years\n`;
+    txt += `Gravida / Para: ${getValue('og_gravida')} / ${getValue('og_para')}\n`;
+    txt += `LMP: ${getValue('og_lmp')}\n`;
+    txt += `EDD: ${getValue('og_edd')}\n`;
+    txt += `GA: ${getValue('og_ga')}\n\n`;
+
+    txt += '━━━ CHIEF COMPLAINT ━━━\n';
+    txt += `${getValue('og_chief_complaint')}\n\n`;
+    txt += 'History of Presenting Complaint:\n';
+    txt += `${getValue('og_hpc')}\n\n`;
+
+    txt += '━━━ ANTENATAL HISTORY ━━━\n';
+    txt += `ANC Visits: ${getValue('og_anc_visits')}\n`;
+    txt += `Antenatal Course: ${getValue('og_anc_notes')}\n\n`;
+    
+    txt += 'Obstetric History:\n';
+    txt += getTableContent('obstetricHistoryTable', ['Year', 'GA', 'Mode', 'Outcome']);
+    txt += '\n';
+
+    txt += '━━━ GYNAE HISTORY ━━━\n';
+    txt += `Cycle: ${getValue('og_cycle')} (${getValue('og_duration')} days)\n`;
+    txt += `Contraception: ${getValue('og_contraception')}\n`;
+    txt += `Sexual History: ${getValue('og_sexual_history')}\n`;
+    txt += `Past Medical History: ${getValue('og_pmh')}\n\n`;
+
+    txt += '━━━ EXAMINATION ━━━\n';
+    txt += `Vitals: BP ${getValue('og_bp')}, Pulse ${getValue('og_pulse')}, Temp ${getValue('og_temp')}\n`;
+    txt += `General: ${getValue('og_general_findings')}\n\n`;
+    
+    txt += 'Abdominal Exam:\n';
+    txt += `Fundal Height: ${getValue('og_sfh')} cm\n`;
+    txt += `Presentation: ${getValue('og_presentation')}\n`;
+    txt += `Fetal Heart: ${getValue('og_fetal_heart')}\n`;
+    txt += `Findings: ${getValue('og_abdominal_findings')}\n\n`;
+
+    txt += 'Vaginal Exam (PV):\n';
+    txt += `Cervix: ${getValue('og_cervix')}, Effacement: ${getValue('og_effacement')}, Station: ${getValue('og_station')}\n`;
+    txt += `Membranes: ${getValue('og_membranes')}\n\n`;
+
+    txt += '━━━ MANAGEMENT ━━━\n';
+    txt += `Working Diagnosis: ${getValue('og_diagnosis')}\n`;
+    txt += `Differentials: ${getValue('og_differentials')}\n`;
+    txt += `Plan:\n${getValue('og_plan')}\n\n`;
+
+    txt += '═══════════════════════════════════════════════════════════\n';
+    txt += `Generated: ${new Date().toLocaleString()}\n`;
+    txt += '═══════════════════════════════════════════════════════════\n';
+    return txt;
+}
+
+// ============================================================================
+// PAEDIATRICS TXT GENERATOR (Your original logic)
+// ============================================================================
+
+function generatePaedsTXTContent() {
     let txt = '';
 
     txt += '═══════════════════════════════════════════════════════════\n';
@@ -329,7 +404,7 @@ function generateTXTContent() {
 }
 
 // ============================================================================
-// NEONATAL-ONLY EXPORT — TXT
+// NEONATAL-ONLY EXPORT — TXT (Preserved)
 // ============================================================================
 
 function downloadNeonatalTXT() {
@@ -399,7 +474,7 @@ function generateNeonatalTXTContent() {
 }
 
 // ============================================================================
-// NEONATAL-ONLY EXPORT — JSON
+// NEONATAL-ONLY EXPORT — JSON (Preserved)
 // ============================================================================
 
 function downloadNeonatalJSON() {
@@ -587,20 +662,33 @@ function getProgressNotes() {
 }
 
 // ============================================================================
-// DOWNLOAD AS JSON (Full Backup)
+// DOWNLOAD AS JSON (Universal)
 // ============================================================================
 
 function downloadJSON() {
-    const data = gatherFormData();
+    const data = gatherFormData(); // Uses main.js function (already universal)
+    
+    // Metadata
+    data._meta = {
+        saveDate: new Date().toISOString(),
+        type: window.SAVE_KEY
+    };
+
     const jsonString = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
 
-    const patientName = document.getElementById('patient_name')?.value || 'Patient';
+    // Smart Filename
+    const isObsGyn = (window.SAVE_KEY === 'obsGynData');
+    const patientId = isObsGyn 
+        ? (document.getElementById('og_patient_name')?.value || 'Patient')
+        : (document.getElementById('patient_name')?.value || 'Patient');
+    const prefix = isObsGyn ? 'ObsGyn' : 'Paeds';
     const date = new Date().toISOString().slice(0, 10);
+
     a.href = url;
-    a.download = `${patientName.replace(/\s+/g, '_')}_Backup_${date}.json`;
+    a.download = `${prefix}_${patientId.replace(/\s+/g, '_')}_Backup_${date}.json`;
     a.click();
     URL.revokeObjectURL(url);
 
@@ -608,7 +696,7 @@ function downloadJSON() {
 }
 
 // ============================================================================
-// IMPORT JSON BACKUP
+// IMPORT JSON BACKUP (Universal & Safe)
 // ============================================================================
 
 function importJSON() {
@@ -625,10 +713,10 @@ function importJSON() {
             try {
                 const data = JSON.parse(event.target.result);
 
+                // Populate form fields
                 Object.keys(data).forEach(key => {
-                    if (key.startsWith('_')) return;
+                    if (key.startsWith('_') && key !== '_dynamicTables' && key !== '_progressNotes') return;
 
-                    // Handle checkbox arrays
                     if (Array.isArray(data[key])) {
                         data[key].forEach(value => {
                             const cb = document.querySelector(`input[type="checkbox"][name="${key}"][value="${value}"]`);
@@ -650,20 +738,23 @@ function importJSON() {
                 if (data._dynamicTables) restoreDynamicTables(data._dynamicTables);
                 if (data._progressNotes) restoreProgressNotes(data._progressNotes);
 
-                localStorage.setItem('clerkshipData', JSON.stringify(data));
+                // Save to correct slot
+                localStorage.setItem(window.SAVE_KEY, JSON.stringify(data));
 
-                // FIX: Recalculate ALL computed fields after import
-                calculateAge();
-                calculateGrowth(); // chains into calculateAllZScores
-                updateVitalIndicators();
-                interpretLabs();
-                classifyNewborn();
-                calculateAdmissionAge();
+                // SAFE Recalculation
+                if (document.getElementById('dob')) { // Paeds specific
+                    calculateAge();
+                    calculateGrowth(); 
+                    updateVitalIndicators();
+                    interpretLabs();
+                    classifyNewborn();
+                    calculateAdmissionAge();
+                    updateHistorySummary();
+                    if (typeof updateDevelopmentalMilestones === 'function') updateDevelopmentalMilestones();
+                }
+                
                 toggleConditionalFields();
                 updateProgress();
-                updateHistorySummary();
-
-                if (typeof updateDevelopmentalMilestones === 'function') updateDevelopmentalMilestones();
 
                 showToast('Data imported successfully!', 'success');
 
